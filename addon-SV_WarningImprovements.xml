@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="0.01" version_id="1" url="" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="0.02" version_id="2" url="" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates/>
   <admin_template_modifications/>
   <code_events/>
-  <code_event_listeners/>
+  <code_event_listeners>
+    <listener event_id="load_class" execute_order="10" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Member" description="XenForo_ControllerPublic_Member"/>
+  </code_event_listeners>
   <cron/>
   <email_templates/>
   <email_template_modifications/>
@@ -20,10 +22,9 @@
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="sv_warning_improvement_continue_script" version_id="1" version_string="0.01"><![CDATA[<script>
+    <template title="sv_warning_improvement_continue_script" version_id="2" version_string="0.02"><![CDATA[<script>
 !function($, window, document, _undefined)
-{	
-
+{
 	$warningForm = $(".warningHeader").closest('form');
 	$warningSubmitButton = $warningForm.find('dl.submitUnit input[type=submit]').first();
 	$dl = $warningSubmitButton.parent();
