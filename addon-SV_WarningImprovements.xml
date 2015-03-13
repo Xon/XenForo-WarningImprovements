@@ -19,6 +19,20 @@
       <sub_options></sub_options>
       <relation group_id="discourager" display_order="9101"/>
     </option>
+    <option option_id="sv_warningimprovements_copy_title" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="discourager" display_order="9110"/>
+    </option>
+    <option option_id="sv_warningimprovements_default_content_action" edit_format="radio" data_type="string" can_backup="1">
+      <default_value>public_warning</default_value>
+      <edit_format_params>none={xen:phrase do_nothing}
+delete_content={xen:phrase delete_the_content}
+public_warning={xen:phrase post_public_warning}</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="discourager" display_order="9120"/>
+    </option>
   </optiongroups>
   <permissions>
     <permission_groups/>
@@ -28,22 +42,26 @@
   <phrases>
     <phrase title="option_sv_warningimprovements_conversation_locked" version_id="2" version_string="0.02"><![CDATA[Lock Warning Conversations]]></phrase>
     <phrase title="option_sv_warningimprovements_conversation_locked_explain" version_id="2" version_string="0.02"><![CDATA[By Default, lock warning conversations.]]></phrase>
+    <phrase title="option_sv_warningimprovements_copy_title" version_id="2" version_string="0.02"><![CDATA[Copy Warning Title to Public Warning]]></phrase>
+    <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
+    <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
+    <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
     <phrase title="warning_definition_0_title" version_id="2" version_string="0.02"><![CDATA[Custom Warning]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="sv_warning_improvement_continue_script" version_id="2" version_string="0.02"><![CDATA[<script>
+    <template title="sv_warning_improvement_js" version_id="2" version_string="0.02"><![CDATA[<script>
 !function($, window, document, _undefined)
 {
 	$warningForm = $(".warningHeader").closest('form');
 	$warningSubmitButton = $warningForm.find('dl.submitUnit input[type=submit]').first();
 	$dl = $warningSubmitButton.parent();
-	$dl.append('<input type="button" class="continue button" value="{xen:phrase continue}"/>');	
+	$dl.append('<input type="button" class="continue button" value="{xen:phrase continue}"/>');
 	$warningContinueButton = $dl.find('.continue');
 	$warningSubmitButton.hide();
-	
-	$warningForm.find('.tabs li a').click(function(e) {		
+
+	$warningForm.find('.tabs li a').click(function(e) {
 		if ($(e.target).parent().next().length === 0){
 			$warningSubmitButton.show();
 			$warningContinueButton.hide();
@@ -53,29 +71,56 @@
 			$warningContinueButton.show();
 		}
 	});
-	
-	$warningContinueButton.click(function(e) {		
+
+	$warningContinueButton.click(function(e) {
 		var $next = $warningForm.find('.tabs li .active').parent().next();
 		if ($next.length !== 0) {
 			$next.find('a').click().focus();
 		}
 	});
-	
-	XenForo.CustomWarningFormFillerControl = function($control)
+
+	XenForo.WarningDefaultActionFormFillerControl = function($control)
 	{
 		$control.trigger('click');
+		<xen:if is='{$xenOptions.sv_warningimprovements_default_content_action} == "delete_content"'>
+		$('input[name=content_action][value=delete_content]').trigger('click');
+		<xen:elseif is='{$xenOptions.sv_warningimprovements_default_content_action} == "public_warning"'/>
+		$('input[name=content_action][value=public_warning]').trigger('click');
+		</xen:if>
 	}
-
-	XenForo.register('#customWarning', 'XenForo.CustomWarningFormFillerControl');
+	XenForo.register('#customWarning', 'XenForo.WarningDefaultActionFormFillerControl');
+	<xen:if is='{$xenOptions.sv_warningimprovements_copy_title}'>
+	XenForo.CustomWarningTitle = function($control)
+	{
+		$control.change(function (e){
+			$('input[name=public_warning]').val($control.val());
+		});
+	}
+	XenForo.register('input[name=title]', 'XenForo.CustomWarningTitle');
+	XenForo.WarningDefRadioButton = function($control)
+	{
+		$control.change(function (e){
+			$('input[name=public_warning]').val($(e.target).closest('label').text());
+		});
+	}
+	XenForo.register('input[name=warning_definition_id][id!=customWarning]', 'XenForo.WarningDefRadioButton');
+	XenForo.CustomWarningRadioButton = function($control)
+	{
+		$control.change(function (e){
+			$('input[name=public_warning]').val($('input[name=title]').val());
+		});
+	}
+	XenForo.register('input[id=customWarning]', 'XenForo.CustomWarningRadioButton');
+	</xen:if>	
 }
 (jQuery, this, document);
 </script>]]></template>
   </templates>
   <public_template_modifications>
-    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn1" description="" execution_order="1" enabled="1" action="str_replace">
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn1" description="Insert extra javascript" execution_order="1" enabled="1" action="str_replace">
       <find><![CDATA[</script>]]></find>
       <replace><![CDATA[$0
-<xen:include template="sv_warning_improvement_continue_script"/>]]></replace>
+<xen:include template="sv_warning_improvement_js"/>]]></replace>
     </modification>
     <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn2" description="Exclude custom warning from list." execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[#(<xen\:foreach loop\="\$warnings" value\="\$warning">)(.*?)(\s*)(</xen\:foreach>)#si]]></find>
