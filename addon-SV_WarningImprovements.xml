@@ -7,18 +7,29 @@
   <admin_template_modifications/>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="load_class" execute_order="10" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Member" description="XenForo_ControllerPublic_Member"/>
+    <listener event_id="load_class" execute_order="10" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ViewPublic_Member_WarnFill" description="XenForo_ViewPublic_Member_WarnFill"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
   <email_template_modifications/>
-  <optiongroups/>
+  <optiongroups>
+    <option option_id="sv_warningimprovements_conversation_locked" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="discourager" display_order="9101"/>
+    </option>
+  </optiongroups>
   <permissions>
     <permission_groups/>
     <permissions/>
     <interface_groups/>
   </permissions>
-  <phrases/>
+  <phrases>
+    <phrase title="option_sv_warningimprovements_conversation_locked" version_id="2" version_string="0.02"><![CDATA[Lock Warning Conversations]]></phrase>
+    <phrase title="option_sv_warningimprovements_conversation_locked_explain" version_id="2" version_string="0.02"><![CDATA[By Default, lock warning conversations.]]></phrase>
+    <phrase title="warning_definition_0_title" version_id="2" version_string="0.02"><![CDATA[Custom Warning]]></phrase>
+  </phrases>
   <route_prefixes/>
   <style_properties/>
   <templates>
@@ -49,6 +60,13 @@
 			$next.find('a').click().focus();
 		}
 	});
+	
+	XenForo.CustomWarningFormFillerControl = function($control)
+	{
+		$control.trigger('click');
+	}
+
+	XenForo.register('#customWarning', 'XenForo.CustomWarningFormFillerControl');
 }
 (jQuery, this, document);
 </script>]]></template>
@@ -58,6 +76,16 @@
       <find><![CDATA[</script>]]></find>
       <replace><![CDATA[$0
 <xen:include template="sv_warning_improvement_continue_script"/>]]></replace>
+    </modification>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn2" description="Exclude custom warning from list." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen\:foreach loop\="\$warnings" value\="\$warning">)(.*?)(\s*)(</xen\:foreach>)#si]]></find>
+      <replace><![CDATA[$1$3<xen:if is="{$warning.warning_definition_id}">
+$2$3</xen:if>
+$3$4]]></replace>
+    </modification>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn3" description="Conversation locking" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<input type="checkbox" name="conversation_locked" value="1"]]></find>
+      <replace><![CDATA[$0 {xen:if '{$xenOptions.sv_warningimprovements_conversation_locked}', 'checked="checked"'}]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>
