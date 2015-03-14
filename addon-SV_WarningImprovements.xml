@@ -53,6 +53,12 @@ $3$4]]></replace>
   <email_templates/>
   <email_template_modifications/>
   <optiongroups>
+    <option option_id="sv_warningimprovements_continue_button" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="discourager" display_order="9100"/>
+    </option>
     <option option_id="sv_warningimprovements_conversation_locked" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
       <edit_format_params></edit_format_params>
@@ -80,12 +86,15 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
     <interface_groups/>
   </permissions>
   <phrases>
+    <phrase title="option_sv_warningimprovements_continue_button" version_id="2" version_string="0.02"><![CDATA[Add Continue Button on Warning]]></phrase>
+    <phrase title="option_sv_warningimprovements_continue_button_explain" version_id="2" version_string="0.02"><![CDATA[Force a continue button to replace the "warn" button for all but the last tab.]]></phrase>
     <phrase title="option_sv_warningimprovements_conversation_locked" version_id="2" version_string="0.02"><![CDATA[Lock Warning Conversations]]></phrase>
     <phrase title="option_sv_warningimprovements_conversation_locked_explain" version_id="2" version_string="0.02"><![CDATA[By Default, lock warning conversations.]]></phrase>
     <phrase title="option_sv_warningimprovements_copy_title" version_id="2" version_string="0.02"><![CDATA[Copy Warning Title to Public Warning]]></phrase>
     <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
+    <phrase title="warning_definition_0_title" version_id="2" version_string="0.02"><![CDATA[Custom Warning]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
@@ -93,6 +102,7 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
     <template title="sv_warning_improvement_js" version_id="2" version_string="0.02"><![CDATA[<script>
 !function($, window, document, _undefined)
 {
+	<xen:if is="{$xenOptions.sv_warningimprovements_continue_button}">
 	$warningForm = $(".warningHeader").closest('form');
 	$warningSubmitButton = $warningForm.find('dl.submitUnit input[type=submit]').first();
 	$dl = $warningSubmitButton.parent();
@@ -117,6 +127,7 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
 			$next.find('a').click().focus();
 		}
 	});
+	</xen:if>	
 
 	XenForo.WarningDefaultActionFormFillerControl = function($control)
 	{
