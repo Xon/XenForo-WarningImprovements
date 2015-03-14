@@ -4,10 +4,50 @@
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates/>
-  <admin_template_modifications/>
+  <admin_template_modifications>
+    <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit1" description="Special case editing the Custom Warning - 1" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[{xen:adminlink warnings/save, $warning}]]></find>
+      <replace><![CDATA[{xen:adminlink warnings/save}]]></replace>
+    </modification>
+    <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit2" description="Special case editing the Custom Warning - 2" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:if is="{$warning.warning_definition_id}">
+	<xen:navigation>]]></find>
+      <replace><![CDATA[<xen:if is="{$warning.warning_definition_id} or {$warning.is_custom}">
+	<xen:navigation>]]></replace>
+    </modification>
+    <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit3" description="Special case editing the Custom Warning - 3" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:title>{xen:if $warning.warning_definition_id]]></find>
+      <replace><![CDATA[<xen:title>{xen:if '{$warning.warning_definition_id} or {$warning.is_custom}']]></replace>
+    </modification>
+    <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit4" description="Special case editing the Custom Warning - 4" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:textboxunit label="{xen:phrase title}:".*?/>)#si]]></find>
+      <replace><![CDATA[<xen:if is="{$warning.is_custom}">
+<input name="title" type="hidden" value="{$masterTitle}" />
+<input name="is_custom" type="hidden" value="1" />
+<fieldset>
+<dl class="ctrlUnit"><dt>{xen:phrase title}:</dt><dd><em>{$masterTitle}</em></dd></dl>
+</fieldset>
+<xen:else />
+$1
+</xen:if>]]></replace>
+    </modification>
+    <modification template="warning_list" modification_key="SV_WarningImprovements_warning_list" description="Exclude custom warning from list." execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen\:foreach loop\="\$warnings" value\="\$warning">)(.*?)(\s*)(</xen\:foreach>)#si]]></find>
+      <replace><![CDATA[$1$3<xen:if is="{$warning.warning_definition_id}">
+$2$3<xen:else />
+			<xen:listitem
+					id="warning-{$warning.warning_definition_id}"
+					label="{$warning.title}"
+					href="{xen:adminlink 'warnings/edit'}" />
+$3</xen:if>
+$3$4]]></replace>
+    </modification>
+  </admin_template_modifications>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="load_class" execute_order="10" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ViewPublic_Member_WarnFill" description="XenForo_ViewPublic_Member_WarnFill"/>
+    <listener event_id="load_class" execute_order="10" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_WarningDefinition" description="XenForo_DataWriter_WarningDefinition"/>
+    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ViewPublic_Member_WarnFill" description="XenForo_ViewPublic_Member_WarnFill"/>
+    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_Warning" description="XenForo_ControllerAdmin_Warning"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -46,7 +86,6 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
     <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
-    <phrase title="warning_definition_0_title" version_id="2" version_string="0.02"><![CDATA[Custom Warning]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
