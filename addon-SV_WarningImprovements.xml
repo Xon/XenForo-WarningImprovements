@@ -95,6 +95,8 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
     <phrase title="warning_definition_0_title" version_id="2" version_string="0.02"><![CDATA[Custom Warning]]></phrase>
+    <phrase title="warning_definition_0_conversation_title" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
+    <phrase title="warning_definition_0_conversation_text" version_id="2" version_string="0.02"><![CDATA[]]></phrase>    
   </phrases>
   <route_prefixes/>
   <style_properties/>
