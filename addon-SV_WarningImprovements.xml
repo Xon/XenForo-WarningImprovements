@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="0.02" version_id="2" url="" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="0.0.3" version_id="3" url="" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
-  <admin_templates/>
+  <admin_templates>
+    <template title="sv_warningimprovements_criteria"><![CDATA[	<li><label>
+		<input type="checkbox" name="user_criteria[warning_points_l][rule]" value="warning_points_l" class="Disabler" id="ucrit_warning_points_l" {xen:checked $userCriteria.warning_points_l} />
+		{xen:phrase user_has_received_at_least_x_warnings_points}:</label>
+		<div class="criteriaQualifier" id="ucrit_warning_points_l_Disabler">
+			<xen:spinbox name="user_criteria[warning_points_l][data][points]" value="{$userCriteria.warning_points_l.points}" size="5" min="0" step="7" />
+		</div>
+	</li>
+	<li><label>
+		<input type="checkbox" name="user_criteria[warning_points_m][rule]" value="warning_points_m" class="Disabler" id="ucrit_warning_points_m" {xen:checked $userCriteria.warning_points_m} />
+		{xen:phrase user_has_received_at_most_x_warnings_points}:</label>
+		<div class="criteriaQualifier" id="ucrit_warning_points_m_Disabler">
+			<xen:spinbox name="user_criteria[warning_points_m][data][points]" value="{$userCriteria.warning_points_m.points}" size="5" min="0" step="7" />
+		</div>
+	</li>]]></template>
+  </admin_templates>
   <admin_template_modifications>
     <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit1" description="Special case editing the Custom Warning - 1" execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[{xen:adminlink warnings/save, $warning}]]></find>
@@ -42,9 +57,14 @@ $2$3<xen:else />
 $3</xen:if>
 $3$4]]></replace>
     </modification>
+    <modification template="helper_criteria_user" modification_key="sv_warningimprovements_helper_criteria_user" description="" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:hook name="user_criteria_content">.*?)(\s*)(</xen:hook>)#si]]></find>
+      <replace><![CDATA[$1$2<xen:include template="sv_warningimprovements_criteria"/>$2$3]]></replace>
+    </modification>
   </admin_template_modifications>
   <code_events/>
   <code_event_listeners>
+    <listener event_id="criteria_user" execute_order="10" callback_class="SV_WarningImprovements_Criteria" callback_method="criteriaUser" active="1" hint="" description="Add warning related criteria"/>
     <listener event_id="load_class" execute_order="10" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_WarningDefinition" description="XenForo_DataWriter_WarningDefinition"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ViewPublic_Member_WarnFill" description="XenForo_ViewPublic_Member_WarnFill"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_Warning" description="XenForo_ControllerAdmin_Warning"/>
@@ -94,9 +114,9 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
     <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
+    <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>
+    <phrase title="user_has_received_at_most_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at most X warnings points]]></phrase>
     <phrase title="warning_definition_0_title" version_id="2" version_string="0.02"><![CDATA[Custom Warning]]></phrase>
-    <phrase title="warning_definition_0_conversation_title" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
-    <phrase title="warning_definition_0_conversation_text" version_id="2" version_string="0.02"><![CDATA[]]></phrase>    
   </phrases>
   <route_prefixes/>
   <style_properties/>
