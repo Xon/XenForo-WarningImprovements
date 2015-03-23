@@ -17,7 +17,6 @@ class SV_WarningImprovements_Listener
         foreach($addonsToUninstall as $addonToUninstall => $keys)
         {
             $addon = $addonModel->getAddOnById($addonToUninstall);
-            XenForo_Error::debug(var_export($addon,true));
             if (!empty($addon))
             {
                 if(!empty($keys))
