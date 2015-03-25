@@ -2,13 +2,11 @@
 
 class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningImprovements_XenForo_DataWriter_Warning
 {
-    public static $SendWarningAlert = true;
-
     protected function _postSave()
     {
         parent::_postSave();
 
-        if ($this->isInsert() && self::$SendWarningAlert)
+        if ($this->isInsert() && SV_WarningImprovements_Globals::$SendWarningAlert)
         {
             $options = XenForo_Application::getOptions();
             $user_id = 0;
