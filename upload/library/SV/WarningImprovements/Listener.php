@@ -70,6 +70,8 @@ class SV_WarningImprovements_Listener
                 ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', 'alert_handler_class', 'SV_WarningImprovements_AlertHandler_Warning')
         ");
 
+        XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
+
         return true;
     }
 
@@ -92,6 +94,8 @@ class SV_WarningImprovements_Listener
         SV_WarningImprovements_Install::dropColumn("xf_warning_definition", "sv_PauseExpireOnSuspended");
         SV_WarningImprovements_Install::dropColumn("xf_user_group", "sv_suspends");
 */
+        XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
+
         return true;
     }
 
