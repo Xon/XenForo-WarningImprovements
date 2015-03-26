@@ -7,5 +7,5 @@ class SV_WarningImprovements_Globals
     public static $warning_user_id = null;
     public static $SendWarningAlert = false;
 
-    private function__construct() {}
+    private function __construct() {}
 }
