@@ -92,17 +92,29 @@ $3$4]]></replace>
       <sub_options></sub_options>
       <relation group_id="SV_WarningImprovements" display_order="9100"/>
     </option>
+    <option option_id="sv_warningimprovements_conversation_invite" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="9120"/>
+    </option>
     <option option_id="sv_warningimprovements_conversation_locked" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="SV_WarningImprovements" display_order="9101"/>
+      <relation group_id="SV_WarningImprovements" display_order="9130"/>
+    </option>
+    <option option_id="sv_warningimprovements_conversation_send_default" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="9110"/>
     </option>
     <option option_id="sv_warningimprovements_copy_title" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="SV_WarningImprovements" display_order="9110"/>
+      <relation group_id="SV_WarningImprovements" display_order="9140"/>
     </option>
     <option option_id="sv_warningimprovements_default_content_action" edit_format="radio" data_type="string" can_backup="1">
       <default_value>public_warning</default_value>
@@ -110,7 +122,7 @@ $3$4]]></replace>
 delete_content={xen:phrase delete_the_content}
 public_warning={xen:phrase post_public_warning}</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="SV_WarningImprovements" display_order="9120"/>
+      <relation group_id="SV_WarningImprovements" display_order="9150"/>
     </option>
   </optiongroups>
   <permissions>
@@ -129,8 +141,12 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
 Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="option_sv_warningimprovements_continue_button" version_id="2" version_string="0.02"><![CDATA[Add Continue Button on Warning]]></phrase>
     <phrase title="option_sv_warningimprovements_continue_button_explain" version_id="2" version_string="0.02"><![CDATA[Force a continue button to replace the "warn" button for all but the last tab.]]></phrase>
+    <phrase title="option_sv_warningimprovements_conversation_invite" version_id="100010" version_string="1.0.1"><![CDATA[Allow Invite into Warning Conversations By Default]]></phrase>
+    <phrase title="option_sv_warningimprovements_conversation_invite_explain" version_id="100010" version_string="1.0.1"><![CDATA[By Default, check inviting others into a warning conversation.]]></phrase>
     <phrase title="option_sv_warningimprovements_conversation_locked" version_id="2" version_string="0.02"><![CDATA[Lock Warning Conversations]]></phrase>
     <phrase title="option_sv_warningimprovements_conversation_locked_explain" version_id="2" version_string="0.02"><![CDATA[By Default, lock warning conversations.]]></phrase>
+    <phrase title="option_sv_warningimprovements_conversation_send_default" version_id="100010" version_string="1.0.1"><![CDATA[Send Warning Conversations By Default]]></phrase>
+    <phrase title="option_sv_warningimprovements_conversation_send_default_explain" version_id="100010" version_string="1.0.1"><![CDATA[By Default, sending warning conversations.]]></phrase>
     <phrase title="option_sv_warningimprovements_copy_title" version_id="2" version_string="0.02"><![CDATA[Copy Warning Title to Public Warning]]></phrase>
     <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
@@ -259,6 +275,14 @@ $3$4]]></replace>
       <replace><![CDATA[$1$2
 <dt></dt>
 <dd><label><input type="checkbox" name="send_warning_alert" value="1" checked="checked" /> {xen:phrase send_alert_on_warning}</label></dd>]]></replace>
+    </modification>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn5" description="Conversation Inviting" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<input type="checkbox" name="open_invite" value="1"]]></find>
+      <replace><![CDATA[$0 {xen:if '{$xenOptions.sv_warningimprovements_conversation_invite}', 'checked="checked"'}]]></replace>
+    </modification>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn6" description="Conversation sending" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(id="startConversation".*?)(class="Disabler".*?)(checked="checked")#i]]></find>
+      <replace><![CDATA[$1 {xen:if '{$xenOptions.sv_warningimprovements_conversation_send_default}', '$2 $3'}]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>
