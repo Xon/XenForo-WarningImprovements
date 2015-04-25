@@ -12,7 +12,7 @@ class SV_WarningImprovements_Listener
         $options = XenForo_Application::getOptions();
 
         $addonModel = XenForo_Model::create("XenForo_Model_AddOn");
-        $addonsToUninstall = array('SV_AlertOnWarning' => array("sv_alert_warning_anonymise" => "sv_warning_anonymise"),
+        $addonsToUninstall = array('SV_AlertOnWarning' => array("sv_alert_warning_anonymise" => "sv_warningimprovements_anonymise_alert"),
                                    'SVViewOwnWarnings' => array());
         foreach($addonsToUninstall as $addonToUninstall => $keys)
         {

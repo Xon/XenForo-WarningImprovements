@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.0.0" version_id="100000" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.0.1" version_id="100010" url="" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -79,7 +79,7 @@ $3$4]]></replace>
   <email_template_modifications/>
   <optiongroups>
     <group group_id="SV_WarningImprovements" display_order="141" debug_only="0"/>
-    <option option_id="sv_warning_anonymise" edit_format="onoff" data_type="boolean" can_backup="1">
+    <option option_id="sv_warningimprovements_anonymise_alert" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
@@ -123,6 +123,10 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
   <phrases>
     <phrase title="option_group_SV_WarningImprovements" version_id="100000" version_string="1.0.0"><![CDATA[Warning Improvements]]></phrase>
     <phrase title="option_group_SV_WarningImprovements_description" version_id="100000" version_string="1.0.0"><![CDATA[A collection of improvements and configurables for XF's warning system.]]></phrase>
+    <phrase title="option_sv_warningimprovements_anonymise_alert" version_id="100000" version_string="1.0.0"><![CDATA[Anonymise Warning Alerts]]></phrase>
+    <phrase title="option_sv_warningimprovements_anonymise_alert_explain" version_id="100000" version_string="1.0.0"><![CDATA[Prevent users from seeing who issued warnings against them.<br/>
+<br/>
+Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="option_sv_warningimprovements_continue_button" version_id="2" version_string="0.02"><![CDATA[Add Continue Button on Warning]]></phrase>
     <phrase title="option_sv_warningimprovements_continue_button_explain" version_id="2" version_string="0.02"><![CDATA[Force a continue button to replace the "warn" button for all but the last tab.]]></phrase>
     <phrase title="option_sv_warningimprovements_conversation_locked" version_id="2" version_string="0.02"><![CDATA[Lock Warning Conversations]]></phrase>
@@ -131,10 +135,6 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
     <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
-    <phrase title="option_sv_warning_anonymise" version_id="100000" version_string="1.0.0"><![CDATA[Anonymise Warning Alerts]]></phrase>
-    <phrase title="option_sv_warning_anonymise_explain" version_id="100000" version_string="1.0.0"><![CDATA[Prevent users from seeing who issued warnings against them.<br/>
-<br/>
-Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="permission_general_viewWarning_issuer" version_id="100" version_string="1.0.0"><![CDATA[View warning issuer]]></phrase>
     <phrase title="send_alert_on_warning" version_id="100000" version_string="1.0.0"><![CDATA[Send alert on warning]]></phrase>
     <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>

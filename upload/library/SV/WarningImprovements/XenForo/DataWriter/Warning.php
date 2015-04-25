@@ -11,7 +11,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
             $options = XenForo_Application::getOptions();
             $user_id = 0;
             $username = '';
-            if (!$options->sv_alert_warning_anonymise)
+            if (!$options->sv_warningimprovements_anonymise_alert)
             {
                 $warning_user = $this->_getUserModel()->getUserById($this->get('warning_user_id'));    
                 if ($warning_user && isset($warning_user['user_id']))
