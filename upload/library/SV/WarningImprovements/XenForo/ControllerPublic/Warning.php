@@ -2,11 +2,6 @@
 
 class SV_WarningImprovements_XenForo_ControllerPublic_Warning extends XFCP_SV_WarningImprovements_XenForo_ControllerPublic_Warning
 {
-    protected function _getUserModel()
-    {
-        return $this->getModelFromCache('XenForo_Model_User');
-    }
-
     public function actionIndex()
     {
         $warningId = $this->_input->filterSingle('warning_id', XenForo_Input::UINT);

@@ -5,14 +5,7 @@ class SV_WarningImprovements_XenForo_Model_User extends XFCP_SV_WarningImproveme
     {
         $this->standardizeViewingUserReference($viewingUser);
 
-        if (preg_match('/members\/.*?\.(\d+)\//i', $_SERVER['REQUEST_URI'], $matches))
-        {
-            if ($matches[1]==$viewingUser['user_id'])
-            {
-                return true;
-            }
-        }
-        else if (!empty(SV_WarningImprovements_Globals::$warning_user_id) && SV_WarningImprovements_Globals::$warning_user_id == $viewingUser['user_id'])
+        if (!empty(SV_WarningImprovements_Globals::$warning_user_id) && SV_WarningImprovements_Globals::$warning_user_id == $viewingUser['user_id'])
         {
             return true;
         }
