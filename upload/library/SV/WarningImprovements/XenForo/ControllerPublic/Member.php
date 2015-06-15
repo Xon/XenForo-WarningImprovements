@@ -2,8 +2,8 @@
 
 class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_WarningImprovements_XenForo_ControllerPublic_Member
 {
-	public function actionMember()
-	{
+    public function actionMember()
+    {
         SV_WarningImprovements_Globals::$warning_user_id = $this->_input->filterSingle('user_id', XenForo_Input::UINT);
 
         return parent::actionMember();
@@ -18,12 +18,12 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
     }
 
     public function actionWarnings()
-	{
+    {
         SV_WarningImprovements_Globals::$warning_user_id = $this->_input->filterSingle('user_id', XenForo_Input::UINT);
 
         return parent::actionWarnings();
     }
-    
+
     public function actionCard()
     {
         SV_WarningImprovements_Globals::$warning_user_id = $this->_input->filterSingle('user_id', XenForo_Input::UINT);

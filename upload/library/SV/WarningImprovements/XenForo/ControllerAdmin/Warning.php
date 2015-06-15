@@ -45,7 +45,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
             $dw = XenForo_DataWriter::create('XenForo_DataWriter_WarningDefinition');
             $dw->setOption(SV_WarningImprovements_XenForo_DataWriter_WarningDefinition::IS_CUSTOM, 1);
-            $dw->setExistingData($warningDefinitionId);            
+            $dw->setExistingData($warningDefinitionId);
             $dw->bulkSet($dwInput);
             $dw->setExtraData(XenForo_DataWriter_WarningDefinition::DATA_TITLE, $phrases['title']);
             $dw->setExtraData(XenForo_DataWriter_WarningDefinition::DATA_CONVERSATION_TITLE, $phrases['conversationTitle']);

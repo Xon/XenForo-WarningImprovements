@@ -13,8 +13,3 @@ class SV_WarningImprovements_XenForo_Model_User extends XFCP_SV_WarningImproveme
         return parent::canViewWarnings($errorPhraseKey, $viewingUser);
     }
 }
-
-
-
-
-

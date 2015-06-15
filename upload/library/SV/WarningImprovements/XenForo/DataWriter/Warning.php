@@ -13,7 +13,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
             $username = '';
             if (!$options->sv_warningimprovements_anonymise_alert)
             {
-                $warning_user = $this->_getUserModel()->getUserById($this->get('warning_user_id'));    
+                $warning_user = $this->_getUserModel()->getUserById($this->get('warning_user_id'));
                 if ($warning_user && isset($warning_user['user_id']))
                 {
                     $user_id = $warning_user['user_id'];
@@ -28,12 +28,12 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
                 'warning');
         }
     }
-    
+
     protected function _postDelete()
     {
         parent::_postDelete();
-        
+
         $this->getModelFromCache('XenForo_Model_Alert')->deleteAlerts('warning', $this->get('warning_id'));
     }
-    
+
 }
