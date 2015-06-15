@@ -2,21 +2,28 @@
 
 class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_WarningImprovements_XenForo_ControllerAdmin_Warning
 {
+    var $_set_custom_warning = false;
+
     public function actionEdit()
     {
         $warningDefinitionId = $this->_input->filterSingle('warning_definition_id', XenForo_Input::UINT);
-        $warning = $this->_getWarningDefinitionOrError($warningDefinitionId);
-
-        $warning['is_custom'] = true;
-
-        $view = $this->_getWarningAddEditResponse($warning);
-
-        $masterValues = $this->_getWarningModel()->getWarningDefinitionMasterPhraseValues($warning['warning_definition_id']);
-        $view->params['masterTitle'] = $masterValues['title'];
-        $view->params['masterConversationTitle'] = $masterValues['conversationTitle'];
-        $view->params['masterConversationText'] = $masterValues['conversationText'];
-
+        $this->_set_custom_warning = empty($warningDefinitionId);
+        $view = parent::actionEdit();
+        if ($this->_set_custom_warning)
+        {
+            $masterValues = $this->_getWarningModel()->getWarningDefinitionMasterPhraseValues($warningDefinitionId);
+            $view->params['masterTitle'] = $masterValues['title'];
+            $view->params['masterConversationTitle'] = $masterValues['conversationTitle'];
+            $view->params['masterConversationText'] = $masterValues['conversationText'];
+            $this->_set_custom_warning = false;
+        }
         return $view;
+    }
+
+    protected function _getWarningAddEditResponse(array $warning)
+    {
+        $warning['is_custom'] = $this->_set_custom_warning;
+        return parent::_getWarningAddEditResponse($warning);
     }
 
     public function actionSave()

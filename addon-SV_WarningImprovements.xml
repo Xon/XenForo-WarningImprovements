@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.0.2" version_id="100020" url="" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.0.3" version_id="100030" url="" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -22,7 +22,7 @@
   <admin_template_modifications>
     <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit1" description="Special case editing the Custom Warning - 1" execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[{xen:adminlink warnings/save, $warning}]]></find>
-      <replace><![CDATA[{xen:adminlink warnings/save}]]></replace>
+      <replace><![CDATA[{xen:if '{$warning.is_custom}', '{xen:adminlink warnings/save}', '{xen:adminlink warnings/save, $warning}'}]]></replace>
     </modification>
     <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit2" description="Special case editing the Custom Warning - 2" execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:if is="{$warning.warning_definition_id}">
