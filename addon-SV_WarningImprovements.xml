@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.0.3" version_id="100030" url="" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.0.4" version_id="100040" url="" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -65,14 +65,14 @@ $3$4]]></replace>
   <code_events/>
   <code_event_listeners>
     <listener event_id="criteria_user" execute_order="10" callback_class="SV_WarningImprovements_Criteria" callback_method="criteriaUser" active="1" hint="" description="Add warning related criteria"/>
-    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_WarningDefinition" description="XenForo_DataWriter_WarningDefinition"/>
-    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ViewPublic_Member_WarnFill" description="XenForo_ViewPublic_Member_WarnFill"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_Warning" description="XenForo_ControllerAdmin_Warning"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_Warning" description="XenForo_DataWriter_Warning"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_Warning" description="XenForo_Model_Warning"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Member" description="XenForo_ControllerPublic_Member"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Warning" description="Xenforo_ControllerPublic_Warning"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_User" description="XenForo_Model_User"/>
+    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_WarningDefinition" description="XenForo_DataWriter_WarningDefinition"/>
+    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ViewPublic_Member_WarnFill" description="XenForo_ViewPublic_Member_WarnFill"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -124,6 +124,12 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="SV_WarningImprovements" display_order="9150"/>
     </option>
+    <option option_id="sv_wi_require_warning_notes" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="350"/>
+    </option>
   </optiongroups>
   <permissions>
     <permission_groups/>
@@ -151,6 +157,8 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
+    <phrase title="option_sv_wi_require_warning_notes" version_id="100040" version_string="1.0.4"><![CDATA[Require Notes for Warning]]></phrase>
+    <phrase title="option_sv_wi_require_warning_notes_explain" version_id="100040" version_string="1.0.4"><![CDATA[Makes the Notes field required when creating a warning]]></phrase>
     <phrase title="permission_general_viewWarning_issuer" version_id="100" version_string="1.0.0"><![CDATA[View warning issuer]]></phrase>
     <phrase title="send_alert_on_warning" version_id="100000" version_string="1.0.0"><![CDATA[Send alert on warning]]></phrase>
     <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>

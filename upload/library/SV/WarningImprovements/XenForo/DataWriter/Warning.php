@@ -2,6 +2,23 @@
 
 class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningImprovements_XenForo_DataWriter_Warning
 {
+    protected function _getFields()
+    {
+        $fields = parent::_getFields();
+
+        if (isset($fields['xf_warning']) && isset($fields['xf_warning']['notes']))
+        {
+            $options = XenForo_Application::getOptions();
+            if ($options->sv_wi_require_warning_notes)
+            {
+                unset($fields['xf_warning']['notes']['default']);
+                $fields['xf_warning']['notes']['required'] = true;
+            }
+        }
+
+        return $fields;
+    }
+
     protected function _postSave()
     {
         parent::_postSave();

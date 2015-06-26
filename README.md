@@ -13,6 +13,7 @@ A Collection of improvements to XF's warning system.
 - Control defaults for user notification
  - Alerts
  - Lock PMs by default
+- Option to require a note when entering a warning
 
  
 New Permission to control if a user can see who infracted them.
