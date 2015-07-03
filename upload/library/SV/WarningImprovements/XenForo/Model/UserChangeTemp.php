@@ -50,10 +50,11 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
             ';
         }
         return $this->fetchAllKeyed('
-            SELECT xf_user_change_temp.*, user_change_temp_id as warning_action_id
+            SELECT xf_user_change_temp.*, user_change_temp_id as warning_action_id,
+                IFNULL(expiry_date, 0xFFFFFFFF) as expiry_date_sort
             FROM xf_user_change_temp
             WHERE ' . $where . '
-            ORDER BY expiry_date DESC
+            ORDER BY expiry_date_sort DESC
         ', 'warning_action_id', array($userId));
     }
 
@@ -124,9 +125,12 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         }
 
         // round up to the nearest hour
-        $expiry_date = $warningAction['expiry_date'];
-        $prev_hour = $expiry_date - ($expiry_date % 1800);
-        $warningAction['expiry_date'] = $prev_hour + 1800;
+        if (!empty($warningAction['expiry_date']))
+        {
+            $expiry_date = $warningAction['expiry_date'];
+            $prev_hour = $expiry_date - ($expiry_date % 1800);
+            $warningAction['expiry_date'] = $prev_hour + 1800;
+        }
 
         return $warningAction;
     }
