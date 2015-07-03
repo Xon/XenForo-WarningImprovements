@@ -183,13 +183,17 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="sv_discouraged_display_all" version_id="100040" version_string="1.0.4"><![CDATA[User, moderators, administrator]]></phrase>
     <phrase title="sv_discouraged_display_moderators" version_id="100040" version_string="1.0.4"><![CDATA[Moderators or administrators]]></phrase>
     <phrase title="sv_discouraged_display_none" version_id="100040" version_string="1.0.4"><![CDATA[Never]]></phrase>
+    <phrase title="sv_requested_warning_action_not_found" version_id="100040" version_string="1.0.4"><![CDATA[The requested warning action could not be found.]]></phrase>
     <phrase title="sv_this_user_has_no_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[This user has no warning actions]]></phrase>
+    <phrase title="sv_update_warning_action" version_id="100040" version_string="1.0.4"><![CDATA[Update Warning Action]]></phrase>
     <phrase title="sv_user_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[Warning Actions ({count})]]></phrase>
     <phrase title="sv_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[Warning Actions]]></phrase>
     <phrase title="sv_warning_action_added_to_user_groups" version_id="100040" version_string="1.0.4"><![CDATA[Added to user groups]]></phrase>
     <phrase title="sv_warning_action_expiry" version_id="100040" version_string="1.0.4"><![CDATA[Warning Action Expiry]]></phrase>
+    <phrase title="sv_warning_action_for_x" version_id="100040" version_string="1.0.4"><![CDATA[Warning action for {name}]]></phrase>
     <phrase title="sv_warning_action_result" version_id="100040" version_string="1.0.4"><![CDATA[Result]]></phrase>
     <phrase title="sv_warning_action_type" version_id="100040" version_string="1.0.4"><![CDATA[Action Type]]></phrase>
+    <phrase title="sv_wa_minutes" version_id="100040" version_string="1.0.4"><![CDATA[Minutes]]></phrase>
     <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>
     <phrase title="user_has_received_at_most_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at most X warnings points]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
@@ -241,7 +245,7 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 	<tr class="dataRow {xen:if $warning.is_expired, muted}">
 		<td class="warningActionType">{$warningAction.name}</td>
 		<td class="warningActionResult">{$warningAction.result}</td>
-		<td class="warningActionExpiry"><xen:if is="{$warningAction.expiry_date}"><xen:datetime time="{$warningAction.expiry_date}" /><xen:else />{xen:phrase n_a}</xen:if></td>
+		<td class="warningActionExpiry"><xen:if is="{$warningAction.expiry_date_rounded}"><xen:datetime time="{$warningAction.expiry_date_rounded}" /><xen:else />{xen:phrase n_a}</xen:if></td>
 		<td class="warningActionView dataOptions"><a href="{xen:link warning-actions, $warningAction}" class="OverlayTrigger secondaryContent">{xen:phrase view}</a></td>
 	</tr>
 </xen:foreach>
@@ -253,6 +257,72 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 		<noscript><a href="{xen:link members/warning-actions, $user}">{xen:phrase view}</a></noscript>
 	</li>
 </xen:if>]]></template>
+    <template title="sv_warning_actions_info" version_id="100040" version_string="1.0.4"><![CDATA[<xen:title>{xen:phrase sv_warning_action_for_x, 'name={$user.username}'}</xen:title>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link members, $user}">{$user.username}</xen:breadcrumb>
+</xen:navigation>
+
+<div class="xenForm formOverlay overlayScroll">
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase sv_warning_action_type}:</dt>
+		<dd>{$warningAction.name}, <xen:datetime time="{$warningAction.create_date}" /></dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase sv_warning_action_result}:</dt>
+		<dd>{$warningAction.result}</dd>
+	</dl>
+	
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase sv_warning_action_expiry}:</dt>
+		<dd><xen:if is="{$warningAction.expiry_date_rounded}"><xen:datetime time="{$warningAction.expiry_date_rounded}" /><xen:else />{xen:phrase n_a}</xen:if></dd>
+	</dl>
+
+	<xen:if is="{$canEditUserWarningActions}">
+		<ul class="tabs Tabs" data-panes="#WarningActionTabs_{$warningAction.warning_action_id} > form">
+			<li><a href="javascript:">{xen:phrase sv_update_warning_action}</a></li>
+		</ul>
+	</xen:if>
+
+	<div id="WarningActionTabs_{$warningAction.warning_action_id}">
+
+		<xen:if is="{$canEditUserWarningActions}">
+			<form action="{xen:link warning-actions/expire, $warningAction}" method="post">
+				<dl class="ctrlUnit">
+					<dt></dt>
+					<dd><ul>
+						<li><label><input type="radio" name="expire" value="now" checked="checked" /> {xen:phrase expire_now}</label></li>
+						<li><label><input type="radio" name="expire" value="future" id="ExpireWarningFuture_{$warningAction.warning_action_id}" class="Disabler" /> {xen:phrase expire_in_time}:</label>
+							<ul id="ExpireWarningFuture_{$warningAction.warning_action_id}_Disabler">
+								<li>
+									<input type="text" size="5" name="expiry_length" value="1" class="textCtrl autoSize" />
+									<select name="expiry_unit" class="textCtrl autoSize">
+										<option value="minutes">{xen:phrase sv_wa_minutes}</option>
+										<option value="hours">{xen:phrase hours}</option>
+										<option value="days" selected="selected">{xen:phrase days}</option>
+										<option value="weeks">{xen:phrase weeks}</option>
+										<option value="months">{xen:phrase months}</option>
+									</select>
+								</li>
+							</ul>
+						</li>
+					</ul></dd>
+				</dl>
+				<dl class="ctrlUnit submitUnit">
+					<dt></dt>
+					<dd>
+						<input type="submit" value="{xen:phrase sv_update_warning_action}" class="button primary" />
+					</dd>
+				</dl>
+
+				<input type="hidden" name="_xfConfirm" value="1" />
+				<input type="hidden" name="redirect" value="{$redirect}" />
+				<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+			</form>
+		</xen:if>
+	</div>
+</div>]]></template>
     <template title="sv_warning_improvement_js" version_id="2" version_string="0.02"><![CDATA[<script>
 !function($, window, document, _undefined)
 {

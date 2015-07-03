@@ -2,6 +2,31 @@
 
 class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_WarningImprovements_XenForo_Model_UserChangeTemp
 {
+    public function expireWarningAction(array $warningAction)
+    {
+        return $this->expireTempUserChange($warningAction);
+    }
+
+    public function updateWarningActionExpiryDate($warningActionId, $expiryDate)
+    {
+        $res = $this->_getDb()->query('
+            UPDATE xf_user_change_temp
+            SET expiry_date = ?
+            WHERE user_change_temp_id = ?
+        ', array($expiryDate, $warningActionId));
+
+        return $res->rowCount();
+    }
+
+    public function getWarningActionById($id)
+    {
+        return $this->_getDb()->fetchRow('
+            SELECT xf_user_change_temp.*, user_change_temp_id as warning_action_id
+            FROM xf_user_change_temp
+            WHERE user_change_temp_id = ?
+        ', $id);
+    }
+
     public function countWarningActionsByUser($userId, $showAll = false, $showDiscouraged = false)
     {
         $sql = '';
@@ -116,6 +141,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
                 {
                     $discouraged_phrase = new XenForo_Phrase('discouraged');
                 }
+                $warningAction['discouraged'] = true;
                 $warningAction['name'] = $discouraged_phrase;
                 $warningAction['result'] = $warning_type['new_value'];
                 break;
@@ -125,12 +151,13 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         }
 
         // round up to the nearest hour
-        if (!empty($warningAction['expiry_date']))
+        $expiry_date = $warningAction['expiry_date'];
+        if (!empty($expiry_date))
         {
-            $expiry_date = $warningAction['expiry_date'];
             $prev_hour = $expiry_date - ($expiry_date % 1800);
-            $warningAction['expiry_date'] = $prev_hour + 1800;
+            $expiry_date = $prev_hour + 1800;
         }
+        $warningAction['expiry_date_rounded'] = $expiry_date;
 
         return $warningAction;
     }
@@ -180,7 +207,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
             return false;
         }
 
-        if (($user['user_id'] == $user['user_id']))
+        if ($user['user_id'] == $viewingUser['user_id'])
         {
             return true;
         }
