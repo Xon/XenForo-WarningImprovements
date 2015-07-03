@@ -252,7 +252,7 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 </table>
 </div>]]></template>
     <template title="sv_warningimprovements_member_view_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[<xen:if is="{$warningActionsCount}">
-	<li id="warningactions" class="profileContent" data-loadUrl="{xen:link members/warning-actions, $user}">
+	<li id="warningActions" class="profileContent" data-loadUrl="{xen:link members/warning-actions, $user}">
 		{xen:phrase loading}...
 		<noscript><a href="{xen:link members/warning-actions, $user}">{xen:phrase view}</a></noscript>
 	</li>
