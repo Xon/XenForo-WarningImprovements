@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.0.4" version_id="100040" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.1.0" version_id="101000" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -154,8 +154,8 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
   <phrases>
     <phrase title="option_group_SV_WarningImprovements" version_id="100000" version_string="1.0.0"><![CDATA[Warning Improvements]]></phrase>
     <phrase title="option_group_SV_WarningImprovements_description" version_id="100000" version_string="1.0.0"><![CDATA[A collection of improvements and configurables for XF's warning system.]]></phrase>
-    <phrase title="option_sv_show_discouraged_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[Show Discouraged Warning Action]]></phrase>
-    <phrase title="option_sv_show_discouraged_warning_actions_explain" version_id="100040" version_string="1.0.4"><![CDATA[Limits who can see that warning actions with discouragment exist.]]></phrase>
+    <phrase title="option_sv_show_discouraged_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[Show Discouraged Warning Action]]></phrase>
+    <phrase title="option_sv_show_discouraged_warning_actions_explain" version_id="101000" version_string="1.1.0"><![CDATA[Limits who can see that warning actions with discouragment exist.]]></phrase>
     <phrase title="option_sv_warningimprovements_anonymise_alert" version_id="100000" version_string="1.0.0"><![CDATA[Anonymise Warning Alerts]]></phrase>
     <phrase title="option_sv_warningimprovements_anonymise_alert_explain" version_id="100000" version_string="1.0.0"><![CDATA[Prevent users from seeing who issued warnings against them.<br/>
 <br/>
@@ -174,26 +174,26 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes" version_id="100040" version_string="1.0.4"><![CDATA[Require Notes for Warning]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes_explain" version_id="100040" version_string="1.0.4"><![CDATA[Makes the Notes field required when creating a warning]]></phrase>
-    <phrase title="permission_general_sv_editWarningActions" version_id="100040" version_string="1.0.4"><![CDATA[Edit Warning Actions]]></phrase>
-    <phrase title="permission_general_sv_showAllWarningActions" version_id="100040" version_string="1.0.4"><![CDATA[Don't Summarize Warning Actions]]></phrase>
-    <phrase title="permission_general_sv_viewWarningActions" version_id="100040" version_string="1.0.4"><![CDATA[View Warning Actions]]></phrase>
+    <phrase title="permission_general_sv_editWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[Edit Warning Actions]]></phrase>
+    <phrase title="permission_general_sv_showAllWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[Don't Summarize Warning Actions]]></phrase>
+    <phrase title="permission_general_sv_viewWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[View Warning Actions]]></phrase>
     <phrase title="permission_general_viewWarning_issuer" version_id="100" version_string="1.0.0"><![CDATA[View warning issuer]]></phrase>
     <phrase title="send_alert_on_warning" version_id="100000" version_string="1.0.0"><![CDATA[Send alert on warning]]></phrase>
-    <phrase title="sv_discouraged_display_administrators" version_id="100040" version_string="1.0.4"><![CDATA[Administrators]]></phrase>
-    <phrase title="sv_discouraged_display_all" version_id="100040" version_string="1.0.4"><![CDATA[User, moderators, administrator]]></phrase>
-    <phrase title="sv_discouraged_display_moderators" version_id="100040" version_string="1.0.4"><![CDATA[Moderators or administrators]]></phrase>
-    <phrase title="sv_discouraged_display_none" version_id="100040" version_string="1.0.4"><![CDATA[Never]]></phrase>
-    <phrase title="sv_requested_warning_action_not_found" version_id="100040" version_string="1.0.4"><![CDATA[The requested warning action could not be found.]]></phrase>
-    <phrase title="sv_this_user_has_no_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[This user has no warning actions]]></phrase>
-    <phrase title="sv_update_warning_action" version_id="100040" version_string="1.0.4"><![CDATA[Update Warning Action]]></phrase>
-    <phrase title="sv_user_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[Warning Actions ({count})]]></phrase>
-    <phrase title="sv_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[Warning Actions]]></phrase>
-    <phrase title="sv_warning_action_added_to_user_groups" version_id="100040" version_string="1.0.4"><![CDATA[Added to user groups]]></phrase>
-    <phrase title="sv_warning_action_expiry" version_id="100040" version_string="1.0.4"><![CDATA[Warning Action Expiry]]></phrase>
-    <phrase title="sv_warning_action_for_x" version_id="100040" version_string="1.0.4"><![CDATA[Warning action for {name}]]></phrase>
-    <phrase title="sv_warning_action_result" version_id="100040" version_string="1.0.4"><![CDATA[Result]]></phrase>
-    <phrase title="sv_warning_action_type" version_id="100040" version_string="1.0.4"><![CDATA[Action Type]]></phrase>
-    <phrase title="sv_wa_minutes" version_id="100040" version_string="1.0.4"><![CDATA[Minutes]]></phrase>
+    <phrase title="sv_discouraged_display_administrators" version_id="101000" version_string="1.1.0"><![CDATA[Administrators]]></phrase>
+    <phrase title="sv_discouraged_display_all" version_id="101000" version_string="1.1.0"><![CDATA[User, moderators, administrator]]></phrase>
+    <phrase title="sv_discouraged_display_moderators" version_id="101000" version_string="1.1.0"><![CDATA[Moderators or administrators]]></phrase>
+    <phrase title="sv_discouraged_display_none" version_id="101000" version_string="1.1.0"><![CDATA[Never]]></phrase>
+    <phrase title="sv_requested_warning_action_not_found" version_id="101000" version_string="1.1.0"><![CDATA[The requested warning action could not be found.]]></phrase>
+    <phrase title="sv_this_user_has_no_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[This user has no warning actions]]></phrase>
+    <phrase title="sv_update_warning_action" version_id="101000" version_string="1.1.0"><![CDATA[Update Warning Action]]></phrase>
+    <phrase title="sv_user_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[Warning Actions ({count})]]></phrase>
+    <phrase title="sv_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[Warning Actions]]></phrase>
+    <phrase title="sv_warning_action_added_to_user_groups" version_id="101000" version_string="1.1.0"><![CDATA[Added to user groups]]></phrase>
+    <phrase title="sv_warning_action_expiry" version_id="101000" version_string="1.1.0"><![CDATA[Warning Action Expiry]]></phrase>
+    <phrase title="sv_warning_action_for_x" version_id="101000" version_string="1.1.0"><![CDATA[Warning action for {name}]]></phrase>
+    <phrase title="sv_warning_action_result" version_id="101000" version_string="1.1.0"><![CDATA[Result]]></phrase>
+    <phrase title="sv_warning_action_type" version_id="101000" version_string="1.1.0"><![CDATA[Action Type]]></phrase>
+    <phrase title="sv_wa_minutes" version_id="101000" version_string="1.1.0"><![CDATA[Minutes]]></phrase>
     <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>
     <phrase title="user_has_received_at_most_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at most X warnings points]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
@@ -224,7 +224,7 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 } 
 </xen:if>
 ]]></template>
-    <template title="sv_member_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[<xen:title>{xen:phrase warnings}: {$user.username}</xen:title>
+    <template title="sv_member_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[<xen:title>{xen:phrase warnings}: {$user.username}</xen:title>
 <xen:h1>{xen:phrase warnings}</xen:h1>
 
 <xen:navigation>
@@ -251,13 +251,13 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 </xen:foreach>
 </table>
 </div>]]></template>
-    <template title="sv_warningimprovements_member_view_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[<xen:if is="{$warningActionsCount}">
+    <template title="sv_warningimprovements_member_view_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[<xen:if is="{$warningActionsCount}">
 	<li id="warningactions" class="profileContent" data-loadUrl="{xen:link members/warning-actions, $user}">
 		{xen:phrase loading}...
 		<noscript><a href="{xen:link members/warning-actions, $user}">{xen:phrase view}</a></noscript>
 	</li>
 </xen:if>]]></template>
-    <template title="sv_warning_actions_info" version_id="100040" version_string="1.0.4"><![CDATA[<xen:title>{xen:phrase sv_warning_action_for_x, 'name={$user.username}'}</xen:title>
+    <template title="sv_warning_actions_info" version_id="101000" version_string="1.1.0"><![CDATA[<xen:title>{xen:phrase sv_warning_action_for_x, 'name={$user.username}'}</xen:title>
 
 <xen:navigation>
 	<xen:breadcrumb href="{xen:link members, $user}">{$user.username}</xen:breadcrumb>
