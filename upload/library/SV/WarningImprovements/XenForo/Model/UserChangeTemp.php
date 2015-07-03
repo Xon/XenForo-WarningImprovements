@@ -175,7 +175,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         switch($show_discouraged_warning_actions)
         {
             case 0: // Admin/Mod/User
-                return $viewingUser['is_admin'] || $viewingUser['is_moderator'] || ($user['user_id'] == $user['user_id']);
+                return $viewingUser['is_admin'] || $viewingUser['is_moderator'] || ($user['user_id'] == $viewingUser['user_id']);
             case 1: // Admin/Mod
                 return $viewingUser['is_admin'] || $viewingUser['is_moderator'];
             case 2: // Admin
