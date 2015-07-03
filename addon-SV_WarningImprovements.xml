@@ -80,6 +80,15 @@ $3$4]]></replace>
   <email_template_modifications/>
   <optiongroups>
     <group group_id="SV_WarningImprovements" display_order="141" debug_only="0"/>
+    <option option_id="sv_show_discouraged_warning_actions" edit_format="radio" data_type="unsigned_integer" can_backup="1">
+      <default_value>2</default_value>
+      <edit_format_params>0={xen:phrase sv_discouraged_display_all}
+1={xen:phrase sv_discouraged_display_moderators}
+2={xen:phrase sv_discouraged_display_administrators}
+3={xen:phrase sv_discouraged_display_none}</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="1000"/>
+    </option>
     <option option_id="sv_warningimprovements_anonymise_alert" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
@@ -135,6 +144,9 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
   <permissions>
     <permission_groups/>
     <permissions>
+      <permission permission_group_id="general" permission_id="sv_editWarningActions" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="260"/>
+      <permission permission_group_id="general" permission_id="sv_showAllWarningActions" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="270"/>
+      <permission permission_group_id="general" permission_id="sv_viewWarningActions" permission_type="flag" default_value="unset" interface_group_id="generalModeratorPermissions" display_order="250"/>
       <permission permission_group_id="general" permission_id="viewWarning_issuer" permission_type="flag" default_value="unset" interface_group_id="generalPermissions" display_order="11005"/>
     </permissions>
     <interface_groups/>
@@ -142,6 +154,8 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
   <phrases>
     <phrase title="option_group_SV_WarningImprovements" version_id="100000" version_string="1.0.0"><![CDATA[Warning Improvements]]></phrase>
     <phrase title="option_group_SV_WarningImprovements_description" version_id="100000" version_string="1.0.0"><![CDATA[A collection of improvements and configurables for XF's warning system.]]></phrase>
+    <phrase title="option_sv_show_discouraged_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[Show Discouraged Warning Action]]></phrase>
+    <phrase title="option_sv_show_discouraged_warning_actions_explain" version_id="100040" version_string="1.0.4"><![CDATA[Limits who can see that warning actions with discouragment exist.]]></phrase>
     <phrase title="option_sv_warningimprovements_anonymise_alert" version_id="100000" version_string="1.0.0"><![CDATA[Anonymise Warning Alerts]]></phrase>
     <phrase title="option_sv_warningimprovements_anonymise_alert_explain" version_id="100000" version_string="1.0.0"><![CDATA[Prevent users from seeing who issued warnings against them.<br/>
 <br/>
@@ -160,8 +174,22 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes" version_id="100040" version_string="1.0.4"><![CDATA[Require Notes for Warning]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes_explain" version_id="100040" version_string="1.0.4"><![CDATA[Makes the Notes field required when creating a warning]]></phrase>
+    <phrase title="permission_general_sv_editWarningActions" version_id="100040" version_string="1.0.4"><![CDATA[Edit Warning Actions]]></phrase>
+    <phrase title="permission_general_sv_showAllWarningActions" version_id="100040" version_string="1.0.4"><![CDATA[Don't Summarize Warning Actions]]></phrase>
+    <phrase title="permission_general_sv_viewWarningActions" version_id="100040" version_string="1.0.4"><![CDATA[View Warning Actions]]></phrase>
     <phrase title="permission_general_viewWarning_issuer" version_id="100" version_string="1.0.0"><![CDATA[View warning issuer]]></phrase>
     <phrase title="send_alert_on_warning" version_id="100000" version_string="1.0.0"><![CDATA[Send alert on warning]]></phrase>
+    <phrase title="sv_discouraged_display_administrators" version_id="100040" version_string="1.0.4"><![CDATA[Administrators]]></phrase>
+    <phrase title="sv_discouraged_display_all" version_id="100040" version_string="1.0.4"><![CDATA[User, moderators, administrator]]></phrase>
+    <phrase title="sv_discouraged_display_moderators" version_id="100040" version_string="1.0.4"><![CDATA[Moderators or administrators]]></phrase>
+    <phrase title="sv_discouraged_display_none" version_id="100040" version_string="1.0.4"><![CDATA[Never]]></phrase>
+    <phrase title="sv_this_user_has_no_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[This user has no warning actions]]></phrase>
+    <phrase title="sv_user_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[Warning Actions ({count})]]></phrase>
+    <phrase title="sv_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[Warning Actions]]></phrase>
+    <phrase title="sv_warning_action_added_to_user_groups" version_id="100040" version_string="1.0.4"><![CDATA[Added to user groups]]></phrase>
+    <phrase title="sv_warning_action_expiry" version_id="100040" version_string="1.0.4"><![CDATA[Warning Action Expiry]]></phrase>
+    <phrase title="sv_warning_action_result" version_id="100040" version_string="1.0.4"><![CDATA[Result]]></phrase>
+    <phrase title="sv_warning_action_type" version_id="100040" version_string="1.0.4"><![CDATA[Action Type]]></phrase>
     <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>
     <phrase title="user_has_received_at_most_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at most X warnings points]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
@@ -171,7 +199,7 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
   </phrases>
   <route_prefixes>
     <route_type type="public">
-      <prefix original_prefix="warning-action" class="SV_WarningImprovements_Route_Prefix_WarningAction" build_link="data_only"/>
+      <prefix original_prefix="warning-actions" class="SV_WarningImprovements_Route_Prefix_WarningAction" build_link="data_only"/>
     </route_type>
   </route_prefixes>
   <style_properties/>
@@ -192,6 +220,39 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 } 
 </xen:if>
 ]]></template>
+    <template title="sv_member_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[<xen:title>{xen:phrase warnings}: {$user.username}</xen:title>
+<xen:h1>{xen:phrase warnings}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:link full:members, $user}">{$user.username}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="member_view.css" />
+
+<div class="warningActionList">
+<table class="dataTable" style="table-layout: fixed">
+<tr class="dataRow">
+	<th class="warningActionType" width="20%">{xen:phrase sv_warning_action_type}</th>
+	<th class="warningActionResult">{xen:phrase sv_warning_action_result}</th>
+	<th class="warningActionExpiry">{xen:phrase sv_warning_action_expiry}</th>
+	<th class="warningActionView">&nbsp;</th>
+</tr>
+<xen:foreach loop="$warningActions" value="$warningAction">
+	<tr class="dataRow {xen:if $warning.is_expired, muted}">
+		<td class="warningActionType">{$warningAction.name}</td>
+		<td class="warningActionResult">{$warningAction.result}</td>
+		<td class="warningActionExpiry"><xen:if is="{$warningAction.expiry_date}"><xen:datetime time="{$warningAction.expiry_date}" /><xen:else />{xen:phrase n_a}</xen:if></td>
+		<td class="warningActionView dataOptions"><a href="{xen:link warning-actions, $warningAction}" class="OverlayTrigger secondaryContent">{xen:phrase view}</a></td>
+	</tr>
+</xen:foreach>
+</table>
+</div>]]></template>
+    <template title="sv_warningimprovements_member_view_warning_actions" version_id="100040" version_string="1.0.4"><![CDATA[<xen:if is="{$warningActionsCount}">
+	<li id="warningactions" class="profileContent" data-loadUrl="{xen:link members/warning-actions, $user}">
+		{xen:phrase loading}...
+		<noscript><a href="{xen:link members/warning-actions, $user}">{xen:phrase view}</a></noscript>
+	</li>
+</xen:if>]]></template>
     <template title="sv_warning_improvement_js" version_id="2" version_string="0.02"><![CDATA[<script>
 !function($, window, document, _undefined)
 {
@@ -296,6 +357,16 @@ $3$4]]></replace>
     <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn6" description="Conversation sending" execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[#(id="startConversation".*?)(class="Disabler".*?)(checked="checked")#i]]></find>
       <replace><![CDATA[$1 {xen:if '{$xenOptions.sv_warningimprovements_conversation_send_default}', '$2 $3'}]]></replace>
+    </modification>
+    <modification template="member_view" modification_key="sv_warningimprovements_member_view1" description="" execution_order="100" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:hook name="member_view_tabs_heading"]]></find>
+      <replace><![CDATA[<xen:if is="{$warningActionsCount}"><li><a href="{$requestPaths.requestUri}#warningActions">{xen:phrase sv_user_warning_actions, 'count={$warningActionsCount}'}</a></li></xen:if>
+$0]]></replace>
+    </modification>
+    <modification template="member_view" modification_key="sv_warningimprovements_member_view2" description="" execution_order="100" enabled="1" action="preg_replace">
+      <find><![CDATA[#(\s*)(<xen:hook name="member_view_tabs_content")#Us]]></find>
+      <replace><![CDATA[$1<xen:include template="sv_warningimprovements_member_view_warning_actions" />
+$1$2]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>
