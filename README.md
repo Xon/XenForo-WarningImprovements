@@ -14,10 +14,20 @@ A Collection of improvements to XF's warning system.
  - Alerts
  - Lock PMs by default
 - Option to require a note when entering a warning
+- Ability to see warning actions applied to an account from the front-end
+ - users may see warning actions agains thier account
+ - automatically roll-up identical warning actions to show the latest expiry
+ - per-group moderator permissions for editing/viewing all/disable summarization.
+ 
 
  
 New Permission to control if a user can see who infracted them.
 - View Warning Issuer.
+
+New moderator permissions for viewing warning actions.
+- View Warning Actions
+- Edit Warning Actions
+- Don't Summarize Warning Actions
 
 There is an option for "Anonymise Warning Alerts" if you do not wish for the issuer to be associated with the warning.
 
