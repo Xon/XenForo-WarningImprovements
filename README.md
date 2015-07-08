@@ -22,6 +22,10 @@ A Collection of improvements to XF's warning system.
  - points
  - warning_title
  - warning_link
+- Option to force new conversation email to be sent on a warning conversation. 
+ - Will send even if they are banned!
+ - Always sends full conversation text.
+ - This can ignore conversation privacy options.
  
 New Permission to control if a user can see who infracted them.
 - View Warning Issuer.

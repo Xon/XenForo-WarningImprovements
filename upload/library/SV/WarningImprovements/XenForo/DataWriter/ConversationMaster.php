@@ -13,8 +13,11 @@ class SV_WarningImprovements_XenForo_DataWriter_ConversationMaster extends XFCP_
                 '{warning_link}' => XenForo_Link::buildPublicLink('full:warnings', $warning),
             );
 
-            $message = $this->get('title');
-            $this->set('title', strtr((string)$message, $replace));
+            $title = $this->get('title');
+            $this->set('title', strtr((string)$title, $replace));
+
+            $message = $this->getExtraData(self::DATA_MESSAGE);
+            $this->setExtraData(self::DATA_MESSAGE, strtr((string)$message, $replace));
         }
 
         return parent::_preSave();

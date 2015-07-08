@@ -76,12 +76,31 @@ $3$4]]></replace>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_UserChangeTemp" description="XenForo_Model_UserChangeTemp"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_ConversationMessage" description="XenForo_DataWriter_ConversationMessage"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_ConversationMaster" description="XenForo_DataWriter_ConversationMaster"/>
+    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_Conversation" description="XenForo_Model_Conversation"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
   <email_template_modifications/>
   <optiongroups>
     <group group_id="SV_WarningImprovements" display_order="141" debug_only="0"/>
+    <option option_id="sv_force_conversation_email_on_warning" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="2000"/>
+    </option>
+    <option option_id="sv_only_force_warning_email_on_banned" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="2020"/>
+    </option>
+    <option option_id="sv_respect_receive_admin_email_on_warning" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="2010"/>
+    </option>
     <option option_id="sv_show_discouraged_warning_actions" edit_format="radio" data_type="unsigned_integer" can_backup="1">
       <default_value>2</default_value>
       <edit_format_params>0={xen:phrase sv_discouraged_display_all}
@@ -156,6 +175,12 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
   <phrases>
     <phrase title="option_group_SV_WarningImprovements" version_id="100000" version_string="1.0.0"><![CDATA[Warning Improvements]]></phrase>
     <phrase title="option_group_SV_WarningImprovements_description" version_id="100000" version_string="1.0.0"><![CDATA[A collection of improvements and configurables for XF's warning system.]]></phrase>
+    <phrase title="option_sv_force_conversation_email_on_warning" version_id="101001" version_string="1.1.1"><![CDATA[Force conversation email on Warning]]></phrase>
+    <phrase title="option_sv_force_conversation_email_on_warning_explain" version_id="101001" version_string="1.1.1"><![CDATA[Forces an email to be send when a user receives a warning conversation. Sends email if the user is banned.]]></phrase>
+    <phrase title="option_sv_only_force_warning_email_on_banned" version_id="101001" version_string="1.1.1"><![CDATA[Only send warning email if user is banned]]></phrase>
+    <phrase title="option_sv_only_force_warning_email_on_banned_explain" version_id="101001" version_string="1.1.1"><![CDATA[Only send warning emails when the user is in a banned state.]]></phrase>
+    <phrase title="option_sv_respect_receive_admin_email_on_warning" version_id="101001" version_string="1.1.1"><![CDATA[Respect receive site mailings setting]]></phrase>
+    <phrase title="option_sv_respect_receive_admin_email_on_warning_explain" version_id="101001" version_string="1.1.1"><![CDATA[Only sends email if the user has allowed "Receive site mailings"]]></phrase>
     <phrase title="option_sv_show_discouraged_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[Show Discouraged Warning Action]]></phrase>
     <phrase title="option_sv_show_discouraged_warning_actions_explain" version_id="101000" version_string="1.1.0"><![CDATA[Limits who can see that warning actions with discouragment exist.]]></phrase>
     <phrase title="option_sv_warningimprovements_anonymise_alert" version_id="100000" version_string="1.0.0"><![CDATA[Anonymise Warning Alerts]]></phrase>
@@ -201,7 +226,6 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
     <phrase title="warning_alert_text" version_id="100000" version_string="1.0.0"><![CDATA[{name} issued you a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>
     <phrase title="warning_alert_text_anonymize" version_id="100000" version_string="1.0.0"><![CDATA[You have received a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>
-    <phrase title="warning_definition_0_title" version_id="2" version_string="0.02"><![CDATA[Custom Warning]]></phrase>
   </phrases>
   <route_prefixes>
     <route_type type="public">
