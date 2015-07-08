@@ -15,7 +15,7 @@ A Collection of improvements to XF's warning system.
  - Lock PMs by default
 - Option to require a note when entering a warning
 - Ability to see warning actions applied to an account from the front-end
- - users may see warning actions agains thier account
+ - users may see warning actions against thier account
  - automatically roll-up identical warning actions to show the latest expiry
  - per-group moderator permissions for editing/viewing all/disable summarization.
 - Additional conversation substitution replaceable for the warning conversation.
@@ -27,7 +27,7 @@ A Collection of improvements to XF's warning system.
  - Always sends full conversation text.
  - This can ignore conversation privacy options.
  
-New Permission to control if a user can see who infracted them.
+New Permission to control if a user can see who warned them.
 - View Warning Issuer.
 
 New moderator permissions for viewing warning actions.
