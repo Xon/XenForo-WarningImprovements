@@ -18,8 +18,10 @@ A Collection of improvements to XF's warning system.
  - users may see warning actions agains thier account
  - automatically roll-up identical warning actions to show the latest expiry
  - per-group moderator permissions for editing/viewing all/disable summarization.
- 
-
+- Additional conversation substitution replaceable for the warning conversation.
+ - points
+ - warning_title
+ - warning_link
  
 New Permission to control if a user can see who infracted them.
 - View Warning Issuer.

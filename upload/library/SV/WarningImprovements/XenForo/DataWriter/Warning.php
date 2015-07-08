@@ -23,6 +23,11 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
     {
         parent::_postSave();
 
+        if (SV_WarningImprovements_Globals::$captureWarning)
+        {
+            SV_WarningImprovements_Globals::$warningObj = $this->getMergedData();
+        }
+
         if ($this->isInsert() && SV_WarningImprovements_Globals::$SendWarningAlert)
         {
             $options = XenForo_Application::getOptions();
