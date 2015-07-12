@@ -8,6 +8,7 @@ class SV_WarningImprovements_Globals
     public static $SendWarningAlert = false;
     public static $warningObj = null;
     public static $captureWarning = false;
+    public static $scaleWarningExpiry = false;
 
     private function __construct() {}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.1.1a" version_id="101011" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.2.0" version_id="102001" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -18,6 +18,78 @@
 			<xen:spinbox name="user_criteria[warning_points_m][data][points]" value="{$userCriteria.warning_points_m.points}" size="5" min="0" step="7" />
 		</div>
 	</li>]]></template>
+    <template title="sv_warningimprovements_escalating_defaults"><![CDATA[<xen:if is="{$warningEscalatingDefaults}">
+	<xen:form action="{xen:adminlink warnings}" class="section">
+		<h2 class="subHeading">
+			{xen:phrase warning_escalating_defaults}
+		</h2>
+
+		<ol class="FilterList Scrollable">
+			<xen:foreach loop="$warningEscalatingDefaults" value="$warningDefault">
+				<xen:set var="$expiry_extension_phrase">{xen:phrase x_days, 'days={$warningDefault.expiry_extension}'}</xen:set>
+				<xen:if is="{$warningDefault.expiry_type} == 'weeks'">
+					<xen:set var="$expiry_extension_phrase">{xen:phrase sv_x_weeks, 'weeks={$warningDefault.expiry_extension}'}</xen:set>
+				</xen:if>
+				<xen:if is="{$warningDefault.expiry_type} == 'months'">
+					<xen:set var="$expiry_extension_phrase">{xen:phrase x_months, 'months={$warningDefault.expiry_extension}'}</xen:set>
+				</xen:if>
+				<xen:if is="{$warningDefault.expiry_type} == 'years'">
+					<xen:set var="$expiry_extension_phrase">{xen:phrase sv_x_years, 'years={$warningDefault.expiry_extension}'}</xen:set>
+				</xen:if>
+				<xen:listitem
+					id="warning_default-{$warningDefault.warning_default_id}"
+				    label="{xen:phrase points}: {$warningDefault.threshold_points}"
+					href="{xen:adminlink warnings/default/edit, $warningDefault}"
+					delete="{xen:adminlink warnings/default/delete, $warningDefault}"
+				>
+					<xen:snippet>
+						{xen:phrase sv_increase_default_expiry_by_x, 'length={$expiry_extension_phrase}'}
+						{xen:if "{$warningDefault.active}", ", {xen:phrase sv_warning_default_is_active}" }
+					</xen:snippet>
+				</xen:listitem>
+			</xen:foreach>
+		</ol>
+	</xen:form>
+</xen:if>]]></template>
+    <template title="sv_warningimprovements_warning_default_delete"><![CDATA[<xen:title>{xen:phrase sv_confirm_deletion_of_warning_default}</xen:title>
+
+<xen:require css="public:delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'warnings/default/delete', $default}" class="deleteConfirmForm formOverlay">
+
+	<p>{xen:phrase please_confirm_that_you_want_to_delete_following_warning_action}:</p>
+	<strong><a href="{xen:adminlink 'warnings/default/edit', $default}">{xen:phrase points}: {$default.threshold_points}</a></strong>
+
+	<xen:submitunit save="{xen:phrase sv_delete_warning_default}" />
+	<input type="hidden" name="_xfConfirm" value="1" />
+
+</xen:form>]]></template>
+    <template title="sv_warningimprovements_warning_default_edit"><![CDATA[<xen:title>{xen:if $default.warning_default_id, '{xen:phrase sv_edit_warning_default}', '{xen:phrase sv_create_new_warning_default}'}</xen:title>
+
+<xen:form action="{xen:adminlink warnings/default/save, $default}" class="AutoValidator" data-redirect="yes">
+	<xen:spinboxunit label="{xen:phrase points_threshold}:" explain="{xen:phrase sv_warning_default_applied_crossing_threshold}" name="threshold_points" value="{$default.threshold_points}" min="0" />
+
+	<xen:spinboxunit label="{xen:phrase sv_warning_expiry_extension}:" explain="{xen:phrase sv_warning_expiry_extension_explain}" name="expiry_extension" value="{xen:if $default.expiry_extension, $default.expiry_extension, 1}" min="0" >
+		<xen:select name="expiry_type" value="{xen:if $default.expiry_type, $default.expiry_type, 'months'}"
+		inputclass="autoSize">
+			<xen:option value="days">{xen:phrase days}</xen:option>
+			<xen:option value="weeks">{xen:phrase weeks}</xen:option>
+			<xen:option value="months">{xen:phrase months}</xen:option>
+			<xen:option value="years">{xen:phrase years}</xen:option>
+		</xen:select>
+	</xen:spinboxunit>
+
+	<xen:checkboxunit label="" listclass="checkboxColumns">
+		<xen:option name="active" value="1" selected="{$default.active}">{xen:phrase sv_warning_default_is_active}</xen:option>
+	</xen:checkboxunit>
+
+	<xen:submitunit save="{xen:phrase sv_save_warning_default}">
+		<xen:if is="{$default.warning_default_id}">
+			<input type="button" value="{xen:phrase sv_delete_warning_default}..." accesskey="d" class="button OverlayTrigger"
+				data-href="{xen:adminlink warnings/default/delete, $default}" />
+		</xen:if>
+	</xen:submitunit>
+</xen:form>]]></template>
   </admin_templates>
   <admin_template_modifications>
     <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit1" description="Special case editing the Custom Warning - 1" execution_order="10" enabled="1" action="str_replace">
@@ -57,9 +129,20 @@ $2$3<xen:else />
 $3</xen:if>
 $3$4]]></replace>
     </modification>
+    <modification template="warning_list" modification_key="SV_WarningImprovements_warning_list2" description="Warning Escalating Defaults" execution_order="4156" enabled="1" action="preg_replace">
+      <find><![CDATA[#$#Usi]]></find>
+      <replace><![CDATA[$0
+<xen:include template="sv_warningimprovements_escalating_defaults" />]]></replace>
+    </modification>
     <modification template="helper_criteria_user" modification_key="sv_warningimprovements_helper_criteria_user" description="" execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[#(<xen:hook name="user_criteria_content">.*?)(\s*)(</xen:hook>)#si]]></find>
       <replace><![CDATA[$1$2<xen:include template="sv_warningimprovements_criteria"/>$2$3]]></replace>
+    </modification>
+    <modification template="warning_list" modification_key="sv_warningimprovements_warning_list3" description="Add &quot;Warning Defaults&quot; button" execution_order="100" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:topctrl>.*?)(</xen:topctrl>)#Usi]]></find>
+      <replace><![CDATA[$1
+<a href="{xen:adminlink warnings/default/add}" class="button">+ {xen:phrase sv_create_new_warning_default}</a>
+$2]]></replace>
     </modification>
   </admin_template_modifications>
   <code_events/>
@@ -77,6 +160,7 @@ $3$4]]></replace>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_ConversationMessage" description="XenForo_DataWriter_ConversationMessage"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_ConversationMaster" description="XenForo_DataWriter_ConversationMaster"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_Conversation" description="XenForo_Model_Conversation"/>
+    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Route_PrefixAdmin_Warnings" description="XenForo_Route_PrefixAdmin_Warnings"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -206,11 +290,18 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="permission_general_sv_viewWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[View Warning Actions]]></phrase>
     <phrase title="permission_general_viewWarning_issuer" version_id="100" version_string="1.0.0"><![CDATA[View warning issuer]]></phrase>
     <phrase title="send_alert_on_warning" version_id="100000" version_string="1.0.0"><![CDATA[Send alert on warning]]></phrase>
+    <phrase title="sv_confirm_deletion_of_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Confirm Deletion of Warning Default.]]></phrase>
+    <phrase title="sv_create_new_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Create New Warning Defaults]]></phrase>
+    <phrase title="sv_delete_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Delete Warning Default]]></phrase>
     <phrase title="sv_discouraged_display_administrators" version_id="101000" version_string="1.1.0"><![CDATA[Administrators]]></phrase>
     <phrase title="sv_discouraged_display_all" version_id="101000" version_string="1.1.0"><![CDATA[User, moderators, administrator]]></phrase>
     <phrase title="sv_discouraged_display_moderators" version_id="101000" version_string="1.1.0"><![CDATA[Moderators or administrators]]></phrase>
     <phrase title="sv_discouraged_display_none" version_id="101000" version_string="1.1.0"><![CDATA[Never]]></phrase>
+    <phrase title="sv_edit_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Edit Warning Default]]></phrase>
+    <phrase title="sv_increase_default_expiry_by_x" version_id="102001" version_string="1.2.0"><![CDATA[ increase default expiry by {length}]]></phrase>
     <phrase title="sv_requested_warning_action_not_found" version_id="101000" version_string="1.1.0"><![CDATA[The requested warning action could not be found.]]></phrase>
+    <phrase title="sv_requested_warning_default_not_found" version_id="102001" version_string="1.2.0"><![CDATA[The requested warning defaults could not be found.]]></phrase>
+    <phrase title="sv_save_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Save Warning Default]]></phrase>
     <phrase title="sv_this_user_has_no_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[This user has no warning actions]]></phrase>
     <phrase title="sv_update_warning_action" version_id="101000" version_string="1.1.0"><![CDATA[Update Warning Action]]></phrase>
     <phrase title="sv_user_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[Warning Actions ({count})]]></phrase>
@@ -220,12 +311,19 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="sv_warning_action_for_x" version_id="101000" version_string="1.1.0"><![CDATA[Warning action for {name}]]></phrase>
     <phrase title="sv_warning_action_result" version_id="101000" version_string="1.1.0"><![CDATA[Result]]></phrase>
     <phrase title="sv_warning_action_type" version_id="101000" version_string="1.1.0"><![CDATA[Action Type]]></phrase>
+    <phrase title="sv_warning_default_applied_crossing_threshold" version_id="102001" version_string="1.2.0"><![CDATA[This warning default will only be applied when a user is issued a warning with thier total warning points above this points threshold. ]]></phrase>
+    <phrase title="sv_warning_default_is_active" version_id="102001" version_string="1.2.0"><![CDATA[Is active]]></phrase>
+    <phrase title="sv_warning_expiry_extension" version_id="102001" version_string="1.2.0"><![CDATA[Expiry Extension]]></phrase>
+    <phrase title="sv_warning_expiry_extension_explain" version_id="102001" version_string="1.2.0"><![CDATA[The duration to add to the warning's default expiry period when above the threshold]]></phrase>
     <phrase title="sv_wa_minutes" version_id="101000" version_string="1.1.0"><![CDATA[Minutes]]></phrase>
+    <phrase title="sv_x_weeks" version_id="102001" version_string="1.2.0"><![CDATA[{weeks} Weeks]]></phrase>
+    <phrase title="sv_x_years" version_id="102001" version_string="1.2.0"><![CDATA[{years} Years]]></phrase>
     <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>
     <phrase title="user_has_received_at_most_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at most X warnings points]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
     <phrase title="warning_alert_text" version_id="100000" version_string="1.0.0"><![CDATA[{name} issued you a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>
     <phrase title="warning_alert_text_anonymize" version_id="100000" version_string="1.0.0"><![CDATA[You have received a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>
+    <phrase title="warning_escalating_defaults" version_id="102001" version_string="1.2.0"><![CDATA[Warning Escalating Defaults]]></phrase>
     <phrase title="warning_definition_0_title" version_id="101011" version_string="1.1.1s"><![CDATA[Custom Warning]]></phrase>
   </phrases>
   <route_prefixes>
@@ -242,13 +340,13 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 'warning_attributes=href="{xen:link warnings, $content}" class="PopupItemLink"',
 'points={$content.points}',
 'warning_title={$content.title}'
-}  
+}
 <xen:else/>
 {xen:phrase warning_alert_text_anonymize,
 'warning_attributes=href="{xen:link warnings, $content}" class="PopupItemLink"',
 'points={$content.points}',
 'warning_title={$content.title}'
-} 
+}
 </xen:if>
 ]]></template>
     <template title="sv_member_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[<xen:title>{xen:phrase warnings}: {$user.username}</xen:title>
@@ -295,12 +393,12 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 		<dt>{xen:phrase sv_warning_action_type}:</dt>
 		<dd>{$warningAction.name}, <xen:datetime time="{$warningAction.create_date}" /></dd>
 	</dl>
-	
+
 	<dl class="ctrlUnit">
 		<dt>{xen:phrase sv_warning_action_result}:</dt>
 		<dd>{$warningAction.result}</dd>
 	</dl>
-	
+
 	<dl class="ctrlUnit">
 		<dt>{xen:phrase sv_warning_action_expiry}:</dt>
 		<dd><xen:if is="{$warningAction.expiry_date_rounded}"><xen:datetime time="{$warningAction.expiry_date_rounded}" /><xen:else />{xen:phrase n_a}</xen:if></dd>
@@ -378,7 +476,7 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 			$next.find('a').click().focus();
 		}
 	});
-	</xen:if>	
+	</xen:if>
 
 	XenForo.WarningDefaultActionFormFillerControl = function($control)
 	{
@@ -412,7 +510,7 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
 		});
 	}
 	XenForo.register('input[id=customWarning]', 'XenForo.CustomWarningRadioButton');
-	</xen:if>	
+	</xen:if>
 }
 (jQuery, this, document);
 </script>]]></template>
