@@ -89,6 +89,15 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                 {
                     $warning['expiry_default'] = $warning['expiry_default'] + $row['expiry_extension'];
                 }
+                else if ($warning['expiry_type'] == 'months' && $row['expiry_type'] == 'years')
+                {
+                    $warning['expiry_default'] = $warning['expiry_default'] + $row['expiry_extension'] * 12;
+                }
+                else if ($warning['expiry_type'] == 'years' && $row['expiry_type'] == 'months')
+                {
+                    $warning['expiry_default'] = $warning['expiry_default'] * 12 + $row['expiry_extension'];
+                    $warning['expiry_type'] = 'months';
+                }
                 else
                 {
                     $expiry_duration = $this->convertToDays($warning['expiry_type'], $warning['expiry_default']) +
