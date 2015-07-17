@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.1.1" version_id="101001" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.1.1a" version_id="101011" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Listener" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Listener" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -226,6 +226,7 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
     <phrase title="warning_alert_text" version_id="100000" version_string="1.0.0"><![CDATA[{name} issued you a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>
     <phrase title="warning_alert_text_anonymize" version_id="100000" version_string="1.0.0"><![CDATA[You have received a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>
+    <phrase title="warning_definition_0_title" version_id="101011" version_string="1.1.1s"><![CDATA[Custom Warning]]></phrase>
   </phrases>
   <route_prefixes>
     <route_type type="public">
