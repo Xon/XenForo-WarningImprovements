@@ -227,14 +227,8 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         return XenForo_Permission::hasPermission($viewingUser['permissions'], 'general', 'sv_editWarningActions');
     }
 
-    protected $_helperObject = null;
     protected function _getHelper()
     {
-        if ($this->_helperObject === null)
-        {
-            $class = XenForo_Application::resolveDynamicClass('XenForo_Helper_UserChangeLog');
-            $this->_helperObject = new $class();
-        }
-        return $this->_helperObject;
+        return $this->getModelFromCache('XenForo_Helper_UserChangeLog');
     }
 }
