@@ -55,7 +55,7 @@ class SV_WarningImprovements_Listener
                     `active` tinyint(3) unsigned NOT NULL DEFAULT '1',
                     PRIMARY KEY (`warning_default_id`),
                     KEY (`threshold_points`, `active`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+                ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci
             ");
         }
 
