@@ -26,6 +26,7 @@ A Collection of improvements to XF's warning system.
  - Will send even if they are banned!
  - Always sends full conversation text.
  - This can ignore conversation privacy options.
+- Automatically extend default warning expires based on warning point total thresholds
  
 New Permission to control if a user can see who warned them.
 - View Warning Issuer.
