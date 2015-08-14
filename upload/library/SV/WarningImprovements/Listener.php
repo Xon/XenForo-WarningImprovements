@@ -31,6 +31,20 @@ class SV_WarningImprovements_Listener
             }
         }
 
+
+        $db->query("
+            CREATE TABLE IF NOT EXISTS xf_sv_warning_default
+            (
+                `warning_default_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                `threshold_points` SMALLINT NOT NULL DEFAULT '0',
+                `expiry_type` ENUM('never','days','weeks','months','years') NOT NULL,
+                `expiry_extension` SMALLINT UNSIGNED NOT NULL,
+                `active` tinyint(3) unsigned NOT NULL DEFAULT '1',
+                PRIMARY KEY (`warning_default_id`),
+                KEY (`threshold_points`, `active`)
+            ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci
+        ");
+
         if ($version == 0)
         {
             // insert the defaults for the custom warning. This can't be normally inserted so fiddle with the sql_mode
@@ -41,22 +55,6 @@ class SV_WarningImprovements_Listener
                     (0,1, 'months',1,'',1);
             ");
             $db->query("SET SESSION sql_mode='STRICT_ALL_TABLES'");
-        }
-
-        if ($version <= 102000)
-        {
-            $db->query("
-                CREATE TABLE IF NOT EXISTS xf_sv_warning_default
-                (
-                    `warning_default_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                    `threshold_points` SMALLINT NOT NULL DEFAULT '0',
-                    `expiry_type` ENUM('never','days','weeks','months','years') NOT NULL,
-                    `expiry_extension` SMALLINT UNSIGNED NOT NULL,
-                    `active` tinyint(3) unsigned NOT NULL DEFAULT '1',
-                    PRIMARY KEY (`warning_default_id`),
-                    KEY (`threshold_points`, `active`)
-                ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci
-            ");
         }
 
         $db->query("
