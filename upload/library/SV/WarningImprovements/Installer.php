@@ -1,6 +1,6 @@
 <?php
 
-class SV_WarningImprovements_Listener
+class SV_WarningImprovements_Installer
 {
     const AddonNameSpace = 'SV_WarningImprovements';
 
@@ -12,7 +12,7 @@ class SV_WarningImprovements_Listener
         
         $addonsToUninstall = array('SV_AlertOnWarning' => array("sv_alert_warning_anonymise" => "sv_warningimprovements_anonymise_alert"),
                                    'SVViewOwnWarnings' => array());
-        SV_WarningImprovements_Install::removeOldAddons($addonsToUninstall);
+        SV_Utils_Install::removeOldAddons($addonsToUninstall);
 
 
         $db->query("
@@ -56,9 +56,9 @@ class SV_WarningImprovements_Listener
 /*
 
 
-        SV_WarningImprovements_Install::addColumn("xf_warning", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
-        SV_WarningImprovements_Install::addColumn("xf_warning_definition", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
-        SV_WarningImprovements_Install::addColumn("xf_user_group", "sv_suspends", "TINYINT NOT NULL DEFAULT 0");
+        SV_Utils_Install::addColumn("xf_warning", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
+        SV_Utils_Install::addColumn("xf_warning_definition", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
+        SV_Utils_Install::addColumn("xf_user_group", "sv_suspends", "TINYINT NOT NULL DEFAULT 0");
 
 
         if ($version < 1)
@@ -95,9 +95,9 @@ class SV_WarningImprovements_Listener
         ");
 
 /*
-        SV_WarningImprovements_Install::dropColumn("xf_warning", "sv_PauseExpireOnSuspended");
-        SV_WarningImprovements_Install::dropColumn("xf_warning_definition", "sv_PauseExpireOnSuspended");
-        SV_WarningImprovements_Install::dropColumn("xf_user_group", "sv_suspends");
+        SV_Utils_Install::dropColumn("xf_warning", "sv_PauseExpireOnSuspended");
+        SV_Utils_Install::dropColumn("xf_warning_definition", "sv_PauseExpireOnSuspended");
+        SV_Utils_Install::dropColumn("xf_user_group", "sv_suspends");
 */
         XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 
