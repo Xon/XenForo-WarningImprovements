@@ -51,7 +51,7 @@ class SV_WarningImprovements_Listener
             INSERT IGNORE INTO xf_content_type_field
                 (content_type, field_name, field_value)
             VALUES
-                ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', 'alert_handler_class', 'SV_WarningImprovements_AlertHandler_Warning')
+                ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', 'alert_handler_class', '".self::AddonNameSpace."_AlertHandler_Warning')
         ");
 /*
 
@@ -77,7 +77,7 @@ class SV_WarningImprovements_Listener
 
         $db->query("
             DELETE FROM xf_content_type_field
-            WHERE xf_content_type_field.field_value = 'SV_WarningImprovements_AlertHandler_Warning'
+            WHERE xf_content_type_field.field_value = '".self::AddonNameSpace."_AlertHandler_Warning'
         ");
 
         $db->query("
