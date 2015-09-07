@@ -9,7 +9,7 @@ class SV_WarningImprovements_Installer
         $version = isset($existingAddOn['version_id']) ? $existingAddOn['version_id'] : 0;
 
         $db = XenForo_Application::getDb();
-        
+
         $addonsToUninstall = array('SV_AlertOnWarning' => array("sv_alert_warning_anonymise" => "sv_warningimprovements_anonymise_alert"),
                                    'SVViewOwnWarnings' => array());
         SV_Utils_Install::removeOldAddons($addonsToUninstall);
@@ -92,6 +92,24 @@ class SV_WarningImprovements_Installer
 
         $db->query("
             DROP TABLE IF EXISTS `xf_sv_warning_default`
+        ");
+
+
+        $db->query("
+            DELETE FROM xf_permission_entry
+            WHERE permission_group_id = 'general' and permission_id = 'sv_editWarningActions'
+        ");
+        $db->query("
+            DELETE FROM xf_permission_entry
+            WHERE permission_group_id = 'general' and permission_id = 'sv_showAllWarningActions'
+        ");
+        $db->query("
+            DELETE FROM xf_permission_entry
+            WHERE permission_group_id = 'general' and permission_id = 'sv_viewWarningActions'
+        ");
+        $db->query("
+            DELETE FROM xf_permission_entry
+            WHERE permission_group_id = 'general' and permission_id = 'viewWarning_issuer'
         ");
 
 /*
