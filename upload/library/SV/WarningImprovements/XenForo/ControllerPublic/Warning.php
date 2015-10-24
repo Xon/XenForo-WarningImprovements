@@ -13,10 +13,18 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Warning extends XFCP_SV_Wa
             SV_WarningImprovements_Globals::$warning_user_id = $warning['user_id'];
         }
 
-        $ret = parent::actionIndex();
+        $response = parent::actionIndex();
 
         SV_WarningImprovements_Globals::$warning_user_id = null;
+        if ($response instanceof XenForo_ControllerResponse_View)
+        {
+            if (!$visitor->hasPermission('general', 'viewWarning') &&
+                !empty($response->params['warning']['content_title']))
+            {
+                $response->params['warning']['content_title'] = XenForo_Helper_String::censorString($response->params['warning']['content_title']);
+            }
+        }
 
-        return $ret;
+        return $response;
     }
 }
