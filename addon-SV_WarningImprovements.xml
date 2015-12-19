@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.2.1" version_id="102010" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.2.2" version_id="1020200" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -194,6 +194,12 @@ $2]]></replace>
       <sub_options></sub_options>
       <relation group_id="SV_WarningImprovements" display_order="1000"/>
     </option>
+    <option option_id="sv_view_own_warnings" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>true</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="410"/>
+    </option>
     <option option_id="sv_warningimprovements_anonymise_alert" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
@@ -267,6 +273,8 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
     <phrase title="option_sv_respect_receive_admin_email_on_warning_explain" version_id="101001" version_string="1.1.1"><![CDATA[Only sends email if the user has allowed "Receive site mailings"]]></phrase>
     <phrase title="option_sv_show_discouraged_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[Show Discouraged Warning Action]]></phrase>
     <phrase title="option_sv_show_discouraged_warning_actions_explain" version_id="101000" version_string="1.1.0"><![CDATA[Limits who can see that warning actions with discouragment exist.]]></phrase>
+    <phrase title="option_sv_view_own_warnings" version_id="1020200" version_string="1.2.2"><![CDATA[View Own Warnings]]></phrase>
+    <phrase title="option_sv_view_own_warnings_explain" version_id="1020200" version_string="1.2.2"><![CDATA[Allow users to see their own warnings]]></phrase>
     <phrase title="option_sv_warningimprovements_anonymise_alert" version_id="100000" version_string="1.0.0"><![CDATA[Anonymise Warning Alerts]]></phrase>
     <phrase title="option_sv_warningimprovements_anonymise_alert_explain" version_id="100000" version_string="1.0.0"><![CDATA[Prevent users from seeing who issued warnings against them.<br/>
 <br/>
@@ -323,8 +331,8 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
     <phrase title="warning_alert_text" version_id="100000" version_string="1.0.0"><![CDATA[{name} issued you a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>
     <phrase title="warning_alert_text_anonymize" version_id="100000" version_string="1.0.0"><![CDATA[You have received a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>
-    <phrase title="warning_escalating_defaults" version_id="102001" version_string="1.2.0"><![CDATA[Warning Escalating Defaults]]></phrase>
     <phrase title="warning_definition_0_title" version_id="101011" version_string="1.1.1s"><![CDATA[Custom Warning]]></phrase>
+    <phrase title="warning_escalating_defaults" version_id="102001" version_string="1.2.0"><![CDATA[Warning Escalating Defaults]]></phrase>
   </phrases>
   <route_prefixes>
     <route_type type="public">

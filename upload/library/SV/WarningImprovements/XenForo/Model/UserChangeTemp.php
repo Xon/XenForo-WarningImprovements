@@ -209,7 +209,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
 
         if ($user['user_id'] == $viewingUser['user_id'])
         {
-            return true;
+            return XenForo_Application::getOptions()->sv_view_own_warnings;
         }
 
         return XenForo_Permission::hasPermission($viewingUser['permissions'], 'general', 'sv_viewWarningActions');
