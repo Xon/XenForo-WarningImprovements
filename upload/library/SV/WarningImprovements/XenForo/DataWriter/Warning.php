@@ -19,9 +19,9 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         return $fields;
     }
 
-    protected function _postSave()
+    protected function _postSaveAfterTransaction()
     {
-        parent::_postSave();
+        parent::_postSaveAfterTransaction();
 
         if (SV_WarningImprovements_Globals::$captureWarning)
         {
