@@ -53,9 +53,13 @@ class SV_WarningImprovements_Installer
             VALUES
                 ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', 'alert_handler_class', '".self::AddonNameSpace."_AlertHandler_Warning')
         ");
+
+        XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
+
+
+        SV_Utils_Install::addColumn("xf_warning_action", "sv_post_node_id", "INT NOT NULL DEFAULT 0");
+        SV_Utils_Install::addColumn("xf_warning_action", "sv_post_thread_id", "INT NOT NULL DEFAULT 0");
 /*
-
-
         SV_Utils_Install::addColumn("xf_warning", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
         SV_Utils_Install::addColumn("xf_warning_definition", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
         SV_Utils_Install::addColumn("xf_user_group", "sv_suspends", "TINYINT NOT NULL DEFAULT 0");
@@ -66,7 +70,6 @@ class SV_WarningImprovements_Installer
             $db->query("update xf_user_group set sv_suspends = 1 where title like '%suspended%' or title like '%XF Ban%' or title like '%XF Ban%' or title = 'Banned';");
         }
 */
-        XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 
         return true;
     }
@@ -112,12 +115,16 @@ class SV_WarningImprovements_Installer
             WHERE permission_group_id = 'general' and permission_id = 'viewWarning_issuer'
         ");
 
+        XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
+
+        SV_Utils_Install::dropColumn("xf_warning_action", "sv_post_node_id");
+        SV_Utils_Install::dropColumn("xf_warning_action", "sv_post_thread_id");
 /*
         SV_Utils_Install::dropColumn("xf_warning", "sv_PauseExpireOnSuspended");
         SV_Utils_Install::dropColumn("xf_warning_definition", "sv_PauseExpireOnSuspended");
         SV_Utils_Install::dropColumn("xf_user_group", "sv_suspends");
 */
-        XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
+
 
         return true;
     }

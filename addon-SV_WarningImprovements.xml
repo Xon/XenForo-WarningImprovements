@@ -138,6 +138,12 @@ $3$4]]></replace>
       <find><![CDATA[#(<xen:hook name="user_criteria_content">.*?)(\s*)(</xen:hook>)#si]]></find>
       <replace><![CDATA[$1$2<xen:include template="sv_warningimprovements_criteria"/>$2$3]]></replace>
     </modification>
+    <modification template="warning_action_edit" modification_key="sv_warningimprovements_warning_action_edit" description="Inject post to thread/form on warning action" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:radiounit label="{xen:phrase action_to_take}:"]]></find>
+      <replace><![CDATA[<xen:spinboxunit label="{xen:phrase sv_warning_thread_id}:" explain="{xen:phrase sv_warning_action_post_thread_reply}" name="sv_post_thread_id" value="{$action.sv_post_thread_id}" />
+<xen:spinboxunit label="{xen:phrase sv_warning_node_id}:" explain="{xen:phrase sv_warning_action_post_new_thread}" name="sv_post_node_id" value="{$action.sv_post_node_id}" />
+$0]]></replace>
+    </modification>
     <modification template="warning_list" modification_key="sv_warningimprovements_warning_list3" description="Add &quot;Warning Defaults&quot; button" execution_order="100" enabled="1" action="preg_replace">
       <find><![CDATA[#(<xen:topctrl>.*?)(</xen:topctrl>)#Usi]]></find>
       <replace><![CDATA[$1
@@ -150,6 +156,7 @@ $2]]></replace>
     <listener event_id="criteria_user" execute_order="10" callback_class="SV_WarningImprovements_Criteria" callback_method="criteriaUser" active="1" hint="" description="Add warning related criteria"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_Warning" description="XenForo_ControllerAdmin_Warning"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_Warning" description="XenForo_DataWriter_Warning"/>
+    <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_WarningAction" description="XenForo_DataWriter_WarningAction"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_Warning" description="XenForo_Model_Warning"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Member" description="XenForo_ControllerPublic_Member"/>
     <listener event_id="load_class" execute_order="100" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Warning" description="Xenforo_ControllerPublic_Warning"/>
@@ -325,12 +332,16 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="sv_warning_action_added_to_user_groups" version_id="101000" version_string="1.1.0"><![CDATA[Added to user groups]]></phrase>
     <phrase title="sv_warning_action_expiry" version_id="101000" version_string="1.1.0"><![CDATA[Warning Action Expiry]]></phrase>
     <phrase title="sv_warning_action_for_x" version_id="101000" version_string="1.1.0"><![CDATA[Warning action for {name}]]></phrase>
+    <phrase title="sv_warning_action_post_new_thread" version_id="1020200" version_string="1.2.2"><![CDATA[Post message to a new thread in the given forum when this warning action is triggered. Zero to disable.]]></phrase>
+    <phrase title="sv_warning_action_post_thread_reply" version_id="1020200" version_string="1.2.2"><![CDATA[Post message to an existing thread when this warning action is triggered. Zero to disable.]]></phrase>
     <phrase title="sv_warning_action_result" version_id="101000" version_string="1.1.0"><![CDATA[Result]]></phrase>
     <phrase title="sv_warning_action_type" version_id="101000" version_string="1.1.0"><![CDATA[Action Type]]></phrase>
     <phrase title="sv_warning_default_applied_crossing_threshold" version_id="102001" version_string="1.2.0"><![CDATA[This warning default will only be applied when a user is issued a warning with thier total warning points above this points threshold. ]]></phrase>
     <phrase title="sv_warning_default_is_active" version_id="102001" version_string="1.2.0"><![CDATA[Is active]]></phrase>
     <phrase title="sv_warning_expiry_extension" version_id="102001" version_string="1.2.0"><![CDATA[Expiry Extension]]></phrase>
     <phrase title="sv_warning_expiry_extension_explain" version_id="102001" version_string="1.2.0"><![CDATA[The duration to add to the warning's default expiry period when above the threshold]]></phrase>
+    <phrase title="sv_warning_node_id" version_id="1020200" version_string="1.2.2"><![CDATA[Post to new thread]]></phrase>
+    <phrase title="sv_warning_thread_id" version_id="1020200" version_string="1.2.2"><![CDATA[Post to existing thread]]></phrase>
     <phrase title="sv_wa_minutes" version_id="101000" version_string="1.1.0"><![CDATA[Minutes]]></phrase>
     <phrase title="sv_x_weeks" version_id="102001" version_string="1.2.0"><![CDATA[{weeks} Weeks]]></phrase>
     <phrase title="sv_x_years" version_id="102001" version_string="1.2.0"><![CDATA[{years} Years]]></phrase>
@@ -343,6 +354,8 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="warning_escalating_defaults" version_id="102001" version_string="1.2.0"><![CDATA[Warning Escalating Defaults]]></phrase>
     <phrase title="Warning_Summary_Message" version_id="1020200" version_string="1.2.2"><![CDATA[{points} points to @{username} for {title}, {report}
 {notes}]]></phrase>
+    <phrase title="Warning_Thread_Message" version_id="1020200" version_string="1.2.2"><![CDATA[@{username} has accumulated {points} active warning points.]]></phrase>
+    <phrase title="Warning_Thread_Title" version_id="1020200" version_string="1.2.2"><![CDATA[{username} has accumulated {points} warning points]]></phrase>
   </phrases>
   <route_prefixes>
     <route_type type="public">

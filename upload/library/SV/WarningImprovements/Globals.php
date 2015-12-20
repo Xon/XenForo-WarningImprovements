@@ -10,5 +10,7 @@ class SV_WarningImprovements_Globals
     public static $captureWarning = false;
     public static $scaleWarningExpiry = false;
 
+    public static $warningActionInput = null;
+
     private function __construct() {}
 }
