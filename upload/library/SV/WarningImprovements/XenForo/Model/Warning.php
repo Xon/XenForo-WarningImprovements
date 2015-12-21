@@ -150,15 +150,18 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         // only do the last post action
         if ($this->lastWarningAction)
         {
+            $posterUserId = empty($this->lastWarningAction['sv_post_as_user_id'])
+                          ? null
+                          : $this->lastWarningAction['sv_post_as_user_id'];
             // post a new thread
             if (!empty($this->lastWarningAction['sv_post_node_id']))
             {
-                $this->postThread($userId, $this->lastWarningAction['sv_post_node_id']);
+                $this->postThread($userId, $this->lastWarningAction['sv_post_node_id'], $posterUserId);
             }
             // post a reply
             else if (!empty($this->lastWarningAction['sv_post_thread_id']))
             {
-                $this->postReply($userId, $this->lastWarningAction['sv_post_thread_id']);
+                $this->postReply($userId, $this->lastWarningAction['sv_post_thread_id'], $posterUserId);
             }
         }
     }
@@ -173,7 +176,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $triggerId;
     }
 
-    protected function postReply($userId, $threadId)
+    protected function postReply($userId, $threadId, $posterUserId)
     {
         $thread = $this->_getThreadModel()->getThreadById($threadId);
         if (empty($thread))
@@ -185,11 +188,22 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         {
             return;
         }
-        $visitor = XenForo_Visitor::getInstance()->toArray();
         $user = $this->_getUserModel()->getUserById($userId);
         if (empty($user))
         {
             return;
+        }
+        if (empty($posterUserId))
+        {
+            $poster = XenForo_Visitor::getInstance()->toArray();
+        }
+        else
+        {
+            $poster = $this->_getUserModel()->getUserById($posterUserId);
+            if (empty($poster))
+            {
+                return;
+            }
         }
         $input = array(
             'username' => $user['username'],
@@ -200,8 +214,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $message = XenForo_Helper_String::autoLinkBbCode($message);
 
         $writer = XenForo_DataWriter::create('XenForo_DataWriter_DiscussionMessage_Post');
-        $writer->set('user_id', $visitor['user_id']);
-        $writer->set('username', $visitor['username']);
+        $writer->set('user_id', $poster['user_id']);
+        $writer->set('username', $poster['username']);
         $writer->set('message', $message);
         $writer->set('message_state', $this->_getPostModel()->getPostInsertMessageState($thread, $forum));
         $writer->set('thread_id', $threadId);
@@ -210,18 +224,29 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $writer->save();
     }
 
-    protected function postThread($userId, $nodeId)
+    protected function postThread($userId, $nodeId, $posterUserId)
     {
         $forum = $this->_getForumModel()->getForumById($nodeId);
         if (empty($forum))
         {
             return;
         }
-        $visitor = XenForo_Visitor::getInstance()->toArray();
         $user = $this->_getUserModel()->getUserById($userId);
         if (empty($user))
         {
             return;
+        }
+        if (empty($posterUserId))
+        {
+            $poster = XenForo_Visitor::getInstance()->toArray();
+        }
+        else
+        {
+            $poster = $this->_getUserModel()->getUserById($posterUserId);
+            if (empty($poster))
+            {
+                return;
+            }
         }
         $input = array(
             'username' => $user['username'],
@@ -234,8 +259,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread', XenForo_DataWriter::ERROR_SILENT);
         $threadDw->setOption(XenForo_DataWriter_Discussion::OPTION_TRIM_TITLE, true);
         $threadDw->bulkSet(array(
-            'user_id' => $visitor['user_id'],
-            'username' => $visitor['username'],
+            'user_id' => $poster['user_id'],
+            'username' => $poster['username'],
             'node_id' => $forum['node_id'],
             'discussion_state' => 'visible',
             'prefix_id' => $forum['default_prefix_id'],

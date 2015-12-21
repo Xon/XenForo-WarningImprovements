@@ -59,6 +59,7 @@ class SV_WarningImprovements_Installer
 
         SV_Utils_Install::addColumn("xf_warning_action", "sv_post_node_id", "INT NOT NULL DEFAULT 0");
         SV_Utils_Install::addColumn("xf_warning_action", "sv_post_thread_id", "INT NOT NULL DEFAULT 0");
+        SV_Utils_Install::addColumn("xf_warning_action", "sv_post_as_user_id", "INT");
 /*
         SV_Utils_Install::addColumn("xf_warning", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
         SV_Utils_Install::addColumn("xf_warning_definition", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
@@ -119,6 +120,7 @@ class SV_WarningImprovements_Installer
 
         SV_Utils_Install::dropColumn("xf_warning_action", "sv_post_node_id");
         SV_Utils_Install::dropColumn("xf_warning_action", "sv_post_thread_id");
+        SV_Utils_Install::dropColumn("xf_warning_action", "sv_post_as_user_id");
 /*
         SV_Utils_Install::dropColumn("xf_warning", "sv_PauseExpireOnSuspended");
         SV_Utils_Install::dropColumn("xf_warning_definition", "sv_PauseExpireOnSuspended");
