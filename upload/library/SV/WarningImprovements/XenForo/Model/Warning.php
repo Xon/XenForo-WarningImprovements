@@ -231,7 +231,10 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $writer->set('thread_id', $threadId);
         $writer->setExtraData(XenForo_DataWriter_DiscussionMessage_Post::DATA_FORUM, $forum);
         $writer->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_MAX_TAGGED_USERS, XenForo_Permission::hasPermission($permissions, 'general', 'maxTaggedUsers'));
-        $writer->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_IS_AUTOMATED, true);
+        if (!empty($posterUserId))
+        {
+            $writer->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_IS_AUTOMATED, true);
+        }
         $writer->save();
     }
 
@@ -290,7 +293,10 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $postWriter->set('message', $message);
         $postWriter->setExtraData(XenForo_DataWriter_DiscussionMessage_Post::DATA_FORUM, $forum);
         $postWriter->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_MAX_TAGGED_USERS, XenForo_Permission::hasPermission($permissions, 'general', 'maxTaggedUsers'));
-        $postWriter->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_IS_AUTOMATED, true);
+        if (!empty($posterUserId))
+        {
+            $postWriter->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_IS_AUTOMATED, true);
+        }
         $threadDw->save();
     }
 
