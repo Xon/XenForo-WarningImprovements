@@ -19,14 +19,18 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         return $fields;
     }
 
+    protected function _postSave()
+    {
+        // capture warning & report objects for later when XenForo_DataWriter_User triggers
+        SV_WarningImprovements_Globals::$warningObj = $this->getMergedData();
+        SV_WarningImprovements_Globals::$reportObj = $this->_getReportModel()->getReportByContent($this->warning['content_type'], $this->warning['content_id']);
+
+        parent::_postSave();
+    }
+
     protected function _postSaveAfterTransaction()
     {
         parent::_postSaveAfterTransaction();
-
-        if (SV_WarningImprovements_Globals::$captureWarning)
-        {
-            SV_WarningImprovements_Globals::$warningObj = $this->getMergedData();
-        }
 
         if (!$this->isInsert())
         {
@@ -58,11 +62,11 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
 
         if ($options->sv_post_warning_summary)
         {
-            $this->postReply(SV_WarningImprovements_Globals::$warningObj, $options->sv_post_warning_summary);
+            $this->postReply(SV_WarningImprovements_Globals::$warningObj, SV_WarningImprovements_Globals::$reportObj, $options->sv_post_warning_summary);
         }
     }
 
-    protected function postReply($warning, $threadId)
+    protected function postReply(array $warning, array $report = null, $threadId)
     {
         $thread = $this->_getThreadModel()->getThreadById($threadId);
         if (empty($thread))
@@ -80,16 +84,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
             return;
         }
         $warning['username'] = $warned_user['username'];
-        // try to fetch any associated report
-        $report = $this->_getReportModel()->getReportByContent($warning['content_type'], $warning['content_id']);
-        if (empty($report))
-        {
-            $warning['report'] = '';
-        }
-        else
-        {
-            $warning['report'] = XenForo_Link::buildPublicLink('full:reports', $report);
-        }
+        $warning['report'] = empty($report) ? 'N/A' : XenForo_Link::buildPublicLink('full:reports', $report);
         $visitor = XenForo_Visitor::getInstance()->toArray();
 
         $message = new XenForo_Phrase('Warning_Summary_Message', $warning, false);
