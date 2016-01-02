@@ -93,7 +93,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         $visitor = XenForo_Visitor::getInstance()->toArray();
 
         $message = new XenForo_Phrase('Warning_Summary_Message', $warning, false);
-        $message = XenForo_Helper_String::autoLinkBbCode($message);
+        $message = XenForo_Helper_String::autoLinkBbCode($message->render());
 
         $writer = XenForo_DataWriter::create('XenForo_DataWriter_DiscussionMessage_Post');
         $writer->set('user_id', $visitor['user_id']);
@@ -102,7 +102,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         $writer->set('message_state', $this->_getPostModel()->getPostInsertMessageState($thread, $forum));
         $writer->set('thread_id', $threadId);
         $writer->setExtraData(XenForo_DataWriter_DiscussionMessage_Post::DATA_FORUM, $forum);
-        $writer->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_MAX_TAGGED_USERS, 0);
+        $writer->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_MAX_TAGGED_USERS, XenForo_Permission::hasPermission($visitor['permissions'], 'general', 'maxTaggedUsers'));
         $writer->save();
     }
 

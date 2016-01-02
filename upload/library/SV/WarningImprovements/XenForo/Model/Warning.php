@@ -197,14 +197,18 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         if (empty($posterUserId))
         {
             $poster = XenForo_Visitor::getInstance()->toArray();
+            $permissions = $poster['permissions'];
         }
         else
         {
-            $poster = $this->_getUserModel()->getUserById($posterUserId);
+            $poster = $this->_getUserModel()->getUserById($posterUserId,array(
+                'join' => XenForo_Model_User::FETCH_USER_PERMISSIONS
+            ));
             if (empty($poster))
             {
                 return;
             }
+            $permissions = XenForo_Permission::unserializePermissions($poster['global_permission_cache']);
         }
         $input = array(
             'username' => $user['username'],
@@ -212,7 +216,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         );
 
         $message = new XenForo_Phrase('Warning_Thread_Message', $input, false);
-        $message = XenForo_Helper_String::autoLinkBbCode($message);
+        $message = XenForo_Helper_String::autoLinkBbCode($message->render());
 
         $writer = XenForo_DataWriter::create('XenForo_DataWriter_DiscussionMessage_Post');
         $writer->set('user_id', $poster['user_id']);
@@ -221,7 +225,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $writer->set('message_state', $this->_getPostModel()->getPostInsertMessageState($thread, $forum));
         $writer->set('thread_id', $threadId);
         $writer->setExtraData(XenForo_DataWriter_DiscussionMessage_Post::DATA_FORUM, $forum);
-        $writer->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_MAX_TAGGED_USERS, 0);
+        $writer->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_MAX_TAGGED_USERS, XenForo_Permission::hasPermission($permissions, 'general', 'maxTaggedUsers'));
         $writer->save();
     }
 
@@ -240,14 +244,18 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         if (empty($posterUserId))
         {
             $poster = XenForo_Visitor::getInstance()->toArray();
+            $permissions = $poster['permissions'];
         }
         else
         {
-            $poster = $this->_getUserModel()->getUserById($posterUserId);
+            $poster = $this->_getUserModel()->getUserById($posterUserId,array(
+                'join' => XenForo_Model_User::FETCH_USER_PERMISSIONS
+            ));
             if (empty($poster))
             {
                 return;
             }
+            $permissions = XenForo_Permission::unserializePermissions($poster['global_permission_cache']);
         }
         $input = array(
             'username' => $user['username'],
@@ -259,18 +267,20 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
         $threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread', XenForo_DataWriter::ERROR_SILENT);
         $threadDw->setOption(XenForo_DataWriter_Discussion::OPTION_TRIM_TITLE, true);
+        $threadDw->setExtraData(XenForo_DataWriter_Discussion_Thread::DATA_FORUM, $forum);
         $threadDw->bulkSet(array(
             'user_id' => $poster['user_id'],
             'username' => $poster['username'],
             'node_id' => $forum['node_id'],
             'discussion_state' => 'visible',
             'prefix_id' => $forum['default_prefix_id'],
-            'title' => $title,
+            'title' => $title->render(),
         ));
 
         $postWriter = $threadDw->getFirstMessageDw();
-        $postWriter->set('message', $message);
-        $postWriter->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_MAX_TAGGED_USERS, 0);
+        $postWriter->set('message', $message->render());
+        $postWriter->setExtraData(XenForo_DataWriter_DiscussionMessage_Post::DATA_FORUM, $forum);
+        $postWriter->setOption(XenForo_DataWriter_DiscussionMessage_Post::OPTION_MAX_TAGGED_USERS, XenForo_Permission::hasPermission($permissions, 'general', 'maxTaggedUsers'));
         $threadDw->save();
     }
 
