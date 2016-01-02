@@ -153,15 +153,18 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             $posterUserId = empty($this->lastWarningAction['sv_post_as_user_id'])
                           ? null
                           : $this->lastWarningAction['sv_post_as_user_id'];
+
+            $options = XenForo_Application::getOptions();
+            $dateStr = date($options->sv_warning_date_format);
             // post a new thread
             if (!empty($this->lastWarningAction['sv_post_node_id']))
             {
-                $this->postThread($userId, $this->lastWarningAction['sv_post_node_id'], $posterUserId, SV_WarningImprovements_Globals::$reportObj);
+                $this->postThread($userId, $this->lastWarningAction['sv_post_node_id'], $posterUserId, SV_WarningImprovements_Globals::$reportObj, $dateStr);
             }
             // post a reply
             else if (!empty($this->lastWarningAction['sv_post_thread_id']))
             {
-                $this->postReply($userId, $this->lastWarningAction['sv_post_thread_id'], $posterUserId, SV_WarningImprovements_Globals::$reportObj);
+                $this->postReply($userId, $this->lastWarningAction['sv_post_thread_id'], $posterUserId, SV_WarningImprovements_Globals::$reportObj, $dateStr);
             }
         }
     }
@@ -177,7 +180,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $triggerId;
     }
 
-    protected function postReply($userId, $threadId, $posterUserId, array $report = null)
+    protected function postReply($userId, $threadId, $posterUserId, array $report = null, $dateStr)
     {
         $thread = $this->_getThreadModel()->getThreadById($threadId);
         if (empty($thread))
@@ -214,6 +217,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             'username' => $user['username'],
             'points' => $user['warning_points'],
             'report' => empty($report) ? 'N/A' : XenForo_Link::buildPublicLink('full:reports', $report),
+            'date' => $dateStr,
         );
 
         $message = new XenForo_Phrase('Warning_Thread_Message', $input, false);
@@ -230,7 +234,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $writer->save();
     }
 
-    protected function postThread($userId, $nodeId, $posterUserId, array $report = null)
+    protected function postThread($userId, $nodeId, $posterUserId, array $report = null, $dateStr)
     {
         $forum = $this->_getForumModel()->getForumById($nodeId);
         if (empty($forum))
@@ -262,6 +266,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             'username' => $user['username'],
             'points' => $user['warning_points'],
             'report' => empty($report) ? 'N/A' : XenForo_Link::buildPublicLink('full:reports', $report),
+            'date' => $dateStr,
         );
 
         $title = new XenForo_Phrase('Warning_Thread_Title', $input, false);

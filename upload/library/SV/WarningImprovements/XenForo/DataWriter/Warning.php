@@ -23,7 +23,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
     {
         // capture warning & report objects for later when XenForo_DataWriter_User triggers
         SV_WarningImprovements_Globals::$warningObj = $this->getMergedData();
-        SV_WarningImprovements_Globals::$reportObj = $this->_getReportModel()->getReportByContent($this->warning['content_type'], $this->warning['content_id']);
+        SV_WarningImprovements_Globals::$reportObj = $this->_getReportModel()->getReportByContent(SV_WarningImprovements_Globals::$warningObj['content_type'], SV_WarningImprovements_Globals::$warningObj['content_id']);
 
         parent::_postSave();
     }
@@ -62,11 +62,12 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
 
         if ($options->sv_post_warning_summary)
         {
-            $this->postReply(SV_WarningImprovements_Globals::$warningObj, SV_WarningImprovements_Globals::$reportObj, $options->sv_post_warning_summary);
+            $dateStr = date($options->sv_warning_date_format);
+            $this->postReply(SV_WarningImprovements_Globals::$warningObj, SV_WarningImprovements_Globals::$reportObj, $options->sv_post_warning_summary, $dateStr);
         }
     }
 
-    protected function postReply(array $warning, array $report = null, $threadId)
+    protected function postReply(array $warning, array $report = null, $threadId, $dateStr)
     {
         $thread = $this->_getThreadModel()->getThreadById($threadId);
         if (empty($thread))
@@ -85,6 +86,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         }
         $warning['username'] = $warned_user['username'];
         $warning['report'] = empty($report) ? 'N/A' : XenForo_Link::buildPublicLink('full:reports', $report);
+        $warning['date'] = $dateStr;
         $visitor = XenForo_Visitor::getInstance()->toArray();
 
         $message = new XenForo_Phrase('Warning_Summary_Message', $warning, false);

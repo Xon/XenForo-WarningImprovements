@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.2.2 RC3" version_id="1020202" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.2.2 RC4" version_id="1020204" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -214,6 +214,12 @@ $2]]></replace>
       <sub_options></sub_options>
       <relation group_id="SV_WarningImprovements" display_order="410"/>
     </option>
+    <option option_id="sv_warning_date_format" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>F d, Y</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="430"/>
+    </option>
     <option option_id="sv_warningimprovements_anonymise_alert" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
@@ -307,6 +313,8 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
+    <phrase title="option_sv_warning_date_format" version_id="1020204" version_string="1.2.2 RC4"><![CDATA[Warning Date Format]]></phrase>
+    <phrase title="option_sv_warning_date_format_explain" version_id="1020204" version_string="1.2.2 RC4"><![CDATA[The Date format string, see <a href="http://php.net/manual/en/function.date.php">php.net</a> for details.]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes" version_id="100040" version_string="1.0.4"><![CDATA[Require Notes for Warning]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes_explain" version_id="100040" version_string="1.0.4"><![CDATA[Makes the Notes field required when creating a warning]]></phrase>
     <phrase title="permission_general_sv_editWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[Edit Warning Actions]]></phrase>
@@ -359,8 +367,8 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
     <phrase title="warning_escalating_defaults" version_id="102001" version_string="1.2.0"><![CDATA[Warning Escalating Defaults]]></phrase>
     <phrase title="Warning_Summary_Message" version_id="1020200" version_string="1.2.2"><![CDATA[{points} points to @{username} for {title}, {report}
 {notes}]]></phrase>
-    <phrase title="Warning_Thread_Message" version_id="1020200" version_string="1.2.2"><![CDATA[@{username} has accumulated {points} active warning points.]]></phrase>
-    <phrase title="Warning_Thread_Title" version_id="1020200" version_string="1.2.2"><![CDATA[{username} has accumulated {points} warning points]]></phrase>
+    <phrase title="Warning_Thread_Message" version_id="1020202" version_string="1.2.2 RC3"><![CDATA[@{username} has accumulated {points} active warning points. Triggering report: {report}]]></phrase>
+    <phrase title="Warning_Thread_Title" version_id="1020204" version_string="1.2.2 RC4"><![CDATA[{username} has accumulated {points} warning points on {date}]]></phrase>
   </phrases>
   <route_prefixes>
     <route_type type="public">
