@@ -67,7 +67,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         }
     }
 
-    protected function postReply(array $warning, array $report = null, $threadId, $dateStr)
+    protected function postReply(array $warning, $report = null, $threadId, $dateStr)
     {
         $thread = $this->_getThreadModel()->getThreadById($threadId);
         if (empty($thread))
