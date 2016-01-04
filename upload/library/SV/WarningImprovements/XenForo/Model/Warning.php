@@ -180,7 +180,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $triggerId;
     }
 
-    protected function postReply($userId, $threadId, $posterUserId, array $report = null, $dateStr)
+    protected function postReply($userId, $threadId, $posterUserId, $report = null, $dateStr)
     {
         $thread = $this->_getThreadModel()->getThreadById($threadId);
         if (empty($thread))
@@ -238,7 +238,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $writer->save();
     }
 
-    protected function postThread($userId, $nodeId, $posterUserId, array $report = null, $dateStr)
+    protected function postThread($userId, $nodeId, $posterUserId, $report = null, $dateStr)
     {
         $forum = $this->_getForumModel()->getForumById($nodeId);
         if (empty($forum))
