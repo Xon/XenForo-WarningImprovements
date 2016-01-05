@@ -300,6 +300,59 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $threadDw->save();
     }
 
+    protected $warning_user = null;
+    protected $viewer = null;
+
+    public function prepareWarning(array $warning)
+    {
+        $warning = parent::prepareWarning($warning);
+
+        if ($this->viewer === null)
+        {
+            $this->viewer = XenForo_Visitor::getInstance()->toArray();
+        }
+        $viewer = $this->viewer;
+
+        if(!XenForo_Permission::hasPermission($viewer['permissions'], 'general', 'viewWarning'))
+        {
+            if (!empty($warning['content_title']))
+            {
+                $warning['content_title'] = XenForo_Helper_String::censorString($warning['content_title']);
+            }
+            $warning['notes'] = '';
+            $warning['expiry_date'] = $warning['expiry_date'] - ($warning['expiry_date'] % 3600) + 3600;
+        }
+
+        if (!XenForo_Permission::hasPermission($viewer['permissions'], 'general', 'viewWarning_issuer') && !XenForo_Permission::hasPermission($viewer['permissions'], 'general', 'viewWarning'))
+        {
+            $anonymisedWarning = false;
+            $options = XenForo_Application::getOptions();
+            if ($options->sv_warningimprovements_warning_user)
+            {
+                if ($this->warning_user === null)
+                {
+                    $this->warning_user = $this->_getUserModel()->getUserByName($options->sv_warningimprovements_warning_user);
+                    if (empty($this->warning_user))
+                    {
+                        $this->warning_user = array();
+                    }
+                }
+                if (isset($this->warning_user['user_id']))
+                {
+                    $warning['warn_user_id'] = $this->warning_user['user_id'];
+                    $warning['warn_username'] = $this->warning_user['username'];
+                    $anonymisedWarning = true;
+                }
+            }
+            if (!$anonymisedWarning)
+            {
+                $warning['warn_user_id'] = 0;
+                $warning['warn_username'] = new XenForo_Phrase('WarningStaff');
+            }
+        }
+        return $warning;
+    }
+
     protected function _getUserModel()
     {
         return $this->getModelFromCache('XenForo_Model_User');

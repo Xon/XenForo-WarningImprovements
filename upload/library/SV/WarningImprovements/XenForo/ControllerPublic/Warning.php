@@ -16,40 +16,6 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Warning extends XFCP_SV_Wa
         $response = parent::actionIndex();
 
         SV_WarningImprovements_Globals::$warning_user_id = null;
-        if ($response instanceof XenForo_ControllerResponse_View)
-        {
-            if (!$visitor->hasPermission('general', 'viewWarning') &&
-                !empty($response->params['warning']['content_title']))
-            {
-                $response->params['warning']['content_title'] = XenForo_Helper_String::censorString($response->params['warning']['content_title']);
-            }
-
-            if(!$visitor->hasPermission('general', 'viewWarning'))
-            {
-                $response->params['warning']['notes'] = '';
-            }
-
-            if (!$visitor->hasPermission('general', 'viewWarning_issuer') && !$visitor->hasPermission('general', 'viewWarning'))
-            {
-                $anonymisedWarning = false;
-                $options = XenForo_Application::getOptions();
-                if ($options->sv_warningimprovements_warning_user)
-                {
-                    $warning_user = $this->_getUserModel()->getUserByName($options->sv_warningimprovements_warning_user);
-                    if ($warning_user && isset($warning_user['user_id']))
-                    {
-                        $response->params['warning']['warn_user_id'] = $warning_user['user_id'];
-                        $response->params['warning']['warn_username'] = $warning_user['username'];
-                        $anonymisedWarning = true;
-                    }
-                }
-                if (!$anonymisedWarning)
-                {
-                    $response->params['warning']['warn_user_id'] = 0;
-                    $response->params['warning']['warn_username'] = new XenForo_Phrase('WarningStaff');
-                }
-            }
-        }
 
         return $response;
     }

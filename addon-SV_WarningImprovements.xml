@@ -608,11 +608,6 @@ $0]]></replace>
       <replace><![CDATA[$1<xen:include template="sv_warningimprovements_member_view_warning_actions" />
 $1$2]]></replace>
     </modification>
-    <modification template="member_warnings" modification_key="sv_warningimprovements_member_warnings" description="Round expiry date up to the nearest hour" execution_order="10" enabled="1" action="str_replace">
-      <find><![CDATA[<xen:datetime time="{$warning.expiry_date}" />]]></find>
-      <replace><![CDATA[<xen:set var='$expiry_date'>{xen:calc '{$warning.expiry_date} - ({$warning.expiry_date} % 3600) + 3600'}</xen:set>
-<xen:datetime time="{$expiry_date}" />]]></replace>
-    </modification>
   </public_template_modifications>
   <bb_code_media_sites/>
   <bb_codes/>
