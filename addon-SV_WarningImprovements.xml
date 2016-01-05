@@ -4,6 +4,15 @@
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
+    <template title="option_list_option_textbox_autocomplete"><![CDATA[<xen:textboxunit label="{$preparedOption.title}" name="{$fieldPrefix}[{$preparedOption.option_id}]" value="{$preparedOption.option_value}"
+hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$formatParams.type}" size="{$formatParams.size}" maxlength="{$formatParams.maxlength}" rows="{$formatParams.rows}" inputclass="Elastic AutoComplete AcSingle">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<xen:include template="option_list_option_editlink" />
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:textboxunit>]]></template>
     <template title="sv_warningimprovements_criteria"><![CDATA[	<li><label>
 		<input type="checkbox" name="user_criteria[warning_points_l][rule]" value="warning_points_l" class="Disabler" id="ucrit_warning_points_l" {xen:checked $userCriteria.warning_points_l} />
 		{xen:phrase user_has_received_at_least_x_warnings_points}:</label>
@@ -155,6 +164,10 @@ $2]]></replace>
   <code_events/>
   <code_event_listeners>
     <listener event_id="criteria_user" execute_order="10" callback_class="SV_WarningImprovements_Criteria" callback_method="criteriaUser" active="1" hint="" description="Add warning related criteria"/>
+    <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_Warning" description="XenForo_Model_Warning"/>
+    <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Member" description="XenForo_ControllerPublic_Member"/>
+    <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Warning" description="Xenforo_ControllerPublic_Warning"/>
+    <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_User" description="XenForo_Model_User"/>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_WarningDefinition" description="XenForo_DataWriter_WarningDefinition"/>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ViewPublic_Member_WarnFill" description="XenForo_ViewPublic_Member_WarnFill"/>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_UserChangeTemp" description="XenForo_Model_UserChangeTemp"/>
@@ -165,10 +178,6 @@ $2]]></replace>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_Warning" description="XenForo_ControllerAdmin_Warning"/>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_Warning" description="XenForo_DataWriter_Warning"/>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_WarningAction" description="XenForo_DataWriter_WarningAction"/>
-    <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_Warning" description="XenForo_Model_Warning"/>
-    <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Member" description="XenForo_ControllerPublic_Member"/>
-    <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerPublic_Warning" description="Xenforo_ControllerPublic_Warning"/>
-    <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_Model_User" description="XenForo_Model_User"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -220,13 +229,6 @@ $2]]></replace>
       <sub_options></sub_options>
       <relation group_id="SV_WarningImprovements" display_order="430"/>
     </option>
-    <option option_id="sv_warningimprovements_anonymise_alert" edit_format="onoff" data_type="boolean" can_backup="1">
-      <default_value>0</default_value>
-      <edit_format_params></edit_format_params>
-      <sub_options></sub_options>
-      <relation group_id="SV_WarningImprovements" display_order="400"/>
-      <relation group_id="alerts" display_order="400"/>
-    </option>
     <option option_id="sv_warningimprovements_continue_button" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
       <edit_format_params></edit_format_params>
@@ -265,6 +267,12 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="SV_WarningImprovements" display_order="9150"/>
     </option>
+    <option option_id="sv_warningimprovements_warning_user" edit_format="template" data_type="string" can_backup="1" validation_class="SV_WarningImprovements_Option_UserName" validation_method="verifyOption_AllowNone">
+      <default_value></default_value>
+      <edit_format_params>option_list_option_textbox_autocomplete</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="400"/>
+    </option>
     <option option_id="sv_wi_require_warning_notes" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
@@ -297,10 +305,6 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
     <phrase title="option_sv_show_discouraged_warning_actions_explain" version_id="101000" version_string="1.1.0"><![CDATA[Limits who can see that warning actions with discouragment exist.]]></phrase>
     <phrase title="option_sv_view_own_warnings" version_id="1020200" version_string="1.2.2"><![CDATA[View Own Warnings]]></phrase>
     <phrase title="option_sv_view_own_warnings_explain" version_id="1020200" version_string="1.2.2"><![CDATA[Allow users to see their own warnings]]></phrase>
-    <phrase title="option_sv_warningimprovements_anonymise_alert" version_id="100000" version_string="1.0.0"><![CDATA[Anonymise Warning Alerts]]></phrase>
-    <phrase title="option_sv_warningimprovements_anonymise_alert_explain" version_id="100000" version_string="1.0.0"><![CDATA[Prevent users from seeing who issued warnings against them.<br/>
-<br/>
-Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="option_sv_warningimprovements_continue_button" version_id="2" version_string="0.02"><![CDATA[Add Continue Button on Warning]]></phrase>
     <phrase title="option_sv_warningimprovements_continue_button_explain" version_id="2" version_string="0.02"><![CDATA[Force a continue button to replace the "warn" button for all but the last tab.]]></phrase>
     <phrase title="option_sv_warningimprovements_conversation_invite" version_id="100010" version_string="1.0.1"><![CDATA[Allow Invite into Warning Conversations By Default]]></phrase>
@@ -313,6 +317,11 @@ Changing this does <b>not</b> apply retroactively.]]></phrase>
     <phrase title="option_sv_warningimprovements_copy_title_explain" version_id="2" version_string="0.02"><![CDATA[Pre-fill the content action "Post a public warning" with the title of the warning.]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action" version_id="2" version_string="0.02"><![CDATA[Default Content Action]]></phrase>
     <phrase title="option_sv_warningimprovements_default_content_action_explain" version_id="2" version_string="0.02"><![CDATA[]]></phrase>
+    <phrase title="option_sv_warningimprovements_warning_user" version_id="1030006" version_string="1.3.0 RC6"><![CDATA[Anonymise As]]></phrase>
+    <phrase title="option_sv_warningimprovements_warning_user_explain" version_id="1030006" version_string="1.3.0 RC6"><![CDATA[Anonymise warnings and warning alerts as a given user if the warned user does not have the 'View warning issuer' permission.<br/>
+If Empty, uses the phrase 'WarningStaff'.<br/>
+Conversations can <b>not</b> be anonymised.<br/>
+Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="option_sv_warning_date_format" version_id="1020204" version_string="1.2.2 RC4"><![CDATA[Warning Date Format]]></phrase>
     <phrase title="option_sv_warning_date_format_explain" version_id="1020204" version_string="1.2.2 RC4"><![CDATA[The Date format string, see <a href="http://php.net/manual/en/function.date.php">php.net</a> for details.]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes" version_id="100040" version_string="1.0.4"><![CDATA[Require Notes for Warning]]></phrase>
@@ -560,14 +569,6 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 </script>]]></template>
   </templates>
   <public_template_modifications>
-    <modification template="warning_info" modification_key="SVViewOwnWarnings_member_warn" description="Only show parts of the warning to users (notes)." execution_order="10" enabled="1" action="str_replace">
-      <find><![CDATA[<xen:if is="{$warning.notes}">]]></find>
-      <replace><![CDATA[<xen:if is="{$warning.notes} AND {$visitor.permissions.general.viewWarning}">]]></replace>
-    </modification>
-    <modification template="warning_info" modification_key="SVViewOwnWarnings_member_warn_mod" description="Only show parts of the warning to users (issuer)." execution_order="10" enabled="1" action="str_replace">
-      <find><![CDATA[{$warning.warn_username}]]></find>
-      <replace><![CDATA[<xen:if is="{$visitor.permissions.general.viewWarning_issuer} OR {$visitor.permissions.general.viewWarning}">$0<xen:else/>{xen:phrase WarningStaff}</xen:if>]]></replace>
-    </modification>
     <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn1" description="Insert extra javascript" execution_order="1" enabled="1" action="str_replace">
       <find><![CDATA[</script>]]></find>
       <replace><![CDATA[$0

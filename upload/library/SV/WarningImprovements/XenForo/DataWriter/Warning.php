@@ -39,17 +39,36 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
 
         $options = XenForo_Application::getOptions();
 
+        $userModel = $this->_getUserModel();
+        $warned_user = $userModel->getUserById($this->get('user_id'), array(
+            'join' => XenForo_Model_User::FETCH_USER_PERMISSIONS
+        ));
+        $warned_user['permissions'] = XenForo_Permission::unserializePermissions($warned_user['global_permission_cache']);
+
         if (SV_WarningImprovements_Globals::$SendWarningAlert)
         {
             $user_id = 0;
             $username = '';
-            if (!$options->sv_warningimprovements_anonymise_alert)
+            if ($warned_user)
             {
-                $warning_user = $this->_getUserModel()->getUserById($this->get('warning_user_id'));
-                if ($warning_user && isset($warning_user['user_id']))
+                if (XenForo_Permission::hasPermission($warned_user['permissions'], 'general', 'viewWarning_issuer') ||
+                    XenForo_Permission::hasPermission($warned_user['permissions'], 'general', 'viewWarning'))
                 {
-                    $user_id = $warning_user['user_id'];
-                    $username  = $warning_user['username'];
+                    $warning_user = $userModel->getUserById($this->get('warning_user_id'));
+                    if ($warning_user && isset($warning_user['user_id']))
+                    {
+                        $user_id = $warning_user['user_id'];
+                        $username  = $warning_user['username'];
+                    }
+                }
+                else if ($options->sv_warningimprovements_warning_user)
+                {
+                    $warning_user = $userModel->getUserByName($options->sv_warningimprovements_warning_user);
+                    if ($warning_user && isset($warning_user['user_id']))
+                    {
+                        $user_id = $warning_user['user_id'];
+                        $username  = $warning_user['username'];
+                    }
                 }
             }
             XenForo_Model_Alert::alert(
@@ -60,14 +79,14 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
                 'warning');
         }
 
-        if ($options->sv_post_warning_summary)
+        if ($options->sv_post_warning_summary && $warned_user)
         {
             $dateStr = date($options->sv_warning_date_format);
-            $this->postReply(SV_WarningImprovements_Globals::$warningObj, SV_WarningImprovements_Globals::$reportObj, $options->sv_post_warning_summary, $dateStr);
+            $this->postReply($warned_user, SV_WarningImprovements_Globals::$warningObj, SV_WarningImprovements_Globals::$reportObj, $options->sv_post_warning_summary, $dateStr);
         }
     }
 
-    protected function postReply(array $warning, $report = null, $threadId, $dateStr)
+    protected function postReply($warned_user, array $warning, $report = null, $threadId, $dateStr)
     {
         $thread = $this->_getThreadModel()->getThreadById($threadId);
         if (empty($thread))
@@ -79,11 +98,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         {
             return;
         }
-        $warned_user = $this->_getUserModel()->getUserById($warning['user_id']);
-        if (empty($warned_user))
-        {
-            return;
-        }
+
         $warning['username'] = $warned_user['username'];
         $warning['report'] = empty($report) ? 'N/A' : XenForo_Link::buildPublicLink('full:reports', $report);
         $warning['date'] = $dateStr;

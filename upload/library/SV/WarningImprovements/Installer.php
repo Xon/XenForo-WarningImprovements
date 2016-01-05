@@ -10,7 +10,7 @@ class SV_WarningImprovements_Installer
 
         $db = XenForo_Application::getDb();
 
-        $addonsToUninstall = array('SV_AlertOnWarning' => array("sv_alert_warning_anonymise" => "sv_warningimprovements_anonymise_alert"),
+        $addonsToUninstall = array('SV_AlertOnWarning' => array(),
                                    'SVViewOwnWarnings' => array());
         SV_Utils_Install::removeOldAddons($addonsToUninstall);
 
