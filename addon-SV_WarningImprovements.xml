@@ -376,7 +376,7 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
     <phrase title="warning_escalating_defaults" version_id="102001" version_string="1.2.0"><![CDATA[Warning Escalating Defaults]]></phrase>
     <phrase title="Warning_Summary_Message" version_id="1020200" version_string="1.2.2"><![CDATA[{points} points to @{username} for {title}, {report}
 {notes}]]></phrase>
-    <phrase title="Warning_Thread_Message" version_id="1020202" version_string="1.2.2 RC3"><![CDATA[@{username} has accumulated {points} active warning points. Triggering report: {report}]]></phrase>
+    <phrase title="Warning_Thread_Message" version_id="1030006" version_string="1.3.0 RC6"><![CDATA[@{username} received {warning_points} warning points and is above the {threshold} warning point threshold, with a total accumulated {points} active warning points. Triggering report: {report}]]></phrase>
     <phrase title="Warning_Thread_Title" version_id="1020204" version_string="1.2.2 RC4"><![CDATA[{username} has accumulated {points} warning points on {date}]]></phrase>
   </phrases>
   <route_prefixes>
