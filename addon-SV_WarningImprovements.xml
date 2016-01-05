@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.3.0 RC5" version_id="1030005" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.3.0 RC6" version_id="1030006" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -606,6 +606,11 @@ $0]]></replace>
       <find><![CDATA[#(\s*)(<xen:hook name="member_view_tabs_content")#Us]]></find>
       <replace><![CDATA[$1<xen:include template="sv_warningimprovements_member_view_warning_actions" />
 $1$2]]></replace>
+    </modification>
+    <modification template="member_warnings" modification_key="sv_warningimprovements_member_warnings" description="Round expiry date up to the nearest hour" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:datetime time="{$warning.expiry_date}" />]]></find>
+      <replace><![CDATA[<xen:set var='$expiry_date'>{xen:calc '{$warning.expiry_date} - ({$warning.expiry_date} % 3600) + 3600'}</xen:set>
+<xen:datetime time="{$expiry_date}" />]]></replace>
     </modification>
   </public_template_modifications>
   <bb_code_media_sites/>
