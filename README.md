@@ -27,6 +27,14 @@ A Collection of improvements to XF's warning system.
  - Always sends full conversation text.
  - This can ignore conversation privacy options.
 - Automatically extend default warning expires based on warning point total thresholds
+- Anonymise warnings and warning alerts as a particular user or as a generic 'Moderation Staff' (WarningStaff phrase).
+ - Affects Alerts and Warnings.
+ - Does NOT change conversations.
+- Round up warning expiry time to the nearest hour to avoid confusion over delays caused by XenForo task system's hourly schedule.
+- Option to log a warning summary to a thread. Phrase: Warning_Summary_Message, can use bbcode
+- New Warning Action actions triggered for the last valid warning action:
+ - Post a new thread. Phrases Warning_Thread_Message & Warning_Thread_Title, can use bbcode.
+ - Reply to an existing thread. Phrases Warning_Thread_Message, can use bbcode.
  
 New Permission to control if a user can see who warned them.
 - View Warning Issuer.
@@ -35,6 +43,4 @@ New moderator permissions for viewing warning actions.
 - View Warning Actions
 - Edit Warning Actions
 - Don't Summarize Warning Actions
-
-There is an option for "Anonymise Warning Alerts" if you do not wish for the issuer to be associated with the warning.
 
