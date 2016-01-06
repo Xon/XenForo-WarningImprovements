@@ -172,7 +172,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     public function triggerWarningAction($userId, array $action)
     {
         $triggerId = parent::triggerWarningAction($userId, $action);
-        if ((empty($this->lastWarningAction) || $action['points'] > $this->lastWarningAction['points']) &&
+        if (SV_WarningImprovements_Globals::$NotifyOnWarningAction &&
+            (empty($this->lastWarningAction) || $action['points'] > $this->lastWarningAction['points']) &&
             (!empty($action['sv_post_node_id']) || !empty($action['sv_post_thread_id'])))
         {
             $this->lastWarningAction = $action;
