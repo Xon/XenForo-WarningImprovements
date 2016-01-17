@@ -74,6 +74,36 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         return parent::actionSave();
     }
 
+    protected function _getActionAddEditResponse(array $action)
+    {
+        $response = parent::_getActionAddEditResponse($action);
+        if ($response instanceof XenForo_ControllerResponse_View)
+        {
+            $nodeList = array();
+            $nodeModel = XenForo_Model::create('XenForo_Model_Node');
+
+            $nodeList = $nodeModel->getNodeOptionsArray(
+                $nodeModel->getAllNodes(),
+                empty($action['sv_post_node_id']) ? 0 : $action['sv_post_node_id'],
+                sprintf('(%s)', new XenForo_Phrase('unspecified'))
+            );
+
+            foreach ($nodeList AS &$option)
+            {
+                if (!empty($option['node_type_id']) && $option['node_type_id'] != 'Forum')
+                {
+                    $option['disabled'] = 'disabled';
+                }
+
+                unset($nodeList['node_type_id']);
+            }
+
+            $response->params['nodeList'] = $nodeList;
+        }
+
+        return $response;
+    }
+
     protected function _getDefaultAddEditResponse(array $warningDefault)
     {
         $viewParams = array(

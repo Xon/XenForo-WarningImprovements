@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.3.0 RC6" version_id="1030006" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.3.0 RC7" version_id="1030007" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -99,6 +99,13 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 		</xen:if>
 	</xen:submitunit>
 </xen:form>]]></template>
+    <template title="sv_warning_action_edit"><![CDATA[<xen:selectunit label="{xen:phrase sv_warning_node_id}:" name="sv_post_node_id" value="{$action.sv_post_node_id}">
+	<xen:options source="$nodeList" />
+	<xen:explain>{xen:phrase sv_warning_action_post_new_thread}</xen:explain>
+</xen:selectunit>
+
+<xen:spinboxunit label="{xen:phrase sv_warning_thread_id}:" explain="{xen:phrase sv_warning_action_post_thread_reply}" name="sv_post_thread_id" value="{$action.sv_post_thread_id}" />
+<xen:spinboxunit label="{xen:phrase sv_warning_post_as_user_id}:" explain="{xen:phrase sv_warning_action_post_as_user}" name="sv_post_as_user_id" value="{$action.sv_post_as_user_id}" />]]></template>
   </admin_templates>
   <admin_template_modifications>
     <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit1" description="Special case editing the Custom Warning - 1" execution_order="10" enabled="1" action="str_replace">
@@ -149,9 +156,7 @@ $3$4]]></replace>
     </modification>
     <modification template="warning_action_edit" modification_key="sv_warningimprovements_warning_action_edit" description="Inject post to thread/form on warning action" execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<xen:radiounit label="{xen:phrase action_to_take}:"]]></find>
-      <replace><![CDATA[<xen:spinboxunit label="{xen:phrase sv_warning_node_id}:" explain="{xen:phrase sv_warning_action_post_new_thread}" name="sv_post_node_id" value="{$action.sv_post_node_id}" />
-<xen:spinboxunit label="{xen:phrase sv_warning_thread_id}:" explain="{xen:phrase sv_warning_action_post_thread_reply}" name="sv_post_thread_id" value="{$action.sv_post_thread_id}" />
-<xen:spinboxunit label="{xen:phrase sv_warning_post_as_user_id}:" explain="{xen:phrase sv_warning_action_post_as_user}" name="sv_post_as_user_id" value="{$action.sv_post_as_user_id}" />
+      <replace><![CDATA[<xen:include template="sv_warning_action_edit" />
 $0]]></replace>
     </modification>
     <modification template="warning_list" modification_key="sv_warningimprovements_warning_list3" description="Add &quot;Warning Defaults&quot; button" execution_order="100" enabled="1" action="preg_replace">
@@ -361,9 +366,9 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
     <phrase title="sv_warning_default_is_active" version_id="102001" version_string="1.2.0"><![CDATA[Is active]]></phrase>
     <phrase title="sv_warning_expiry_extension" version_id="102001" version_string="1.2.0"><![CDATA[Expiry Extension]]></phrase>
     <phrase title="sv_warning_expiry_extension_explain" version_id="102001" version_string="1.2.0"><![CDATA[The duration to add to the warning's default expiry period when above the threshold]]></phrase>
-    <phrase title="sv_warning_node_id" version_id="1020200" version_string="1.2.2"><![CDATA[Post to new thread]]></phrase>
+    <phrase title="sv_warning_node_id" version_id="1030007" version_string="1.3.0 RC7"><![CDATA[Post to Forum]]></phrase>
     <phrase title="sv_warning_post_as_user_id" version_id="1020200" version_string="1.2.2"><![CDATA[User Id To Post As]]></phrase>
-    <phrase title="sv_warning_thread_id" version_id="1020200" version_string="1.2.2"><![CDATA[Post to existing thread]]></phrase>
+    <phrase title="sv_warning_thread_id" version_id="1030007" version_string="1.3.0 RC7"><![CDATA[Reply to thread]]></phrase>
     <phrase title="sv_wa_minutes" version_id="101000" version_string="1.1.0"><![CDATA[Minutes]]></phrase>
     <phrase title="sv_x_weeks" version_id="102001" version_string="1.2.0"><![CDATA[{weeks} Weeks]]></phrase>
     <phrase title="sv_x_years" version_id="102001" version_string="1.2.0"><![CDATA[{years} Years]]></phrase>
