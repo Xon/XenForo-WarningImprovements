@@ -1,5 +1,4 @@
-XenForo-WarningImprovements
-======================
+# XenForo-WarningImprovements
 
 A Collection of improvements to XF's warning system.
 
