@@ -3,6 +3,11 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 {
     public function getWarningByIds($warningIds)
     {
+        if (empty($warningIds))
+        {
+            return array();
+        }
+
         return $this->fetchAllKeyed('
             SELECT warning.*, user.*, warn_user.username AS warn_username
             FROM xf_warning AS warning
