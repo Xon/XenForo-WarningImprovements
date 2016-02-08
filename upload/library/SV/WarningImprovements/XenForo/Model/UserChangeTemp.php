@@ -154,8 +154,8 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         $expiry_date = $warningAction['expiry_date'];
         if (!empty($expiry_date))
         {
-            $prev_hour = $expiry_date - ($expiry_date % 1800);
-            $expiry_date = $prev_hour + 1800;
+            $prev_hour = $expiry_date - ($expiry_date % 3600);
+            $expiry_date = $prev_hour + 3600;
         }
         $warningAction['expiry_date_rounded'] = $expiry_date;
 
