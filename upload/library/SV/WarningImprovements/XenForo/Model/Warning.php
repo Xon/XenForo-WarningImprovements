@@ -330,7 +330,10 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                 $warning['content_title'] = XenForo_Helper_String::censorString($warning['content_title']);
             }
             $warning['notes'] = '';
-            $warning['expiry_date'] = $warning['expiry_date'] - ($warning['expiry_date'] % 3600) + 3600;
+            if (!empty($warning['expiry_date']))
+            {
+                $warning['expiry_date'] = $warning['expiry_date'] - ($warning['expiry_date'] % 3600) + 3600;
+            }
         }
 
         if (!XenForo_Permission::hasPermission($viewer['permissions'], 'general', 'viewWarning_issuer') && !XenForo_Permission::hasPermission($viewer['permissions'], 'general', 'viewWarning'))
