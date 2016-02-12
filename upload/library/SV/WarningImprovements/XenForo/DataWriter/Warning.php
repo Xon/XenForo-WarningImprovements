@@ -22,7 +22,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
     protected function _preSave()
     {
         $warning_definition_id = $this->get('warning_definition_id');
-        if ($warning_definition_id == 0)
+        if ($this->isInsert() && $warning_definition_id == 0)
         {
             $warningModel = $this->_getWarningModel();
             $warning = $warningModel->getWarningDefinitionById($warning_definition_id);
