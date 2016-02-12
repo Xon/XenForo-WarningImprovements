@@ -19,6 +19,35 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         return $fields;
     }
 
+    protected function _preSave()
+    {
+        $warning_definition_id = $this->get('warning_definition_id');
+        if ($warning_definition_id == 0)
+        {
+            $warningModel = $this->_getWarningModel();
+            $warning = $warningModel->getWarningDefinitionById($warning_definition_id);
+            if (!empty($warning))
+            {
+                $dwInput = array();
+                $warning = $warningModel->prepareWarningDefinition($warning);
+                $dwInput['extra_user_group_ids'] = $warning['extra_user_group_ids'];
+                if (!$warning['is_editable'])
+                {
+                    $dwInput['points'] = $warning['points_default'];
+                    $dwInput['expiry_date'] = (
+                        $warning['expiry_type'] == 'never' ? 0
+                        : min(
+                            pow(2,32) - 1,
+                            strtotime('+' . $warning['expiry_default'] . ' ' . $warning['expiry_type'])
+                        )
+                    );
+                }
+                $this->bulkSet($dwInput);
+			}
+        }
+        parent::_preSave();
+    }
+
     protected function _postSave()
     {
         // capture warning & report objects for later when XenForo_DataWriter_User triggers
@@ -123,6 +152,11 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         parent::_postDelete();
 
         $this->getModelFromCache('XenForo_Model_Alert')->deleteAlerts('warning', $this->get('warning_id'));
+    }
+
+    protected function _getWarningModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_Warning');
     }
 
     protected function _getReportModel()
