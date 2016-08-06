@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.3.1" version_id="1030100" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.3.2" version_id="1030200" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -344,6 +344,7 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="permission_general_sv_viewWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[View Warning Actions]]></phrase>
     <phrase title="permission_general_viewWarning_issuer" version_id="100" version_string="1.0.0"><![CDATA[View warning issuer]]></phrase>
     <phrase title="send_alert_on_warning" version_id="100000" version_string="1.0.0"><![CDATA[Send alert on warning]]></phrase>
+    <phrase title="svwi_the_user_x_could_not_be_found" version_id="1030200" version_string="1.3.2"><![CDATA[The user {name} could not be found.]]></phrase>
     <phrase title="sv_confirm_deletion_of_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Confirm Deletion of Warning Default.]]></phrase>
     <phrase title="sv_create_new_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Create New Warning Defaults]]></phrase>
     <phrase title="sv_delete_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Delete Warning Default]]></phrase>

@@ -24,7 +24,7 @@ class SV_WarningImprovements_Option_UserName
             return true;
         }
 
-        $dw->error(new XenForo_Phrase('the_user_x_could_not_be_found', array('name' => $option)), $fieldName);
+        $dw->error(new XenForo_Phrase('svwi_the_user_x_could_not_be_found', array('name' => $option)), $fieldName);
         return false;
     }
 }
