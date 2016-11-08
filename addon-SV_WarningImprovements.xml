@@ -608,16 +608,12 @@ $3$4]]></replace>
       <find><![CDATA[<input type="checkbox" name="open_invite" value="1"]]></find>
       <replace><![CDATA[$0 {xen:if '{$xenOptions.sv_warningimprovements_conversation_invite}', 'checked="checked"'}]]></replace>
     </modification>
-    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn6" description="Conversation sending" execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#(id="startConversation".*?)(class="Disabler".*?)(checked="checked")#i]]></find>
-      <replace><![CDATA[$1 {xen:if '{$xenOptions.sv_warningimprovements_conversation_send_default}', '$2 $3'}]]></replace>
-    </modification>
-    <modification template="member_view" modification_key="sv_warningimprovements_member_view1" description="" execution_order="100" enabled="1" action="str_replace">
+    <modification template="member_view" modification_key="sv_warningimprovements_member_view1" description="Warning Actions (header)" execution_order="100" enabled="1" action="str_replace">
       <find><![CDATA[<xen:hook name="member_view_tabs_heading"]]></find>
       <replace><![CDATA[<xen:if is="{$warningActionsCount}"><li><a href="{$requestPaths.requestUri}#warningActions">{xen:phrase sv_user_warning_actions, 'count={$warningActionsCount}'}</a></li></xen:if>
 $0]]></replace>
     </modification>
-    <modification template="member_view" modification_key="sv_warningimprovements_member_view2" description="" execution_order="100" enabled="1" action="preg_replace">
+    <modification template="member_view" modification_key="sv_warningimprovements_member_view2" description="Warning Actions (body)" execution_order="100" enabled="1" action="preg_replace">
       <find><![CDATA[#(\s*)(<xen:hook name="member_view_tabs_content")#Us]]></find>
       <replace><![CDATA[$1<xen:include template="sv_warningimprovements_member_view_warning_actions" />
 $1$2]]></replace>
