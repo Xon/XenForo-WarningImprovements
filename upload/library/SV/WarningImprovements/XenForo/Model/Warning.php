@@ -40,7 +40,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             SELECT *
             FROM xf_sv_warning_default
             order by threshold_points
-        ','warning_default_id');
+        ', 'warning_default_id');
     }
 
     public function getWarningDefaultExtention($warningCount, $warningTotals)
