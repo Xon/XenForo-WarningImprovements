@@ -189,11 +189,11 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
     public function actionActionSave()
     {
-		SV_WarningImprovements_Globals::$warningActionInput = $this->_input->filter(array(
-			'sv_post_node_id' => XenForo_Input::UINT,
-			'sv_post_thread_id' => XenForo_Input::UINT,
+        SV_WarningImprovements_Globals::$warningActionInput = $this->_input->filter(array(
+            'sv_post_node_id' => XenForo_Input::UINT,
+            'sv_post_thread_id' => XenForo_Input::UINT,
             'sv_post_as_user_id' => XenForo_Input::UINT,
-		));
+        ));
         return parent::actionActionSave();
     }
 }
