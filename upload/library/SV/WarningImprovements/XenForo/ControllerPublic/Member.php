@@ -62,7 +62,18 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
         SV_WarningImprovements_Globals::$scaleWarningExpiry = true;
         SV_WarningImprovements_Globals::$NotifyOnWarningAction = true;
 
-        return parent::actionWarn();
+        $response = parent::actionWarn();
+
+        if (!$response instanceof XenForo_ControllerResponse_View) {
+            return $response;
+        }
+
+        $viewParams = &$response->params;
+
+        $warningModel = $this->getModelFromCache('XenForo_Model_Warning');
+        $viewParams['warningItems'] = $warningModel->getWarningItems();
+
+        return $response;
     }
 
     public function actionWarnings()

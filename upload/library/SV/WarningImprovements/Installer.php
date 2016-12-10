@@ -28,6 +28,26 @@ class SV_WarningImprovements_Installer
             ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci
         ");
 
+        $db->query(
+            'CREATE TABLE IF NOT EXISTS xf_sv_warning_category (
+                warning_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                parent_warning_category_id INT UNSIGNED NOT NULL DEFAULT 0,
+                display_order INT UNSIGNED NOT NULL DEFAULT 0,
+                PRIMARY KEY (warning_category_id)
+            ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci'
+        );
+
+        SV_Utils_Install::addColumn(
+            'xf_warning_definition',
+            'sv_warning_category_id',
+            'INT UNSIGNED NOT NULL DEFAULT 0'
+        );
+        SV_Utils_Install::addColumn(
+            'xf_warning_definition',
+            'sv_display_order',
+            'INT UNSIGNED NOT NULL DEFAULT 0'
+        );
+
         if ($version == 0)
         {
             // insert the defaults for the custom warning. This can't be normally inserted so fiddle with the sql_mode
@@ -38,6 +58,28 @@ class SV_WarningImprovements_Installer
                     (0,1, 'months',1,'',1);
             ");
             $db->query("SET SESSION sql_mode='STRICT_ALL_TABLES'");
+
+            // create default warning category
+            $categoryDw = XenForo_DataWriter::create(
+                'SV_WarningImprovements_DataWriter_WarningCategory'
+            );
+            $categoryDw->bulkSet(array(
+                'parent_warning_category_id' => 0,
+                'display_order'              => 0
+            ));
+            $categoryDw->setExtraData(
+                SV_WarningImprovements_DataWriter_WarningCategory::DATA_TITLE,
+                'Warnings'
+            );
+            $categoryDw->save();
+
+            $defaultCategory = $categoryDw->getMergedData();
+
+            // set all warning definitions to be in default warning category
+            $db->update('xf_warning_definition', array(
+                'sv_warning_category_id' => $defaultCategory['warning_category_id'],
+                'sv_display_order'       => 0
+            ));
         }
 
         $db->query("
@@ -98,6 +140,16 @@ class SV_WarningImprovements_Installer
             DROP TABLE IF EXISTS `xf_sv_warning_default`
         ");
 
+        $db->query('DROP TABLE IF EXISTS xf_sv_warning_category');
+
+        SV_Utils_Install::dropColumn(
+            'xf_warning_definition',
+            'sv_warning_category_id'
+        );
+        SV_Utils_Install::dropColumn(
+            'xf_warning_definition',
+            'sv_display_order'
+        );
 
         $db->query("
             DELETE FROM xf_permission_entry

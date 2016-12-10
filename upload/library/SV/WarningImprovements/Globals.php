@@ -11,6 +11,7 @@ class SV_WarningImprovements_Globals
     public static $reportObj = null;
     public static $scaleWarningExpiry = false;
 
+    public static $warningDefinitionInput = null;
     public static $warningActionInput = null;
 
     private function __construct() {}
