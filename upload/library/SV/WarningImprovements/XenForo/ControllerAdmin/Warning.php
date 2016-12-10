@@ -9,6 +9,66 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         return $view;
     }
 
+    public function actionLoadTree()
+    {
+        $this->_assertPostOnly();
+
+        $this->_routeMatch->setResponseType('json');
+
+        $viewParams = array(
+            'tree' => $this->_getWarningModel()->getWarningItemTree()
+        );
+
+        return $this->responseView(
+            'XenForo_ViewAdmin_Warning_LoadTree',
+            '',
+            $viewParams
+        );
+    }
+
+    public function actionSyncTree()
+    {
+        $this->_assertPostOnly();
+
+        $tree = $this->_input->filterSingle('tree', XenForo_Input::JSON_ARRAY);
+
+        $warningItems = $this->_getWarningModel()->flattenWarningItemTree($tree);
+
+        foreach ($warningItems as $warningItem) {
+            if ($warningItem['type'] === 'category') {
+                $datawriter = XenForo_DataWriter::create(
+                    'SV_WarningImprovements_DataWriter_WarningCategory'
+                );
+                $datawriter->setExistingData($warningItem['id']);
+                $datawriter->bulkSet(array(
+                    'parent_warning_category_id' => $warningItem['parent'],
+                    'display_order'              => $warningItem['display_order']
+                ));
+                $datawriter->save();
+            } elseif ($warningItem['type'] === 'definition') {
+                // TODO: fix setting for default warning
+                if ($warningItem['id'] === 0) {
+                    continue;
+                }
+
+                $datawriter = XenForo_DataWriter::create(
+                    'XenForo_DataWriter_WarningDefinition'
+                );
+                $datawriter->setExistingData($warningItem['id']);
+                $datawriter->bulkSet(array(
+                    'sv_warning_category_id' => $warningItem['parent'],
+                    'sv_display_order'       => $warningItem['display_order']
+                ));
+                $datawriter->save();
+            }
+        }
+
+        return $this->responseRedirect(
+            XenForo_ControllerResponse_Redirect::RESOURCE_UPDATED,
+            XenForo_Link::buildAdminLink('warnings')
+        );
+    }
+
     var $_set_custom_warning = false;
 
     public function actionEdit()
@@ -30,40 +90,74 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
     protected function _getWarningAddEditResponse(array $warning)
     {
         $warning['is_custom'] = $this->_set_custom_warning;
-        return parent::_getWarningAddEditResponse($warning);
+
+        $response = parent::_getWarningAddEditResponse($warning);
+        $viewParams = &$response->params;
+
+        $viewParams['warningCategories'] = $this->_getWarningModel()
+            ->getWarningCategoryOptions();
+
+        return $response;
     }
 
     public function actionSave()
     {
-        $warningDefinitionId = $this->_input->filterSingle('warning_definition_id', XenForo_Input::UINT);
-        $is_custom = $this->_input->filterSingle('is_custom', XenForo_Input::UINT);
-        if ($warningDefinitionId == 0 && $is_custom)
-        {
+        $warningDefinitionId = $this->_input->filterSingle(
+            'warning_definition_id',
+            XenForo_Input::UINT
+        );
+        $isCustom = $this->_input->filterSingle(
+            'is_custom',
+            XenForo_Input::UINT
+        );
+
+        if ($warningDefinitionId == 0 && $isCustom) {
             $dwInput = $this->_input->filter(array(
-                'points_default' => XenForo_Input::UINT,
-                'expiry_type' => XenForo_Input::STRING,
-                'expiry_default' => XenForo_Input::UINT,
-                'extra_user_group_ids' => array(XenForo_Input::UINT, 'array' => true),
-                'is_editable' => XenForo_Input::UINT
+                'points_default'       => XenForo_Input::UINT,
+                'expiry_type'          => XenForo_Input::STRING,
+                'expiry_default'       => XenForo_Input::UINT,
+                'extra_user_group_ids' => array(
+                    XenForo_Input::UINT,
+                    'array' => true
+                ),
+                'is_editable'          => XenForo_Input::UINT
             ));
             $phrases = $this->_input->filter(array(
-                'title' => XenForo_Input::STRING,
+                'title'             => XenForo_Input::STRING,
                 'conversationTitle' => XenForo_Input::STRING,
-                'conversationText' => XenForo_Input::STRING
+                'conversationText'  => XenForo_Input::STRING
             ));
 
-            if ($this->_input->filterSingle('expiry_type_base', XenForo_Input::STRING) == 'never')
-            {
+            $expiryType = $this->_input->filterSingle(
+                'expiry_type_base',
+                XenForo_Input::String
+            );
+
+            if ($expiryType == 'never') {
                 $dwInput['expiry_type'] = 'never';
             }
 
-            $dw = XenForo_DataWriter::create('XenForo_DataWriter_WarningDefinition');
-            $dw->setOption(SV_WarningImprovements_XenForo_DataWriter_WarningDefinition::IS_CUSTOM, 1);
+            $dw = XenForo_DataWriter::create(
+                'XenForo_DataWriter_WarningDefinition'
+            );
+            $dw->setOption(
+                SV_WarningImprovements_XenForo_DataWriter_WarningDefinition::IS_CUSTOM,
+                1
+            );
             $dw->setExistingData($warningDefinitionId);
             $dw->bulkSet($dwInput);
-            $dw->setExtraData(XenForo_DataWriter_WarningDefinition::DATA_TITLE, $phrases['title']);
-            $dw->setExtraData(XenForo_DataWriter_WarningDefinition::DATA_CONVERSATION_TITLE, $phrases['conversationTitle']);
-            $dw->setExtraData(XenForo_DataWriter_WarningDefinition::DATA_CONVERSATION_TEXT, $phrases['conversationText']);
+            $dw->setExtraData(
+                XenForo_DataWriter_WarningDefinition::DATA_TITLE,
+                $phrases['title']
+            );
+            $dw->setExtraData(
+                XenForo_DataWriter_WarningDefinition::DATA_CONVERSATION_TITLE,
+                $phrases['conversationTitle']
+            );
+            $dw->setExtraData(
+                XenForo_DataWriter_WarningDefinition::DATA_CONVERSATION_TEXT,
+                $phrases['conversationText']
+            );
             $dw->save();
 
             return $this->responseRedirect(
@@ -71,7 +165,19 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                 XenForo_Link::buildAdminLink('warnings') . '#_warning-' . $dw->get('warning_definition_id')
             );
         }
-        return parent::actionSave();
+
+        SV_WarningImprovements_Globals::$warningDefinitionInput = $this->_input->filter(
+            array(
+                'sv_warning_category_id' => XenForo_Input::UINT,
+                'sv_display_order'       => XenForo_Input::UINT
+            )
+        );
+
+        $response = parent::actionSave();
+
+        SV_WarningImprovements_Globals::$warningDefinitionInput = null;
+
+        return $response;
     }
 
     protected function _getActionAddEditResponse(array $action)
@@ -195,5 +301,137 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
             'sv_post_as_user_id' => XenForo_Input::UINT,
         ));
         return parent::actionActionSave();
+    }
+
+    public function actionCategoryAdd()
+    {
+        $warningCategories = $this->_getWarningModel()
+            ->getWarningCategoryOptions(true);
+
+        $viewParams = array(
+            'warningCategory'   => array('display_order' => 0),
+            'warningCategories' => $warningCategories
+        );
+
+        return $this->responseView(
+            'XenForo_ViewAdmin_Warning_CategoryEdit',
+            'sv_warning_category_edit',
+            $viewParams
+        );
+    }
+
+    public function actionCategoryEdit()
+    {
+        $warningCategoryId = $this->_input->filterSingle(
+            'warning_category_id',
+            XenForo_Input::UINT
+        );
+        $warningCategory = $this->_getWarningCategoryOrError($warningCategoryId);
+
+        $warningCategories = $this->_getWarningModel()
+            ->getWarningCategoryOptions(true);
+
+        if (isset($warningCategories[$warningCategoryId])) {
+            unset($warningCategories[$warningCategoryId]);
+        }
+
+        $viewParams = array(
+            'warningCategory'   => $warningCategory,
+            'warningCategories' => $warningCategories
+        );
+
+        return $this->responseView(
+            'XenForo_ViewAdmin_Warning_CategoryEdit',
+            'sv_warning_category_edit',
+            $viewParams
+        );
+    }
+
+    public function actionCategorySave()
+    {
+        $this->_assertPostOnly();
+
+        $warningCategoryId = $this->_input->filterSingle(
+            'warning_category_id',
+            XenForo_Input::UINT
+        );
+
+        $dwInput = $this->_input->filter(array(
+            'warning_category_id'        => XenForo_Input::STRING,
+            'parent_warning_category_id' => XenForo_Input::UINT,
+            'display_order'              => XenForo_Input::UINT
+        ));
+
+        $titlePhrase = $this->_input->filterSingle(
+            'title',
+            XenForo_Input::STRING
+        );
+
+        $dw = XenForo_DataWriter::create(
+            'SV_WarningImprovements_DataWriter_WarningCategory'
+        );
+        if ($warningCategoryId) {
+            $dw->setExistingData($warningCategoryId);
+        }
+        $dw->bulkSet($dwInput);
+        $dw->setExtraData(
+            SV_WarningImprovements_DataWriter_WarningCategory::DATA_TITLE,
+            $titlePhrase
+        );
+        $dw->save();
+
+        // TODO: hook hash into jstree
+        return $this->responseRedirect(
+            XenForo_ControllerResponse_Redirect::SUCCESS,
+            XenForo_Link::buildAdminLink('warnings') . $this->getLastHash(
+                'c' . $dw->get('warning_category_id')
+            )
+        );
+    }
+
+    public function actionCategoryDelete()
+    {
+        if ($this->isConfirmedPost()) {
+            return $this->_deleteData(
+                'SV_WarningImprovements_DataWriter_WarningCategory',
+                'warning_category_id',
+                XenForo_Link::buildAdminLink('warnings')
+            );
+        } else {
+            $warningCategoryId = $this->_input->filterSingle(
+                'warning_category_id',
+                XenForo_Input::STRING
+            );
+            $warningCategory = $this->_getWarningCategoryOrError(
+                $warningCategoryId
+            );
+
+            $viewParams = array(
+                'warningCategory' => $warningCategory
+            );
+
+            return $this->responseView(
+                'XenForo_ViewAdmin_Warning_CategoryDelete',
+                'sv_warning_category_delete',
+                $viewParams
+            );
+        }
+    }
+
+    protected function _getWarningCategoryOrError($warningCategoryId)
+    {
+        $warningModel = $this->_getWarningModel();
+
+        $warningCategory = $warningModel->getWarningCategoryById($warningCategoryId);
+        if (!$warningCategory) {
+            throw $this->responseException($this->responseError(
+                new XenForo_Phrase('sv_requested_warning_category_not_found'),
+                404
+            ));
+        }
+
+        $warningCategory = $warningModel->prepareWarningCategory($warningCategory);
+
+        return $warningCategory;
     }
 }

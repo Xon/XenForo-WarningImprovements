@@ -1,6 +1,331 @@
 <?php
 class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprovements_XenForo_Model_Warning
 {
+    public static function isWarningCategory($warningCategory)
+    {
+        return (
+            !(empty($warningCategory)) and
+            is_array($warningCategory) and
+            array_key_exists('warning_category_id', $warningCategory) and
+            array_key_exists('parent_warning_category_id', $warningCategory)
+        );
+    }
+
+    public static function isWarningDefinition($warningDefinition)
+    {
+        return (
+            !(empty($warningDefinition)) and
+            is_array($warningDefinition) and
+            array_key_exists('warning_definition_id', $warningDefinition) and
+            array_key_exists('sv_warning_category_id', $warningDefinition)
+        );
+    }
+
+    public static function isWarningItemsArray($warningItems)
+    {
+        if (is_array($warningItems)) {
+            if (count($warningItems) == 0) {
+                return true;
+            } else {
+                return (
+                    self::isWarningCategory(reset($warningItems)) or
+                    self::isWarningDefinition(reset($warningItems))
+                );
+            }
+        } else {
+            return false;
+        }
+    }
+
+    public function getWarningCategoryById($warningCategoryId)
+    {
+        return $this->_getDb()->fetchRow(
+            'SELECT *
+                FROM xf_sv_warning_category
+                WHERE warning_category_id = ?',
+            $warningCategoryId
+        );
+    }
+
+    public function getWarningCategoryTitlePhraseName($warningCategoryId)
+    {
+        return 'sv_warning_category_'.$warningCategoryId.'_title';
+    }
+
+    public function getWarningCategories()
+    {
+        return $this->fetchAllKeyed(
+            'SELECT *
+                FROM xf_sv_warning_category
+                ORDER BY parent_warning_category_id, display_order',
+            'warning_category_id'
+        );
+    }
+
+    public function getWarningCategoriesByParentId($warningCategoryId)
+    {
+        return $this->fetchAllKeyed(
+            'SELECT *
+                FROM xf_sv_warning_category
+                WHERE parent_warning_category_id = ?
+                ORDER BY display_order',
+            'warning_category_id',
+            $warningCategoryId
+        );
+    }
+
+    public function getWarningCategoryOptions($rootOnly = false)
+    {
+        if (!$rootOnly) {
+            $categories = $this->getWarningCategories();
+            $categories = $this->calculateWarningItemsDepth($categories);
+        } else {
+            $categories = $this->getWarningCategoriesByParentId(0);
+        }
+
+        $categories = $this->prepareWarningCategories($categories);
+
+        $options = array();
+
+        foreach ($categories as $categoryId => $category) {
+            $options[$categoryId] = array(
+                'value' => $categoryId,
+                'label' => $category['title'],
+                'depth' => (!$rootOnly ? $category['depth'] : 0)
+            );
+        }
+
+        return $options;
+    }
+
+
+    public function prepareWarningCategory(array $warningCategory)
+    {
+        if (!empty($warningCategory['warning_category_id'])) {
+            $warningCategory['title'] = new XenForo_Phrase(
+                $this->getWarningCategoryTitlePhraseName(
+                    $warningCategory['warning_category_id']
+                )
+            );
+        }
+
+        return $warningCategory;
+    }
+
+    public function prepareWarningCategories(array $warningCategories)
+    {
+        return array_map(
+            array($this, 'prepareWarningCategory'),
+            $warningCategories
+        );
+    }
+
+    public function getWarningDefinitions()
+    {
+        $warningDefinitions = parent::getWarningDefinitions();
+
+        uasort($warningDefinitions, function ($first, $second) {
+            $key = 'sv_display_order';
+
+            if ($first[$key] === $second[$key]) {
+                return 0;
+            }
+
+            return ($first[$key] < $second[$key]) ? -1 : 1;
+        });
+
+        return $warningDefinitions;
+    }
+
+    public function getWarningDefinitionsByCategoryId($warningCategoryId)
+    {
+        return $this->fetchAllKeyed(
+            'SELECT *
+                FROM xf_warning_definition
+                WHERE sv_warning_category_id = ?
+                ORDER BY sv_display_order',
+            'warning_definition_id',
+            $warningCategoryId
+        );
+    }
+
+    // TODO: maybe a good candidate for caching
+    public function getWarningItems()
+    {
+        $warningCategories = $this->prepareWarningCategories(
+            $this->getWarningCategories()
+        );
+        $warningDefinitions = $this->prepareWarningDefinitions(
+            $this->getWarningDefinitions()
+        );
+
+        $warningItems = array_merge($warningCategories, $warningDefinitions);
+
+        $warningItems = $this->sortWarningItems($warningItems);
+        $warningItems = $this->calculateWarningItemsDepth($warningItems);
+
+        return $warningItems;
+    }
+
+    public function getWarningItemsByParentId($warningCategoryId)
+    {
+        $warningCategories = $this->prepareWarningCategories(
+            $this->getWarningCategoriesByParentId($warningCategoryId)
+        );
+        $warningDefinitions = $this->prepareWarningDefinitions(
+            $this->getWarningDefinitionsByCategoryId($warningCategoryId)
+        );
+
+        $warningItems = array_merge($warningCategories, $warningDefinitions);
+
+        return $this->sortWarningItems($warningItems);
+    }
+
+    public function sortWarningItems(array $warningItems)
+    {
+        uasort($warningItems, function ($first, $second) {
+            $keys = array('parent_warning_category_id', 'sv_warning_category_id');
+
+            foreach ($keys as $key) {
+                if (!isset($firstOrder) and isset($first[$key])) {
+                    $firstOrder = $first[$key];
+                }
+
+                if (!isset($secondOrder) and isset($second[$key])) {
+                    $secondOrder = $second[$key];
+                }
+            }
+
+            if ($firstOrder === $secondOrder) {
+                return 0;
+            }
+
+            return ($firstOrder < $secondOrder) ? -1 : 1;
+        });
+
+        uasort($warningItems, function ($first, $second) {
+            $keys = array('display_order', 'sv_display_order');
+
+            foreach ($keys as $key) {
+                if (!isset($firstOrder) and isset($first[$key])) {
+                    $firstOrder = $first[$key];
+                }
+
+                if (!isset($secondOrder) and isset($second[$key])) {
+                    $secondOrder = $second[$key];
+                }
+            }
+
+            if ($firstOrder === $secondOrder) {
+                return 0;
+            }
+
+            return ($firstOrder < $secondOrder) ? -1 : 1;
+        });
+
+        return $warningItems;
+    }
+
+    public function getWarningItemTree(array $warningItems = null)
+    {
+        if (!self::isWarningItemsArray($warningItems)) {
+            $warningItems = $this->getWarningItems();
+        }
+
+        $tree = array();
+
+        foreach ($warningItems as $warningItem) {
+            $node = array();
+
+            if (self::isWarningCategory($warningItem)) {
+                $node['id'] = 'c'.$warningItem['warning_category_id'];
+                $node['type'] = 'category';
+
+                if ($warningItem['parent_warning_category_id'] !== 0) {
+                    $node['parent'] = 'c'.$warningItem['parent_warning_category_id'];
+                } else {
+                    $node['parent'] = '#';
+                }
+            } elseif (self::isWarningDefinition($warningItem)) {
+                $node['id'] = 'd'.$warningItem['warning_definition_id'];
+                $node['type'] = 'definition';
+                $node['parent'] = 'c'.$warningItem['sv_warning_category_id'];
+            }
+
+            $node['text'] = $warningItem['title'];
+
+            $tree[] = $node;
+        }
+
+        return $tree;
+    }
+
+    public function calculateWarningItemsDepth(
+        array &$warningItems,
+        $parentId = 0,
+        $depth = 0
+    ) {
+        $calculatedItems = array();
+
+        foreach ($warningItems as &$warningItem) {
+            if (self::isWarningCategory($warningItem)) {
+                $itemParentId = $warningItem['parent_warning_category_id'];
+            } elseif (self::isWarningDefinition($warningItem)) {
+                $itemParentId = $warningItem['sv_warning_category_id'];
+            }
+
+            if ($itemParentId === $parentId) {
+                $warningItem['depth'] = $depth;
+                $calculatedItems[] = $warningItem;
+
+                if (self::isWarningCategory($warningItem)) {
+                    $calculatedItems = array_merge(
+                        $calculatedItems,
+                        $this->calculateWarningItemsDepth(
+                            $warningItems,
+                            $warningItem['warning_category_id'],
+                            $depth + 1
+                        )
+                    );
+                }
+
+                unset($warningItem);
+            }
+        }
+
+        return $calculatedItems;
+    }
+
+    public function flattenWarningItemTree(array $tree, $parent = 0)
+    {
+        $warningItems = array();
+        $displayOrder = 0;
+
+        foreach ($tree as $branch) {
+            $branch['id'] = (int)substr($branch['id'], 1);
+
+            $item = array(
+                'type'          => $branch['type'],
+                'id'            => $branch['id'],
+                'parent'        => $parent,
+                'display_order' => $displayOrder
+            );
+
+            $warningItems[] = $item;
+
+            if (isset($branch['children'])) {
+                $warningItems = array_merge(
+                    $warningItems,
+                    $this->flattenWarningItemTree($branch['children'], $branch['id'])
+                );
+            }
+
+            $displayOrder++;
+        }
+
+        return $warningItems;
+    }
+
     public function getWarningByIds($warningIds)
     {
         if (empty($warningIds))
