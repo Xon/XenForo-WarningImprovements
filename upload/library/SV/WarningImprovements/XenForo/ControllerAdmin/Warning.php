@@ -46,13 +46,15 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                 ));
                 $dw->save();
             } elseif ($warningItem['type'] === 'definition') {
-                // TODO: fix setting for default warning
                 $dw = XenForo_DataWriter::create(
                     'XenForo_DataWriter_WarningDefinition'
                 );
 
                 if ($warningItem['id'] === 0) {
-                    continue;
+                    $dw->setOption(
+                        SV_WarningImprovements_XenForo_DataWriter_WarningDefinition::IS_CUSTOM,
+                        1
+                    );
                 }
 
                 $dw->setExistingData($warningItem['id']);
