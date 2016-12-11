@@ -32,7 +32,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
         $tree = $this->_input->filterSingle('tree', XenForo_Input::JSON_ARRAY);
 
-        $warningItems = $this->_getWarningModel()->flattenWarningItemTree($tree);
+        $warningItems = $this->_getWarningModel()->processWarningItemTree($tree);
 
         foreach ($warningItems as $warningItem) {
             if ($warningItem['type'] === 'category') {

@@ -1,7 +1,7 @@
 <?php
 class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprovements_XenForo_Model_Warning
 {
-    public static function isWarningCategory($warningCategory)
+    public function isWarningCategory($warningCategory)
     {
         return (
             !(empty($warningCategory)) and
@@ -11,7 +11,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         );
     }
 
-    public static function isWarningDefinition($warningDefinition)
+    public function isWarningDefinition($warningDefinition)
     {
         return (
             !(empty($warningDefinition)) and
@@ -21,15 +21,15 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         );
     }
 
-    public static function isWarningItemsArray($warningItems)
+    public function isWarningItemsArray($warningItems)
     {
         if (is_array($warningItems)) {
             if (count($warningItems) == 0) {
                 return true;
             } else {
                 return (
-                    self::isWarningCategory(reset($warningItems)) or
-                    self::isWarningDefinition(reset($warningItems))
+                    $this->isWarningCategory(reset($warningItems)) or
+                    $this->isWarningDefinition(reset($warningItems))
                 );
             }
         } else {
@@ -226,40 +226,6 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $warningItems;
     }
 
-    public function getWarningItemTree(array $warningItems = null)
-    {
-        if (!self::isWarningItemsArray($warningItems)) {
-            $warningItems = $this->getWarningItems();
-        }
-
-        $tree = array();
-
-        foreach ($warningItems as $warningItem) {
-            $node = array();
-
-            if (self::isWarningCategory($warningItem)) {
-                $node['id'] = 'c'.$warningItem['warning_category_id'];
-                $node['type'] = 'category';
-
-                if ($warningItem['parent_warning_category_id'] !== 0) {
-                    $node['parent'] = 'c'.$warningItem['parent_warning_category_id'];
-                } else {
-                    $node['parent'] = '#';
-                }
-            } elseif (self::isWarningDefinition($warningItem)) {
-                $node['id'] = 'd'.$warningItem['warning_definition_id'];
-                $node['type'] = 'definition';
-                $node['parent'] = 'c'.$warningItem['sv_warning_category_id'];
-            }
-
-            $node['text'] = $warningItem['title'];
-
-            $tree[] = $node;
-        }
-
-        return $tree;
-    }
-
     public function calculateWarningItemsDepth(
         array &$warningItems,
         $parentId = 0,
@@ -268,9 +234,9 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $calculatedItems = array();
 
         foreach ($warningItems as &$warningItem) {
-            if (self::isWarningCategory($warningItem)) {
+            if ($this->isWarningCategory($warningItem)) {
                 $itemParentId = $warningItem['parent_warning_category_id'];
-            } elseif (self::isWarningDefinition($warningItem)) {
+            } elseif ($this->isWarningDefinition($warningItem)) {
                 $itemParentId = $warningItem['sv_warning_category_id'];
             }
 
@@ -278,7 +244,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                 $warningItem['depth'] = $depth;
                 $calculatedItems[] = $warningItem;
 
-                if (self::isWarningCategory($warningItem)) {
+                if ($this->isWarningCategory($warningItem)) {
                     $calculatedItems = array_merge(
                         $calculatedItems,
                         $this->calculateWarningItemsDepth(
@@ -296,31 +262,78 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $calculatedItems;
     }
 
-    public function flattenWarningItemTree(array $tree, $parent = 0)
+    public function getWarningItemTree(array $warningItems = null)
     {
-        $warningItems = array();
-        $displayOrder = 0;
+        if (!$this->isWarningItemsArray($warningItems)) {
+            $warningItems = $this->getWarningItems();
+        }
 
-        foreach ($tree as $branch) {
-            $branch['id'] = (int)substr($branch['id'], 1);
+        $tree = array();
 
-            $item = array(
-                'type'          => $branch['type'],
-                'id'            => $branch['id'],
-                'parent'        => $parent,
-                'display_order' => $displayOrder
-            );
+        foreach ($warningItems as $warningItem) {
+            $node = array();
 
-            $warningItems[] = $item;
+            if ($this->isWarningCategory($warningItem)) {
+                $node['id'] = 'c'.$warningItem['warning_category_id'];
+                $node['type'] = 'category';
 
-            if (isset($branch['children'])) {
-                $warningItems = array_merge(
-                    $warningItems,
-                    $this->flattenWarningItemTree($branch['children'], $branch['id'])
-                );
+                if ($warningItem['parent_warning_category_id'] !== 0) {
+                    $node['parent'] = 'c'.$warningItem['parent_warning_category_id'];
+                } else {
+                    $node['parent'] = '#';
+                }
+            } elseif ($this->isWarningDefinition($warningItem)) {
+                $node['id'] = 'd'.$warningItem['warning_definition_id'];
+                $node['type'] = 'definition';
+                $node['parent'] = 'c'.$warningItem['sv_warning_category_id'];
             }
 
-            $displayOrder++;
+            $node['text'] = $warningItem['title'];
+
+            $tree[] = $node;
+        }
+
+        return $tree;
+    }
+
+    public function processWarningItemTree(array &$tree, $parentId = 0)
+    {
+        $warningItems = array();
+
+        $displayOrder = 0;
+        foreach ($tree as &$branch) {
+            if (!is_int($branch['id'])) {
+                $branch['id'] = (int)substr($branch['id'], 1);
+            }
+
+            if (!is_int($branch['parent'])) {
+                if ($branch['parent'] != '#') {
+                    $branch['parent'] = (int)substr($branch['parent'], 1);
+                } else {
+                    $branch['parent'] = 0;
+                }
+            }
+
+            if ($branch['parent'] === $parentId) {
+                $item = array(
+                    'type'          => $branch['type'],
+                    'id'            => $branch['id'],
+                    'parent'        => $branch['parent'],
+                    'display_order' => $displayOrder
+                );
+                $warningItems[] = $item;
+
+                if ($branch['type'] == 'category') {
+                    $warningItems = array_merge(
+                        $warningItems,
+                        $this->processWarningItemTree($tree, $branch['id'])
+                    );
+                }
+
+                unset($branch);
+
+                $displayOrder++;
+            }
         }
 
         return $warningItems;

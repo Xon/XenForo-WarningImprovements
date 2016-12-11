@@ -89,13 +89,13 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
         $children = $warningModel->getWarningItemsByParentId($warningCategoryId);
 
         foreach ($children as $child) {
-            if ($warningModel::isWarningCategory($child)) {
+            if ($warningModel->isWarningCategory($child)) {
                 $datawriter = XenForo_DataWriter::create(
                     'SV_WarningImprovements_DataWriter_WarningCategory'
                 );
                 $datawriter->setExistingData($child['warning_category_id']);
                 $datawriter->delete();
-            } elseif ($warningModel::isWarningDefinition($child)) {
+            } elseif ($warningModel->isWarningDefinition($child)) {
                 $datawriter = XenForo_DataWriter::create(
                     'XenForo_DataWriter_WarningDefinition'
                 );
