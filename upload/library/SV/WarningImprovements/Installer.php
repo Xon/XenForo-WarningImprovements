@@ -58,7 +58,9 @@ class SV_WarningImprovements_Installer
                     (0,1, 'months',1,'',1);
             ");
             $db->query("SET SESSION sql_mode='STRICT_ALL_TABLES'");
+        }
 
+        if ($version < 1040000) {
             // create default warning category
             $categoryDw = XenForo_DataWriter::create(
                 'SV_WarningImprovements_DataWriter_WarningCategory'
