@@ -35,7 +35,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         $warningItems = $this->_getWarningModel()->processWarningItemTree($tree);
 
         foreach ($warningItems as $warningItem) {
-            if ($warningItem['type'] === 'category') {
+            if ($warningItem['type'] == 'category') {
                 $dw = XenForo_DataWriter::create(
                     'SV_WarningImprovements_DataWriter_WarningCategory'
                 );
@@ -45,7 +45,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                     'display_order'              => $warningItem['display_order']
                 ));
                 $dw->save();
-            } elseif ($warningItem['type'] === 'definition') {
+            } elseif ($warningItem['type'] == 'definition') {
                 $dw = XenForo_DataWriter::create(
                     'XenForo_DataWriter_WarningDefinition'
                 );
@@ -165,7 +165,9 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
             return $this->responseRedirect(
                 XenForo_ControllerResponse_Redirect::SUCCESS,
-                XenForo_Link::buildAdminLink('warnings') . '#_warning-' . $dw->get('warning_definition_id')
+                XenForo_Link::buildAdminLink('warnings') . $this->getLastHash(
+                    'warning-'.$dw->get('warning_definition_id')
+                )
             );
         }
 
