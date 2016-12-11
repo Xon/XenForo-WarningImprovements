@@ -90,17 +90,17 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
 
         foreach ($children as $child) {
             if ($warningModel->isWarningCategory($child)) {
-                $datawriter = XenForo_DataWriter::create(
+                $dw = XenForo_DataWriter::create(
                     'SV_WarningImprovements_DataWriter_WarningCategory'
                 );
-                $datawriter->setExistingData($child['warning_category_id']);
-                $datawriter->delete();
+                $dw->setExistingData($child['warning_category_id']);
+                $dw->delete();
             } elseif ($warningModel->isWarningDefinition($child)) {
-                $datawriter = XenForo_DataWriter::create(
+                $dw = XenForo_DataWriter::create(
                     'XenForo_DataWriter_WarningDefinition'
                 );
-                $datawriter->setExistingData($child['warning_definition_id']);
-                $datawriter->delete();
+                $dw->setExistingData($child['warning_definition_id']);
+                $dw->delete();
             }
         }
     }
