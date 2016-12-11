@@ -72,6 +72,51 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         );
     }
 
+    public function actionRenameTreeItem()
+    {
+        $this->_assertPostOnly();
+
+        $node = $this->_input->filterSingle('node', XenForo_Input::JSON_ARRAY);
+
+        $warningItem = $this->_getWarningModel()
+            ->processWarningItemTreeItem($node);
+
+        if ($warningItem['type'] == 'category') {
+            $dw = XenForo_DataWriter::create(
+                'SV_WarningImprovements_DataWriter_WarningCategory'
+            );
+            $dw->setExistingData($warningItem['id']);
+            $dw->setExtraData(
+                SV_WarningImprovements_DataWriter_WarningCategory::DATA_TITLE,
+                $warningItem['title']
+            );
+            $dw->save();
+
+            $hash = $this->getLastHash(
+                'category-'.$dw->get('warning_category_id')
+            );
+        } elseif ($warningItem['type'] == 'definition') {
+            $dw = XenForo_DataWriter::create(
+                'XenForo_DataWriter_WarningDefinition'
+            );
+            $dw->setExistingData($warningItem['id']);
+            $dw->setExtraData(
+                XenForo_DataWriter_WarningDefinition::DATA_TITLE,
+                $warningItem['title']
+            );
+            $dw->save();
+
+            $hash = $this->getLastHash(
+                'warning-'.$dw->get('warning_definition_id')
+            );
+        }
+
+        return $this->responseRedirect(
+            XenForo_ControllerResponse_Redirect::RESOURCE_UPDATED,
+            XenForo_Link::buildAdminLink('warnings').$hash
+        );
+    }
+
     var $_set_custom_warning = false;
 
     public function actionEdit()

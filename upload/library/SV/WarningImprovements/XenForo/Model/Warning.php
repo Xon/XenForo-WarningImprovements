@@ -296,6 +296,15 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $tree;
     }
 
+    public function processWarningItemTreeItem(array $node)
+    {
+        return array(
+            'type' => $node['type'],
+            'id'   => (int)substr($node['id'], 1),
+            'title' => $node['text']
+        );
+    }
+
     public function processWarningItemTree(array &$tree, $parentId = 0)
     {
         $warningItems = array();
