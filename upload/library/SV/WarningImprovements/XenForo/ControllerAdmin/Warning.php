@@ -36,30 +36,31 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
         foreach ($warningItems as $warningItem) {
             if ($warningItem['type'] === 'category') {
-                $datawriter = XenForo_DataWriter::create(
+                $dw = XenForo_DataWriter::create(
                     'SV_WarningImprovements_DataWriter_WarningCategory'
                 );
-                $datawriter->setExistingData($warningItem['id']);
-                $datawriter->bulkSet(array(
+                $dw->setExistingData($warningItem['id']);
+                $dw->bulkSet(array(
                     'parent_warning_category_id' => $warningItem['parent'],
                     'display_order'              => $warningItem['display_order']
                 ));
-                $datawriter->save();
+                $dw->save();
             } elseif ($warningItem['type'] === 'definition') {
                 // TODO: fix setting for default warning
+                $dw = XenForo_DataWriter::create(
+                    'XenForo_DataWriter_WarningDefinition'
+                );
+
                 if ($warningItem['id'] === 0) {
                     continue;
                 }
 
-                $datawriter = XenForo_DataWriter::create(
-                    'XenForo_DataWriter_WarningDefinition'
-                );
-                $datawriter->setExistingData($warningItem['id']);
-                $datawriter->bulkSet(array(
+                $dw->setExistingData($warningItem['id']);
+                $dw->bulkSet(array(
                     'sv_warning_category_id' => $warningItem['parent'],
                     'sv_display_order'       => $warningItem['display_order']
                 ));
-                $datawriter->save();
+                $dw->save();
             }
         }
 
