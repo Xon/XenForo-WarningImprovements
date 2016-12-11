@@ -383,11 +383,10 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         );
         $dw->save();
 
-        // TODO: hook hash into jstree
         return $this->responseRedirect(
             XenForo_ControllerResponse_Redirect::SUCCESS,
             XenForo_Link::buildAdminLink('warnings') . $this->getLastHash(
-                'c' . $dw->get('warning_category_id')
+                'category-'.$dw->get('warning_category_id')
             )
         );
     }
