@@ -348,6 +348,30 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $warningItems;
     }
 
+    public function groupWarningsByCategory(array $warningItems)
+    {
+        $warningCategories = array();
+
+        foreach ($warningItems as $warningItemId => $warningItem) {
+            if ($this->isWarningCategory($warningItem)) {
+                $categoryId = $warningItem['warning_category_id'];
+                $warningCategories[$categoryId] = $warningItem;
+            } elseif ($this->isWarningDefinition($warningItem)) {
+                $definitionId = $warningItem['warning_definition_id'];
+                $categoryId = $warningItem['sv_warning_category_id'];
+                $warningCategories[$categoryId]['warnings'][$definitionId] = $warningItem;
+            }
+        }
+
+        foreach ($warningCategories as $warningCategoryId => $warningCategory) {
+            if (empty($warningCategory['warnings'])) {
+                unset($warningCategories[$warningCategoryId]);
+            }
+        }
+
+        return $warningCategories;
+    }
+
     public function getWarningByIds($warningIds)
     {
         if (empty($warningIds))
