@@ -233,7 +233,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     ) {
         $calculatedItems = array();
 
-        foreach ($warningItems as &$warningItem) {
+        foreach ($warningItems as $warningItemId => $warningItem) {
             if ($this->isWarningCategory($warningItem)) {
                 $itemParentId = $warningItem['parent_warning_category_id'];
             } elseif ($this->isWarningDefinition($warningItem)) {
@@ -255,7 +255,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                     );
                 }
 
-                unset($warningItem);
+                unset($warningItems[$warningItemId]);
             }
         }
 
@@ -310,7 +310,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $warningItems = array();
 
         $displayOrder = 0;
-        foreach ($tree as &$branch) {
+        foreach ($tree as $branchId => $branch) {
             if (!is_int($branch['id'])) {
                 $branch['id'] = (int)substr($branch['id'], 1);
             }
@@ -339,7 +339,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                     );
                 }
 
-                unset($branch);
+                unset($branch[$branchId]);
 
                 $displayOrder++;
             }
