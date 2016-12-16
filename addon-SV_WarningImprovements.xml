@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.3.2" version_id="1030200" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.0" version_id="1040000" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -106,6 +106,111 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 
 <xen:spinboxunit label="{xen:phrase sv_warning_thread_id}:" explain="{xen:phrase sv_warning_action_post_thread_reply}" name="sv_post_thread_id" value="{$action.sv_post_thread_id}" />
 <xen:spinboxunit label="{xen:phrase sv_warning_post_as_user_id}:" explain="{xen:phrase sv_warning_action_post_as_user}" name="sv_post_as_user_id" value="{$action.sv_post_as_user_id}" />]]></template>
+    <template title="sv_warning_category_delete"><![CDATA[<xen:title>{xen:phrase sv_confirm_deletion_of_warning_category}: {$warningCategory.title}</xen:title>
+<xen:h1>{xen:phrase sv_confirm_deletion_of_warning_category}</xen:h1>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'warnings/category-edit', '', 'warning_category_id={$warningCategory.warning_category_id}'}">{$warningCategory.title}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="public:delete_confirmation.css" />
+
+<xen:form action="{xen:adminlink 'warnings/category-delete', '', 'warning_category_id={$warningCategory.warning_category_id}'}" class="deleteConfirmForm">
+	<p>{xen:phrase sv_please_confirm_that_you_want_to_delete_following_warning_category}:</p>
+	<strong><a href="{xen:adminlink 'warnings/category-edit', '','warning_category_id={$warningCategory.warning_category_id}'}">{$warningCategory.title}</a></strong>
+	<p>{xen:phrase sv_confirm_delete_warning_category_footnote}</p>
+
+	<xen:submitunit save="{xen:phrase sv_delete_warning_category}" />
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
+    <template title="sv_warning_category_edit"><![CDATA[<xen:title>{xen:if '{$warningCategory.warning_category_id}', '{xen:phrase sv_edit_warning_category}: {$warningCategory.title}', '{xen:phrase sv_create_new_warning_category}'}</xen:title>
+
+<xen:if is="{$warningCategory.warning_category_id}">
+	<xen:navigation>
+		<xen:breadcrumb href="{xen:adminlink warnings}#_category-{$warningCategory.warning_category_id}">{$warningCategory.title}</xen:breadcrumb>
+	</xen:navigation>
+</xen:if>
+
+<xen:form class="AutoValidator"
+	action="{xen:adminlink 'warnings/category-save', '', 'warning_category_id={$warningCategory.warning_category_id}'}"
+	data-redirect="on">
+
+	<xen:textboxunit label="{xen:phrase title}:" name="title" value="{$warningCategory.title}" data-optinout="OptOut" data-livetitletemplate="{xen:if {$warningCategory.warning_category_id},
+		'{xen:phrase sv_edit_warning_category}: <em>%s</em>',
+		'{xen:phrase sv_create_new_warning_category}: <em>%s</em>'}" />
+
+	<xen:selectunit label="{xen:phrase sv_parent_category}:" name="parent_warning_category_id" value="{$warningCategory.parent_warning_category_id}">
+		<xen:option value="0" label="({xen:phrase none})" />
+		<xen:options source="$warningCategories" />
+	</xen:selectunit>
+
+	<xen:spinboxunit label="{xen:phrase display_order}:" name="display_order" value="{$warningCategory.display_order}" min="0" step="10" />
+
+	<xen:submitunit save="{xen:phrase sv_save_warning_category}">
+		<xen:if is="{$warningCategory.warning_category_id}"><a href="{xen:adminlink 'warnings/category-delete', '', 'warning_category_id={$warningCategory.warning_category_id}'}" class="button OverlayTrigger">{xen:phrase sv_delete_warning_category}...</a></xen:if>
+	</xen:submitunit>
+</xen:form>]]></template>
+    <template title="sv_warning_edit_inputs"><![CDATA[<fieldset>
+	<xen:selectunit label="{xen:phrase sv_warning_category}:" name="sv_warning_category_id" value="{$warning.sv_warning_category_id}">
+		<xen:options source="$warningCategories" />
+	</xen:selectunit>
+
+	<xen:spinboxunit label="{xen:phrase display_order}:" name="sv_display_order" value="{$warning.sv_display_order}" min="0" step="10" />
+</fieldset>]]></template>
+    <template title="sv_warning_list_jstree"><![CDATA[<link rel="stylesheet" href="styles/jstree/default/style.min.css" />
+<xen:require css="sv_warning_list_jstree.css" />
+
+<xen:require js="js/jsTree/jstree.min.js" />
+<xen:require js="js/sv/warningimprovements/full/warnings.js" />
+
+<div class="section">
+	<h2 class="subHeading">
+		{xen:phrase warnings}
+		<xen:if is="{$warnings}">
+			<div class="warningItemTreeSearch">
+				<input id="warningItemTreeSearch" type="search" name="filter" placeholder="{xen:phrase filter_items}" class="textCtrl">
+			</div>
+		</xen:if>
+	</h2>
+
+	<xen:if is="{$warnings}">
+		<div id="warningitems" class="WarningItemTree"
+			data-searchinput="#warningItemTreeSearch"
+			data-loadurl="{xen:adminlink warnings/load-tree}"
+			data-syncurl="{xen:adminlink warnings/sync-tree}"
+			data-renameurl="{xen:adminlink warnings/rename-tree-item}"
+			data-categoryediturl="{xen:adminlink 'warnings/category-edit&warning_category_id={id}'}"
+			data-warningediturl="{xen:adminlink 'warnings/{id}/edit'}"
+			data-edittext="{xen:phrase edit}"
+			data-renametext="{xen:phrase sv_rename}">
+		</div>
+	<xen:else />
+		<div class="noResults">{xen:phrase no_warnings_have_been_defined}</div>
+	</xen:if>
+</div>
+]]></template>
+    <template title="sv_warning_list_jstree.css"><![CDATA[.subHeading .warningItemTreeSearch
+{
+	float: right;
+	margin-top: -3px;
+	max-height: 22px;
+	overflow: hidden;
+}
+
+.subHeading .warningItemTreeSearch .textCtrl
+{
+	padding-top: 2px;
+	padding-bottom: 2px;
+	font-size: 11px;
+	height: 13px;
+	box-sizing: content-box;
+}
+
+.jstree-contextmenu
+{
+	z-index: 100;
+}]]></template>
   </admin_templates>
   <admin_template_modifications>
     <modification template="warning_edit" modification_key="SV_WarningImprovements_warning_edit1" description="Special case editing the Custom Warning - 1" execution_order="10" enabled="1" action="str_replace">
@@ -134,18 +239,7 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 $1
 </xen:if>]]></replace>
     </modification>
-    <modification template="warning_list" modification_key="SV_WarningImprovements_warning_list" description="Exclude custom warning from list." execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#(<xen\:foreach loop\="\$warnings" value\="\$warning">)(.*?)(\s*)(</xen\:foreach>)#si]]></find>
-      <replace><![CDATA[$1$3<xen:if is="{$warning.warning_definition_id}">
-$2$3<xen:else />
-			<xen:listitem
-					id="warning-{$warning.warning_definition_id}"
-					label="{$warning.title}"
-					href="{xen:adminlink 'warnings/edit'}" />
-$3</xen:if>
-$3$4]]></replace>
-    </modification>
-    <modification template="warning_list" modification_key="SV_WarningImprovements_warning_list2" description="Warning Escalating Defaults" execution_order="4156" enabled="1" action="preg_replace">
+    <modification template="warning_list" modification_key="SV_WarningImprovements_warning_list4" description="Warning Escalating Defaults" execution_order="4156" enabled="1" action="preg_replace">
       <find><![CDATA[#$#Usi]]></find>
       <replace><![CDATA[$0
 <xen:include template="sv_warningimprovements_escalating_defaults" />]]></replace>
@@ -159,11 +253,49 @@ $3$4]]></replace>
       <replace><![CDATA[<xen:include template="sv_warning_action_edit" />
 $0]]></replace>
     </modification>
-    <modification template="warning_list" modification_key="sv_warningimprovements_warning_list3" description="Add &quot;Warning Defaults&quot; button" execution_order="100" enabled="1" action="preg_replace">
+    <modification template="warning_edit" modification_key="sv_warningimprovements_warning_edit4" description="Add category and display order inputs" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<fieldset>
+		<xen:spinboxunit label="{xen:phrase warning_points}:" name="points_default" value="{$warning.points_default}" min="0" />]]></find>
+      <replace><![CDATA[<xen:include template="sv_warning_edit_inputs" />
+$0]]></replace>
+    </modification>
+    <modification template="warning_list" modification_key="sv_warningimprovements_warning_list1" description="Add &quot;Create Warning Category&quot; button" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<a href="{xen:adminlink warnings/add}" class="button">+ {xen:phrase create_new_warning}</a>]]></find>
+      <replace><![CDATA[<a href="{xen:adminlink warnings/category-add}" class="button">+ {xen:phrase sv_create_new_warning_category}</a>
+$0]]></replace>
+    </modification>
+    <modification template="warning_list" modification_key="sv_warningimprovements_warning_list2" description="Add &quot;Warning Defaults&quot; button" execution_order="100" enabled="1" action="preg_replace">
       <find><![CDATA[#(<xen:topctrl>.*?)(</xen:topctrl>)#Usi]]></find>
       <replace><![CDATA[$1
 <a href="{xen:adminlink warnings/default/add}" class="button">+ {xen:phrase sv_create_new_warning_default}</a>
 $2]]></replace>
+    </modification>
+    <modification template="warning_list" modification_key="sv_warningimprovements_warning_list3" description="Display warning items in jsTree instance" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<xen:form action="{xen:adminlink warnings}" class="section">
+	<xen:if is="{$warnings}">
+
+		<h2 class="subHeading">
+			<xen:include template="filter_list_controls" />
+			{xen:phrase warnings}
+		</h2>
+
+		<ol class="FilterList Scrollable">
+			<xen:foreach loop="$warnings" value="$warning">
+				<xen:listitem
+					id="warning-{$warning.warning_definition_id}"
+					label="{$warning.title}"
+					href="{xen:adminlink warnings/edit, $warning}"
+					delete="{xen:adminlink warnings/delete, $warning}" />
+			</xen:foreach>
+		</ol>
+
+		<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $warnings}</span>', 'total={xen:count $warnings}'}</p>
+
+	<xen:else />
+		<div class="noResults">{xen:phrase no_warnings_have_been_defined}</div>
+	</xen:if>
+</xen:form>]]></find>
+      <replace><![CDATA[<xen:include template="sv_warning_list_jstree" />]]></replace>
     </modification>
   </admin_template_modifications>
   <code_events/>
@@ -183,6 +315,7 @@ $2]]></replace>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ControllerAdmin_Warning" description="XenForo_ControllerAdmin_Warning"/>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_Warning" description="XenForo_DataWriter_Warning"/>
     <listener event_id="load_class" execute_order="4156" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_DataWriter_WarningAction" description="XenForo_DataWriter_WarningAction"/>
+    <listener event_id="load_class_view" execute_order="10" callback_class="SV_WarningImprovements_Listener" callback_method="load_class" active="1" hint="XenForo_ViewAdmin_Warning_LoadTree" description="XenForo_ViewAdmin_Warning_LoadTree"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -345,19 +478,35 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="permission_general_viewWarning_issuer" version_id="100" version_string="1.0.0"><![CDATA[View warning issuer]]></phrase>
     <phrase title="send_alert_on_warning" version_id="100000" version_string="1.0.0"><![CDATA[Send alert on warning]]></phrase>
     <phrase title="svwi_the_user_x_could_not_be_found" version_id="1030200" version_string="1.3.2"><![CDATA[The user {name} could not be found.]]></phrase>
+    <phrase title="sv_choose_a_warning" version_id="1040000" version_string="1.4.0"><![CDATA[Choose a warning...]]></phrase>
+    <phrase title="sv_confirm_delete_warning_category_footnote" version_id="1040000" version_string="1.4.0"><![CDATA[Any children of this category will also be deleted.]]></phrase>
+    <phrase title="sv_confirm_deletion_of_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Confirm Deletion of Warning Category]]></phrase>
     <phrase title="sv_confirm_deletion_of_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Confirm Deletion of Warning Default.]]></phrase>
+    <phrase title="sv_create_new_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Create New Warning Category]]></phrase>
     <phrase title="sv_create_new_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Create New Warning Defaults]]></phrase>
+    <phrase title="sv_delete_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Delete Warning Category]]></phrase>
     <phrase title="sv_delete_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Delete Warning Default]]></phrase>
     <phrase title="sv_discouraged_display_administrators" version_id="101000" version_string="1.1.0"><![CDATA[Administrators]]></phrase>
     <phrase title="sv_discouraged_display_all" version_id="101000" version_string="1.1.0"><![CDATA[User, moderators, administrator]]></phrase>
     <phrase title="sv_discouraged_display_moderators" version_id="101000" version_string="1.1.0"><![CDATA[Moderators or administrators]]></phrase>
     <phrase title="sv_discouraged_display_none" version_id="101000" version_string="1.1.0"><![CDATA[Never]]></phrase>
+    <phrase title="sv_edit_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Edit Warning Category]]></phrase>
     <phrase title="sv_edit_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Edit Warning Default]]></phrase>
     <phrase title="sv_increase_default_expiry_by_x" version_id="102001" version_string="1.2.0"><![CDATA[ increase default expiry by {length}]]></phrase>
+    <phrase title="sv_no_results_match" version_id="1040000" version_string="1.4.0"><![CDATA[No results match]]></phrase>
+    <phrase title="sv_parent_category" version_id="1040000" version_string="1.4.0"><![CDATA[Parent Category]]></phrase>
+    <phrase title="sv_please_confirm_that_you_want_to_delete_following_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Please confirm that you want to delete the following warning category]]></phrase>
+    <phrase title="sv_please_enter_valid_parent_warning_category_id" version_id="1040000" version_string="1.4.0"><![CDATA[Please enter a valid parent warning category ID.]]></phrase>
+    <phrase title="sv_please_enter_valid_warning_category_id" version_id="1040000" version_string="1.4.0"><![CDATA[Please enter a valid warning category ID.]]></phrase>
+    <phrase title="sv_rename" version_id="1040000" version_string="1.4.0"><![CDATA[Rename]]></phrase>
     <phrase title="sv_requested_warning_action_not_found" version_id="101000" version_string="1.1.0"><![CDATA[The requested warning action could not be found.]]></phrase>
+    <phrase title="sv_requested_warning_category_not_found" version_id="1040000" version_string="1.4.0"><![CDATA[The requested warning category could not be found.]]></phrase>
     <phrase title="sv_requested_warning_default_not_found" version_id="102001" version_string="1.2.0"><![CDATA[The requested warning defaults could not be found.]]></phrase>
+    <phrase title="sv_save_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Save Warning Category]]></phrase>
     <phrase title="sv_save_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Save Warning Default]]></phrase>
     <phrase title="sv_this_user_has_no_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[This user has no warning actions]]></phrase>
+    <phrase title="sv_toggle_radio_view" version_id="1040000" version_string="1.4.0"><![CDATA[Use radio view]]></phrase>
+    <phrase title="sv_toggle_select_view" version_id="1040000" version_string="1.4.0"><![CDATA[Use select view]]></phrase>
     <phrase title="sv_update_warning_action" version_id="101000" version_string="1.1.0"><![CDATA[Update Warning Action]]></phrase>
     <phrase title="sv_user_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[Warning Actions ({count})]]></phrase>
     <phrase title="sv_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[Warning Actions]]></phrase>
@@ -371,6 +520,8 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
     <phrase title="sv_warning_action_post_thread_reply" version_id="1020200" version_string="1.2.2"><![CDATA[Post message to an existing thread when this warning action is triggered. Zero to disable.]]></phrase>
     <phrase title="sv_warning_action_result" version_id="101000" version_string="1.1.0"><![CDATA[Result]]></phrase>
     <phrase title="sv_warning_action_type" version_id="101000" version_string="1.1.0"><![CDATA[Action Type]]></phrase>
+    <phrase title="sv_warning_categories" version_id="1040000" version_string="1.4.0"><![CDATA[Warning Categories]]></phrase>
+    <phrase title="sv_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Warning Category]]></phrase>
     <phrase title="sv_warning_default_applied_crossing_threshold" version_id="102001" version_string="1.2.0"><![CDATA[This warning default will only be applied when a user is issued a warning with thier total warning points above this points threshold. ]]></phrase>
     <phrase title="sv_warning_default_is_active" version_id="102001" version_string="1.2.0"><![CDATA[Is active]]></phrase>
     <phrase title="sv_warning_expiry_extension" version_id="102001" version_string="1.2.0"><![CDATA[Expiry Extension]]></phrase>
@@ -443,6 +594,90 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 </xen:foreach>
 </table>
 </div>]]></template>
+    <template title="sv_member_warn_chooser" version_id="1040000" version_string="1.4.0"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
+<xen:require css="sv_member_warn_chooser.css" />
+
+<xen:require js="js/chosen/chosen.jquery.min.js" />
+<xen:require js="js/sv/warningimprovements/full/warnings.js" />
+
+<div id="warningViewSelect">
+    <select class="warningItems WarningSelector" name="warning_definition_id"
+        data-customwarningtitle="#customWarningTitle"
+        data-noresultstext="{xen:phrase sv_no_results_match}">
+        data-placeholdertext="{xen:phrase sv_choose_a_warning}"
+        <option></option>
+        <xen:foreach loop="$warningItemsGrouped" value="$warningCategory">
+            <optgroup class="warningCategory" label="{$warningCategory.title}">
+                <xen:foreach loop="$warningCategory.warnings" value="$warning">
+                    <option class="warningDefinition FormFiller" value="{$warning.warning_definition_id}">{$warning.title}</option>
+                </xen:foreach>
+            </optgroup>
+        </xen:foreach>
+    </select>
+    <input id="customWarningTitle" class="textCtrl" style="display:none" type="text" name="title" placeholder="{xen:phrase custom_warning}..." maxlength="255" />
+</div>
+
+<div id="warningViewRadio">
+    <ul class="warningItems">
+        <xen:foreach loop="$warningItems" value="$warningItem">
+            <xen:if is="{$warningItem.warning_category_id}">
+                <li class="warningCategory _depth{$warningItem.depth}">{$warningItem.title}</li>
+            <xen:else />
+                <xen:if is="{$warningItem.warning_definition_id} != 0">
+                    <li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" class="FormFiller" value="{$warningItem.warning_definition_id}" /> {$warningItem.title}</label></li>
+                <xen:else />
+                    <li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" class="FormFiller Disabler" value="0" id="customWarning" checked="checked" /> {xen:phrase custom_warning}:</label>
+                        <ul id="customWarning_Disabler">
+                            <li><input type="text" name="title" class="textCtrl" placeholder="{xen:phrase custom_warning}..." maxlength="255" /></li>
+                        </ul>
+                    </li>
+                </xen:if>
+            </xen:if>
+        </xen:foreach>
+    </ul>
+</div>
+
+<a id="warningViewToggle" class="WarningViewToggler" href="#"
+    data-selectview="#warningViewSelect"
+    data-radioview="#warningViewRadio"
+    data-toggleselecttext="{xen:phrase sv_toggle_select_view}"
+    data-toggleradiotext="{xen:phrase sv_toggle_radio_view}"></a>]]></template>
+    <template title="sv_member_warn_chooser.css" version_id="1040000" version_string="1.4.0"><![CDATA[#warningViewSelect select
+{
+	width: 100%;
+}
+
+#warningViewSelect #customWarningTitle
+{
+	margin: 6px 0;
+}
+
+#warningViewRadio li
+{
+	margin: 6px 0;
+}
+
+.ctrlUnit li._depth0 { padding-left: 0em; }
+.ctrlUnit li._depth1 { padding-left: 2em; }
+.ctrlUnit li._depth2 { padding-left: 4em; }
+.ctrlUnit li._depth3 { padding-left: 6em; }
+.ctrlUnit li._depth4 { padding-left: 8em; }
+.ctrlUnit li._depth5 { padding-left: 10em; }
+.ctrlUnit li._depth6 { padding-left: 12em; }
+.ctrlUnit li._depth7 { padding-left: 14em; }
+.ctrlUnit li._depth8 { padding-left: 16em; }
+.ctrlUnit li._depth9 { padding-left: 18em; }
+
+#warningViewRadio .warningCategory
+{
+	font-weight: bold;
+}
+
+#warningViewToggle
+{
+	font-size: 11px;
+	margin-left: 4px;
+}]]></template>
     <template title="sv_warningimprovements_member_view_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[<xen:if is="{$warningActionsCount}">
 	<li id="warningActions" class="profileContent" data-loadUrl="{xen:link members/warning-actions, $user}">
 		{xen:phrase loading}...
@@ -583,16 +818,22 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 </script>]]></template>
   </templates>
   <public_template_modifications>
-    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn1" description="Insert extra javascript" execution_order="1" enabled="1" action="str_replace">
-      <find><![CDATA[</script>]]></find>
-      <replace><![CDATA[$0
-<xen:include template="sv_warning_improvement_js"/>]]></replace>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn1" description="Display warning items by category with Chosen support" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<ul>
+						<xen:foreach loop="$warnings" value="$warning">
+							<li><label><input type="radio" name="warning_definition_id" class="FormFiller" value="{$warning.warning_definition_id}" /> {$warning.title}</label></li>
+						</xen:foreach>
+						<li><label><input type="radio" name="warning_definition_id" class="FormFiller Disabler" value="0" id="customWarning" checked="checked" /> {xen:phrase custom_warning}:</label>
+							<ul id="customWarning_Disabler">
+								<li><input type="text" name="title" class="textCtrl" placeholder="{xen:phrase custom_warning}..." maxlength="255" /></li>
+							</ul>
+						</li>
+					</ul>]]></find>
+      <replace><![CDATA[<xen:include template="sv_member_warn_chooser" />]]></replace>
     </modification>
-    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn2" description="Exclude custom warning from list." execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#(<xen\:foreach loop\="\$warnings" value\="\$warning">)(.*?)(\s*)(</xen\:foreach>)#si]]></find>
-      <replace><![CDATA[$1$3<xen:if is="{$warning.warning_definition_id}">
-$2$3</xen:if>
-$3$4]]></replace>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn2" description="Conversation Inviting" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[<input type="checkbox" name="open_invite" value="1"]]></find>
+      <replace><![CDATA[$0 {xen:if '{$xenOptions.sv_warningimprovements_conversation_invite}', 'checked="checked"'}]]></replace>
     </modification>
     <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn3" description="Conversation locking" execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<input type="checkbox" name="conversation_locked" value="1"]]></find>
@@ -604,9 +845,10 @@ $3$4]]></replace>
 <dt></dt>
 <dd><label><input type="checkbox" name="send_warning_alert" value="1" {xen:checked "{$xenOptions.sv_warningimprovements_alert_send_default}"} /> {xen:phrase send_alert_on_warning}</label></dd>]]></replace>
     </modification>
-    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn5" description="Conversation Inviting" execution_order="10" enabled="1" action="str_replace">
-      <find><![CDATA[<input type="checkbox" name="open_invite" value="1"]]></find>
-      <replace><![CDATA[$0 {xen:if '{$xenOptions.sv_warningimprovements_conversation_invite}', 'checked="checked"'}]]></replace>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn5" description="Insert extra javascript" execution_order="1" enabled="1" action="str_replace">
+      <find><![CDATA[</script>]]></find>
+      <replace><![CDATA[$0
+<xen:include template="sv_warning_improvement_js"/>]]></replace>
     </modification>
     <modification template="member_view" modification_key="sv_warningimprovements_member_view1" description="Warning Actions (header)" execution_order="100" enabled="1" action="str_replace">
       <find><![CDATA[<xen:hook name="member_view_tabs_heading"]]></find>
