@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.0" version_id="1040000" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.1" version_id="1040100" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -146,6 +146,11 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 	</xen:selectunit>
 
 	<xen:spinboxunit label="{xen:phrase display_order}:" name="display_order" value="{$warningCategory.display_order}" min="0" step="10" />
+
+	<xen:checkboxunit id="allowedUserGroups" label="{xen:phrase sv_allowed_user_groups}:" name="allowed_user_group_ids[]" listclass="checkboxColumns">
+		<xen:hint><br /><label><input type="checkbox" class="CheckAll" data-target="#allowedUserGroups" /> {xen:phrase select_all}</label></xen:hint>
+		<xen:options source="$userGroups" />
+	</xen:checkboxunit>
 
 	<xen:submitunit save="{xen:phrase sv_save_warning_category}">
 		<xen:if is="{$warningCategory.warning_category_id}"><a href="{xen:adminlink 'warnings/category-delete', '', 'warning_category_id={$warningCategory.warning_category_id}'}" class="button OverlayTrigger">{xen:phrase sv_delete_warning_category}...</a></xen:if>
@@ -455,6 +460,7 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="permission_general_viewWarning_issuer" version_id="100" version_string="1.0.0"><![CDATA[View warning issuer]]></phrase>
     <phrase title="send_alert_on_warning" version_id="100000" version_string="1.0.0"><![CDATA[Send alert on warning]]></phrase>
     <phrase title="svwi_the_user_x_could_not_be_found" version_id="1030200" version_string="1.3.2"><![CDATA[The user {name} could not be found.]]></phrase>
+    <phrase title="sv_allowed_user_groups" version_id="1040100" version_string="1.4.1"><![CDATA[Allowed User Groups]]></phrase>
     <phrase title="sv_choose_a_warning" version_id="1040000" version_string="1.4.0"><![CDATA[Choose a warning...]]></phrase>
     <phrase title="sv_confirm_delete_warning_category_footnote" version_id="1040000" version_string="1.4.0"><![CDATA[Any children of this category will also be deleted.]]></phrase>
     <phrase title="sv_confirm_deletion_of_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Confirm Deletion of Warning Category]]></phrase>
@@ -470,6 +476,7 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="sv_edit_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Edit Warning Category]]></phrase>
     <phrase title="sv_edit_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Edit Warning Default]]></phrase>
     <phrase title="sv_increase_default_expiry_by_x" version_id="102001" version_string="1.2.0"><![CDATA[ increase default expiry by {length}]]></phrase>
+    <phrase title="sv_no_permission_to_give_warning" version_id="1040100" version_string="1.4.1"><![CDATA[You don't have permission to give this warning.]]></phrase>
     <phrase title="sv_no_results_match" version_id="1040000" version_string="1.4.0"><![CDATA[No results match]]></phrase>
     <phrase title="sv_parent_category" version_id="1040000" version_string="1.4.0"><![CDATA[Parent Category]]></phrase>
     <phrase title="sv_please_confirm_that_you_want_to_delete_following_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Please confirm that you want to delete the following warning category]]></phrase>

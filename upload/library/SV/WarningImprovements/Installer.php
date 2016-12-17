@@ -84,6 +84,14 @@ class SV_WarningImprovements_Installer
             ));
         }
 
+        if ($version < 1040100) {
+            SV_Utils_Install::addColumn(
+                'xf_sv_warning_category',
+                'allowed_user_group_ids',
+                "VARBINARY(255) NOT NULL DEFAULT '2'"
+            );
+        }
+
         $db->query("
             INSERT IGNORE INTO xf_content_type
                 (content_type, addon_id, fields)

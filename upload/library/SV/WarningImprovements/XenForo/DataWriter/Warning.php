@@ -21,12 +21,25 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
 
     protected function _preSave()
     {
-        $warning_definition_id = $this->get('warning_definition_id');
-        if ($this->isInsert() && $warning_definition_id == 0)
+        if ($this->isInsert())
         {
+            $warningDefinitionId = $this->get('warning_definition_id');
             $warningModel = $this->_getWarningModel();
-            $warning = $warningModel->getWarningDefinitionById($warning_definition_id);
-            if (!empty($warning))
+
+            $warning = $warningModel->getWarningDefinitionById(
+                $warningDefinitionId
+            );
+            $warningCategory = $warningModel->getWarningCategoryById(
+                $warning['sv_warning_category_id']
+            );
+
+            if (!$warningModel->canViewWarningCategory($warningCategory))
+            {
+                $this->error(XenForo_Phrase('sv_no_permission_to_give_warning'));
+                return false;
+            }
+
+            if ($warningDefinitionId == 0 && !empty($warning))
             {
                 $dwInput = array();
                 $warning = $warningModel->prepareWarningDefinition($warning);
@@ -43,8 +56,9 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
                     );
                 }
                 $this->bulkSet($dwInput);
-			}
+            }
         }
+
         parent::_preSave();
     }
 

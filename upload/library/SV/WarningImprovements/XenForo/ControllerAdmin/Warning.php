@@ -353,14 +353,24 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         return parent::actionActionSave();
     }
 
-    public function actionCategoryAdd()
+    protected function _getCategoryAddEditResponse(array $warningCategory)
     {
         $warningCategories = $this->_getWarningModel()
             ->getWarningCategoryOptions(true);
 
+        if (isset($warningCategory['warning_category_id']) &&
+            isset($warningCategories[$warningCategory['warning_category_id']])
+        ) {
+            unset($warningCategories[$warningCategory['warning_category_id']]);
+        }
+
+        $userGroups = $this->getModelFromCache('XenForo_Model_UserGroup')
+            ->getUserGroupOptions($warningCategory['allowed_user_group_ids']);
+
         $viewParams = array(
-            'warningCategory'   => array('display_order' => 0),
-            'warningCategories' => $warningCategories
+            'warningCategory'   => $warningCategory,
+            'warningCategories' => $warningCategories,
+            'userGroups'        => $userGroups
         );
 
         return $this->responseView(
@@ -368,6 +378,14 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
             'sv_warning_category_edit',
             $viewParams
         );
+    }
+
+    public function actionCategoryAdd()
+    {
+        return $this->_getCategoryAddEditResponse(array(
+            'display_order'          => 0,
+            'allowed_user_group_ids' => '2'
+        ));
     }
 
     public function actionCategoryEdit()
@@ -378,23 +396,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         );
         $warningCategory = $this->_getWarningCategoryOrError($warningCategoryId);
 
-        $warningCategories = $this->_getWarningModel()
-            ->getWarningCategoryOptions(true);
-
-        if (isset($warningCategories[$warningCategoryId])) {
-            unset($warningCategories[$warningCategoryId]);
-        }
-
-        $viewParams = array(
-            'warningCategory'   => $warningCategory,
-            'warningCategories' => $warningCategories
-        );
-
-        return $this->responseView(
-            'XenForo_ViewAdmin_Warning_CategoryEdit',
-            'sv_warning_category_edit',
-            $viewParams
-        );
+        return $this->_getCategoryAddEditResponse($warningCategory);
     }
 
     public function actionCategorySave()
@@ -409,7 +411,11 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         $dwInput = $this->_input->filter(array(
             'warning_category_id'        => XenForo_Input::STRING,
             'parent_warning_category_id' => XenForo_Input::UINT,
-            'display_order'              => XenForo_Input::UINT
+            'display_order'              => XenForo_Input::UINT,
+            'allowed_user_group_ids'     => array(
+                XenForo_Input::UINT,
+                'array' => true
+            )
         ));
 
         $titlePhrase = $this->_input->filterSingle(

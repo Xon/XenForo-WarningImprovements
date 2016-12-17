@@ -23,6 +23,14 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
                 'display_order' => array(
                     'type'    => self::TYPE_UINT,
                     'default' => 0
+                ),
+                'allowed_user_group_ids' => array(
+                    'type'         => self::TYPE_UNKNOWN,
+                    'default'      => '2',
+                    'verification' => array(
+                        'XenForo_DataWriter_Helper_User',
+                        'verifyExtraUserGroupIds'
+                    )
                 )
             )
         );

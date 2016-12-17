@@ -72,10 +72,12 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
 
         $warningModel = $this->getModelFromCache('XenForo_Model_Warning');
         $warningItems = $warningModel->getWarningItems();
-        $warningItemsGrouped = $warningModel->groupWarningsByCategory($warningItems);
+        $warningCategories = $warningModel->groupWarningItemsByWarningCategory(
+            $warningItems
+        );
 
         $viewParams['warningItems'] = $warningItems;
-        $viewParams['warningItemsGrouped'] = $warningItemsGrouped;
+        $viewParams['warningCategories'] = $warningCategories;
 
         return $response;
     }
