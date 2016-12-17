@@ -170,16 +170,23 @@ var SV = SV || {};
           ],
           'core': {
             'data': ajaxData['tree'],
-            'check_callback': function (operation, node) {
+            'check_callback': function (operation, node, parent) {
               if (operation == 'rename_node') {
                 var id = node.id.substr(1);
-
-                if (id != 0) {
-                  return true;
+                if (id == 0) {
+                  return false;
                 }
+
+                return true;
               }
 
               if (operation == 'move_node') {
+                if (node.type == 'category') {
+                  if (parent.parent != '#') {
+                    return false;
+                  }
+                }
+
                 return true;
               }
 
