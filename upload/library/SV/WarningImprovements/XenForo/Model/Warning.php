@@ -30,16 +30,22 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function isWarningItemsArray($warningItems)
     {
-        if (is_array($warningItems)) {
-            if (count($warningItems) == 0) {
+        if (is_array($warningItems))
+        {
+            if (count($warningItems) == 0)
+            {
                 return true;
-            } else {
+            }
+            else
+            {
                 return (
                     $this->isWarningCategory(reset($warningItems)) or
                     $this->isWarningDefinition(reset($warningItems))
                 );
             }
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
@@ -61,7 +67,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function getWarningCategories($fromCache = false)
     {
-        if (!$fromCache || empty($this->warningCategories)) {
+        if (!$fromCache || empty($this->warningCategories))
+        {
             $this->warningCategories = $this->fetchAllKeyed(
                 'SELECT *
                     FROM xf_sv_warning_category
@@ -89,19 +96,24 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         array $warningItem,
         array $warningCategories = null
     ) {
-        if (is_null($warningCategories)) {
+        if (is_null($warningCategories))
+        {
             $warningCategories = $this->prepareWarningCategories(
                 $this->getWarningCategories(true)
             );
         }
 
-        if ($this->isWarningCategory($warningItem)) {
+        if ($this->isWarningCategory($warningItem))
+        {
             $parentWarningCategoryId = $warningItem['parent_warning_category_id'];
 
-            if ($parentWarningCategoryId === 0) {
+            if ($parentWarningCategoryId === 0)
+            {
                 return $warningItem;
             }
-        } elseif ($this->isWarningDefinition($warningItem)) {
+        }
+        elseif ($this->isWarningDefinition($warningItem))
+        {
             $parentWarningCategoryId = $warningItem['sv_warning_category_id'];
         }
 
@@ -112,10 +124,13 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function getWarningCategoryOptions($rootOnly = false)
     {
-        if (!$rootOnly) {
+        if (!$rootOnly)
+        {
             $categories = $this->getWarningCategories();
             $categories = $this->calculateWarningItemsDepth($categories);
-        } else {
+        }
+        else
+        {
             $categories = $this->getWarningCategoriesByParentId(0);
         }
 
@@ -123,7 +138,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
         $options = array();
 
-        foreach ($categories as $category) {
+        foreach ($categories as $category)
+        {
             $categoryId = $category['warning_category_id'];
 
             $options[$categoryId] = array(
@@ -141,7 +157,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         array $warningCategories = null,
         array $viewingUser = null
     ) {
-        if (empty($warningCategory['allowed_user_group_ids'])) {
+        if (empty($warningCategory['allowed_user_group_ids']))
+        {
             return false;
         }
 
@@ -167,8 +184,10 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
 
         $parentWarningCategoryId = $warningCategory['parent_warning_category_id'];
-        if ($parentWarningCategoryId !== 0) {
-            if (is_null($warningCategories)) {
+        if ($parentWarningCategoryId !== 0)
+        {
+            if (is_null($warningCategories))
+            {
                 $warningCategories = $this->prepareWarningCategories(
                     $this->getWarningCategories(true)
                 );
@@ -186,7 +205,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function prepareWarningCategory(array $warningCategory)
     {
-        if (!empty($warningCategory['warning_category_id'])) {
+        if (!empty($warningCategory['warning_category_id']))
+        {
             $warningCategory['title'] = new XenForo_Phrase(
                 $this->getWarningCategoryTitlePhraseName(
                     $warningCategory['warning_category_id']
@@ -209,10 +229,12 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     {
         $warningDefinitions = parent::getWarningDefinitions();
 
-        uasort($warningDefinitions, function ($first, $second) {
+        uasort($warningDefinitions, function ($first, $second)
+        {
             $key = 'sv_display_order';
 
-            if ($first[$key] === $second[$key]) {
+            if ($first[$key] === $second[$key])
+            {
                 return 0;
             }
 
@@ -241,7 +263,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     ) {
         $this->standardizeViewingUserReference($viewingUser);
 
-        if (is_null($warningCategories)) {
+        if (is_null($warningCategories))
+        {
             $warningCategories = $this->prepareWarningCategories(
                 $this->getWarningCategories(true)
             );
@@ -274,7 +297,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
         $warningItems = array_merge($warningCategories, $warningDefinitions);
 
-        if ($filterViewable) {
+        if ($filterViewable)
+        {
             $warningItems = $this->filterViewableWarningItems(
                 $warningItems,
                 $warningCategories
@@ -301,40 +325,50 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function sortWarningItems(array $warningItems)
     {
-        uasort($warningItems, function ($first, $second) {
+        uasort($warningItems, function ($first, $second)
+        {
             $keys = array('parent_warning_category_id', 'sv_warning_category_id');
 
-            foreach ($keys as $key) {
-                if (!isset($firstOrder) and isset($first[$key])) {
+            foreach ($keys as $key)
+            {
+                if (!isset($firstOrder) && isset($first[$key]))
+                {
                     $firstOrder = $first[$key];
                 }
 
-                if (!isset($secondOrder) and isset($second[$key])) {
+                if (!isset($secondOrder) && isset($second[$key]))
+                {
                     $secondOrder = $second[$key];
                 }
             }
 
-            if ($firstOrder === $secondOrder) {
+            if ($firstOrder === $secondOrder)
+            {
                 return 0;
             }
 
             return ($firstOrder < $secondOrder) ? -1 : 1;
         });
 
-        uasort($warningItems, function ($first, $second) {
+        uasort($warningItems, function ($first, $second)
+        {
             $keys = array('display_order', 'sv_display_order');
 
-            foreach ($keys as $key) {
-                if (!isset($firstOrder) and isset($first[$key])) {
+            foreach ($keys as $key)
+            {
+                if (!isset($firstOrder) && isset($first[$key]))
+                {
                     $firstOrder = $first[$key];
                 }
 
-                if (!isset($secondOrder) and isset($second[$key])) {
+                if (!isset($secondOrder) && isset($second[$key]))
+                {
                     $secondOrder = $second[$key];
                 }
             }
 
-            if ($firstOrder === $secondOrder) {
+            if ($firstOrder === $secondOrder)
+            {
                 return 0;
             }
 
@@ -351,18 +385,24 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     ) {
         $calculatedItems = array();
 
-        foreach ($warningItems as $warningItemId => $warningItem) {
-            if ($this->isWarningCategory($warningItem)) {
+        foreach ($warningItems as $warningItemId => $warningItem)
+        {
+            if ($this->isWarningCategory($warningItem))
+            {
                 $itemParentId = $warningItem['parent_warning_category_id'];
-            } elseif ($this->isWarningDefinition($warningItem)) {
+            }
+            elseif ($this->isWarningDefinition($warningItem))
+            {
                 $itemParentId = $warningItem['sv_warning_category_id'];
             }
 
-            if ($itemParentId === $parentId) {
+            if ($itemParentId === $parentId)
+            {
                 $warningItem['depth'] = $depth;
                 $calculatedItems[] = $warningItem;
 
-                if ($this->isWarningCategory($warningItem)) {
+                if ($this->isWarningCategory($warningItem))
+                {
                     $calculatedItems = array_merge(
                         $calculatedItems,
                         $this->calculateWarningItemsDepth(
@@ -384,21 +424,26 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         array $warningItems,
         array $warningCategories = null
     ) {
-        if (is_null($warningCategories)) {
+        if (is_null($warningCategories))
+        {
             $warningCategories = $this->prepareWarningCategories(
                 $this->getWarningCategories(true)
             );
         }
 
-        foreach ($warningItems as $warningItemId => $warningItem) {
-            if ($this->isWarningCategory($warningItem)) {
+        foreach ($warningItems as $warningItemId => $warningItem)
+        {
+            if ($this->isWarningCategory($warningItem))
+            {
                 if (!$this->canViewWarningCategory(
                     $warningItem,
                     $warningCategories
                 )) {
                     unset($warningItems[$warningItemId]);
                 }
-            } elseif ($this->isWarningDefinition($warningItem)) {
+            }
+            elseif ($this->isWarningDefinition($warningItem))
+            {
                 if (!$this->canViewWarningDefinition(
                     $warningItem,
                     $warningCategories
@@ -413,25 +458,33 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function getWarningItemTree(array $warningItems = null)
     {
-        if (!$this->isWarningItemsArray($warningItems)) {
+        if (!$this->isWarningItemsArray($warningItems))
+        {
             $warningItems = $this->getWarningItems();
         }
 
         $tree = array();
 
-        foreach ($warningItems as $warningItem) {
+        foreach ($warningItems as $warningItem)
+        {
             $node = array();
 
-            if ($this->isWarningCategory($warningItem)) {
+            if ($this->isWarningCategory($warningItem))
+            {
                 $node['id'] = 'c'.$warningItem['warning_category_id'];
                 $node['type'] = 'category';
 
-                if ($warningItem['parent_warning_category_id'] !== 0) {
+                if ($warningItem['parent_warning_category_id'] !== 0)
+                {
                     $node['parent'] = 'c'.$warningItem['parent_warning_category_id'];
-                } else {
+                }
+                else
+                {
                     $node['parent'] = '#';
                 }
-            } elseif ($this->isWarningDefinition($warningItem)) {
+            }
+            elseif ($this->isWarningDefinition($warningItem))
+            {
                 $node['id'] = 'd'.$warningItem['warning_definition_id'];
                 $node['type'] = 'definition';
                 $node['parent'] = 'c'.$warningItem['sv_warning_category_id'];
@@ -459,20 +512,27 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $warningItems = array();
 
         $displayOrder = 0;
-        foreach ($tree as $branchId => $branch) {
-            if (!is_int($branch['id'])) {
+        foreach ($tree as $branchId => $branch)
+        {
+            if (!is_int($branch['id']))
+            {
                 $branch['id'] = (int)substr($branch['id'], 1);
             }
 
-            if (!is_int($branch['parent'])) {
-                if ($branch['parent'] != '#') {
+            if (!is_int($branch['parent']))
+            {
+                if ($branch['parent'] != '#')
+                {
                     $branch['parent'] = (int)substr($branch['parent'], 1);
-                } else {
+                }
+                else
+                {
                     $branch['parent'] = 0;
                 }
             }
 
-            if ($branch['parent'] === $parentId) {
+            if ($branch['parent'] === $parentId)
+            {
                 $item = array(
                     'type'          => $branch['type'],
                     'id'            => $branch['id'],
@@ -481,7 +541,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                 );
                 $warningItems[] = $item;
 
-                if ($branch['type'] == 'category') {
+                if ($branch['type'] == 'category')
+                {
                     $warningItems = array_merge(
                         $warningItems,
                         $this->processWarningItemTree($tree, $branch['id'])
@@ -501,16 +562,21 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     {
         $warningCategories = array();
 
-        foreach ($warningItems as $warningItem) {
-            if ($this->isWarningCategory($warningItem)) {
+        foreach ($warningItems as $warningItem)
+        {
+            if ($this->isWarningCategory($warningItem))
+            {
                 $warningItemId = $warningItem['warning_category_id'];
 
-                if ($warningItem['parent_warning_category_id'] === 0) {
+                if ($warningItem['parent_warning_category_id'] === 0)
+                {
                     $warningCategories[$warningItemId] = $warningItem;
 
                     continue;
                 }
-            } elseif ($this->isWarningDefinition($warningItem)) {
+            }
+            elseif ($this->isWarningDefinition($warningItem))
+            {
                 $warningItemId = $warningItem['warning_definition_id'];
             }
 
@@ -521,8 +587,10 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             $warningCategories[$rootWarningCategoryId]['children'][] = $warningItem;
         }
 
-        foreach ($warningCategories as $warningCategoryId => $warningCategory) {
-            if (empty($warningCategory['children'])) {
+        foreach ($warningCategories as $warningCategoryId => $warningCategory)
+        {
+            if (empty($warningCategory['children']))
+            {
                 unset($warningCategories[$warningCategoryId]);
             }
         }
@@ -534,19 +602,25 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     {
         $warningCategories = array();
 
-        foreach ($warningItems as $warningItemId => $warningItem) {
-            if ($this->isWarningCategory($warningItem)) {
+        foreach ($warningItems as $warningItemId => $warningItem)
+        {
+            if ($this->isWarningCategory($warningItem))
+            {
                 $categoryId = $warningItem['warning_category_id'];
                 $warningCategories[$categoryId] = $warningItem;
-            } elseif ($this->isWarningDefinition($warningItem)) {
+            }
+            elseif ($this->isWarningDefinition($warningItem))
+            {
                 $definitionId = $warningItem['warning_definition_id'];
                 $categoryId = $warningItem['sv_warning_category_id'];
                 $warningCategories[$categoryId]['warnings'][$definitionId] = $warningItem;
             }
         }
 
-        foreach ($warningCategories as $warningCategoryId => $warningCategory) {
-            if (empty($warningCategory['warnings'])) {
+        foreach ($warningCategories as $warningCategoryId => $warningCategory)
+        {
+            if (empty($warningCategory['warnings']))
+            {
                 unset($warningCategories[$warningCategoryId]);
             }
         }

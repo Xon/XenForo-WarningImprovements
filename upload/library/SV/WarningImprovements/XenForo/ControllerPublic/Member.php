@@ -64,7 +64,8 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
 
         $response = parent::actionWarn();
 
-        if (!$response instanceof XenForo_ControllerResponse_View) {
+        if (!$response instanceof XenForo_ControllerResponse_View)
+        {
             return $response;
         }
 

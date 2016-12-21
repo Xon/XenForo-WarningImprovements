@@ -34,8 +34,10 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
         $warningItems = $this->_getWarningModel()->processWarningItemTree($tree);
 
-        foreach ($warningItems as $warningItem) {
-            if ($warningItem['type'] == 'category') {
+        foreach ($warningItems as $warningItem)
+        {
+            if ($warningItem['type'] == 'category')
+            {
                 $dw = XenForo_DataWriter::create(
                     'SV_WarningImprovements_DataWriter_WarningCategory'
                 );
@@ -45,12 +47,15 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                     'display_order'              => $warningItem['display_order']
                 ));
                 $dw->save();
-            } elseif ($warningItem['type'] == 'definition') {
+            }
+            elseif ($warningItem['type'] == 'definition')
+            {
                 $dw = XenForo_DataWriter::create(
                     'XenForo_DataWriter_WarningDefinition'
                 );
 
-                if ($warningItem['id'] === 0) {
+                if ($warningItem['id'] === 0)
+                {
                     $dw->setOption(
                         SV_WarningImprovements_XenForo_DataWriter_WarningDefinition::IS_CUSTOM,
                         1
@@ -81,7 +86,8 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         $warningItem = $this->_getWarningModel()
             ->processWarningItemTreeItem($node);
 
-        if ($warningItem['type'] == 'category') {
+        if ($warningItem['type'] == 'category')
+        {
             $dw = XenForo_DataWriter::create(
                 'SV_WarningImprovements_DataWriter_WarningCategory'
             );
@@ -95,7 +101,9 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
             $hash = $this->getLastHash(
                 'category-'.$dw->get('warning_category_id')
             );
-        } elseif ($warningItem['type'] == 'definition') {
+        }
+        elseif ($warningItem['type'] == 'definition')
+        {
             $dw = XenForo_DataWriter::create(
                 'XenForo_DataWriter_WarningDefinition'
             );
@@ -159,7 +167,8 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
             XenForo_Input::UINT
         );
 
-        if ($warningDefinitionId == 0 && $isCustom) {
+        if ($warningDefinitionId == 0 && $isCustom)
+        {
             $dwInput = $this->_input->filter(array(
                 'points_default'       => XenForo_Input::UINT,
                 'expiry_type'          => XenForo_Input::STRING,
@@ -181,7 +190,8 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                 XenForo_Input::STRING
             );
 
-            if ($expiryType == 'never') {
+            if ($expiryType == 'never')
+            {
                 $dwInput['expiry_type'] = 'never';
             }
 
@@ -426,7 +436,8 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         $dw = XenForo_DataWriter::create(
             'SV_WarningImprovements_DataWriter_WarningCategory'
         );
-        if ($warningCategoryId) {
+        if ($warningCategoryId)
+        {
             $dw->setExistingData($warningCategoryId);
         }
         $dw->bulkSet($dwInput);
@@ -446,13 +457,16 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
     public function actionCategoryDelete()
     {
-        if ($this->isConfirmedPost()) {
+        if ($this->isConfirmedPost())
+        {
             return $this->_deleteData(
                 'SV_WarningImprovements_DataWriter_WarningCategory',
                 'warning_category_id',
                 XenForo_Link::buildAdminLink('warnings')
             );
-        } else {
+        }
+        else
+        {
             $warningCategoryId = $this->_input->filterSingle(
                 'warning_category_id',
                 XenForo_Input::STRING
@@ -478,7 +492,8 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         $warningModel = $this->_getWarningModel();
 
         $warningCategory = $warningModel->getWarningCategoryById($warningCategoryId);
-        if (!$warningCategory) {
+        if (!$warningCategory)
+        {
             throw $this->responseException($this->responseError(
                 new XenForo_Phrase('sv_requested_warning_category_not_found'),
                 404

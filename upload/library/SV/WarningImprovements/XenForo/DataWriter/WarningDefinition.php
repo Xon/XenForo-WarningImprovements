@@ -48,14 +48,16 @@ class SV_WarningImprovements_XenForo_DataWriter_WarningDefinition extends XFCP_S
 
         $warningDefinitionInput = SV_WarningImprovements_Globals::$warningDefinitionInput;
 
-        if (!is_null($warningDefinitionInput)) {
+        if (!is_null($warningDefinitionInput))
+        {
             $this->bulkSet($warningDefinitionInput);
         }
     }
 
     protected function _verifyWarningCategoryId($warningCategoryId)
     {
-        if (empty($warningCategoryId)) {
+        if (empty($warningCategoryId))
+        {
             return false;
         }
 
@@ -63,7 +65,8 @@ class SV_WarningImprovements_XenForo_DataWriter_WarningDefinition extends XFCP_S
             $warningCategoryId
         );
 
-        if (!empty($warningCategory)) {
+        if (!empty($warningCategory))
+        {
             return true;
         }
 

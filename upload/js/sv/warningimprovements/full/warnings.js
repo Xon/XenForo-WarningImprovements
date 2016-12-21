@@ -41,14 +41,18 @@ var SV = SV || {};
 
     init: function()
     {
-      if (!this.setting || !this.setting.length) {
+      if (!this.setting || !this.setting.length)
+      {
         this.setSetting('select');
       }
 
-      if (this.setting == 'select') {
+      if (this.setting == 'select')
+      {
         this.$radioView.remove();
         this.$toggler.text(this.phrases.toggleRadio);
-      } else {
+      }
+      else
+      {
         this.$selectView.remove();
         this.$toggler.text(this.phrases.toggleSelect);
       }
@@ -56,9 +60,12 @@ var SV = SV || {};
 
     toggle: function()
     {
-      if (this.setting == 'select') {
+      if (this.setting == 'select')
+      {
         this.setSetting('radio');
-      } else {
+      }
+      else
+      {
         this.setSetting('select');
       }
 
@@ -117,9 +124,12 @@ var SV = SV || {};
 
       this.$selector.find('option[value="'+id+'"]').trigger('click');
 
-      if (id == 0) {
+      if (id == 0)
+      {
         this.$customWarningTitle.show();
-      } else {
+      }
+      else
+      {
         this.$customWarningTitle.hide();
       }
     }
@@ -163,7 +173,8 @@ var SV = SV || {};
 
     init: function()
     {
-      XenForo.ajax(this.urls.load, '', $.context(function(ajaxData) {
+      XenForo.ajax(this.urls.load, '', $.context(function(ajaxData)
+      {
         this.$tree.jstree({
           'plugins': [
             'contextmenu',
@@ -175,19 +186,25 @@ var SV = SV || {};
           ],
           'core': {
             'data': ajaxData['tree'],
-            'check_callback': function (operation, node, parent) {
-              if (operation == 'rename_node') {
+            'check_callback': function (operation, node, parent)
+            {
+              if (operation == 'rename_node')
+              {
                 var id = node.id.substr(1);
-                if (id == 0) {
+                if (id == 0)
+                {
                   return false;
                 }
 
                 return true;
               }
 
-              if (operation == 'move_node') {
-                if (node.type == 'category') {
-                  if (parent.parent != '#' && parent.parent != null) {
+              if (operation == 'move_node')
+              {
+                if (node.type == 'category')
+                {
+                  if (parent.parent != '#' && parent.parent != null)
+                  {
                     return false;
                   }
                 }
@@ -203,18 +220,21 @@ var SV = SV || {};
             'items': {
               'rename': {
                 'label': this.phrases.rename,
-                '_disabled': function(data) {
+                '_disabled': function(data)
+                {
                   var inst = $.jstree.reference(data.reference);
                   var node = inst.get_node(data.reference);
                   var id = node.id.substr(1);
 
-                  if (id == 0) {
+                  if (id == 0)
+                  {
                     return true;
                   }
 
                   return false;
                 },
-                'action': function(data) {
+                'action': function(data)
+                {
                   var inst = $.jstree.reference(data.reference);
                   var node = inst.get_node(data.reference);
 
@@ -223,15 +243,19 @@ var SV = SV || {};
               },
               'edit': {
                 'label': this.phrases.edit,
-                'action': $.context(function(data) {
+                'action': $.context(function(data)
+                {
                   var inst = $.jstree.reference(data.reference);
                   var node = inst.get_node(data.reference);
                   var id = node.id.substr(1);
 
                   var href;
-                  if (node.type == 'category') {
+                  if (node.type == 'category')
+                  {
                     href = this.urls.categoryEdit.replace('{id}', id);
-                  } else if (node.type == 'definition') {
+                  }
+                  else if (node.type == 'definition')
+                  {
                     href = this.urls.warningEdit.replace('{id}', id);
                   }
 
@@ -240,26 +264,32 @@ var SV = SV || {};
               },
               'delete': {
                 'label': this.phrases.delete,
-                '_disabled': function(data) {
+                '_disabled': function(data)
+                {
                   var inst = $.jstree.reference(data.reference);
                   var node = inst.get_node(data.reference);
                   var id = node.id.substr(1);
 
-                  if (id == 0) {
+                  if (id == 0)
+                  {
                     return true;
                   }
 
                   return false;
                 },
-                'action': $.context(function(data) {
+                'action': $.context(function(data)
+                {
                   var inst = $.jstree.reference(data.reference);
                   var node = inst.get_node(data.reference);
                   var id = node.id.substr(1);
 
                   var href;
-                  if (node.type == 'category') {
+                  if (node.type == 'category')
+                  {
                     href = this.urls.categoryDelete.replace('{id}', id);
-                  } else if (node.type == 'definition') {
+                  }
+                  else if (node.type == 'definition')
+                  {
                     href = this.urls.warningDelete.replace('{id}', id);
                   }
 
@@ -308,12 +338,15 @@ var SV = SV || {};
     initSearch: function()
     {
       var timeout = false;
-      this.$searchInput.keyup($.context(function() {
-        if (timeout) {
+      this.$searchInput.keyup($.context(function()
+      {
+        if (timeout)
+        {
           clearTimeout(timeout);
         }
 
-        timeout = setTimeout($.context(function() {
+        timeout = setTimeout($.context(function()
+        {
           var query = this.$searchInput.val();
           this.$tree.jstree(true).search(query);
         }, this), 250);
@@ -326,24 +359,30 @@ var SV = SV || {};
         'tree': this.$tree.jstree(true).get_json('#', {'flat': true})
       };
 
-      XenForo.ajax(this.urls.sync, formData, function() {
+      XenForo.ajax(this.urls.sync, formData, function()
+      {
         console.log('Tree synchronized');
       });
     },
 
     handleLast: function()
     {
-      if (window.location.hash) {
+      if (window.location.hash)
+      {
         var last = window.location.hash.replace('#_', '');
 
         var id;
-        if (last.indexOf('warning-') == 0) {
+        if (last.indexOf('warning-') == 0)
+        {
           id = last.replace('warning-', 'd');
-        } else if (last.indexOf('category-') == 0) {
+        }
+        else if (last.indexOf('category-') == 0)
+        {
           id = last.replace('category-', 'c');
         }
 
-        if (id) {
+        if (id)
+        {
           this.$tree.jstree(true).select_node(id);
         }
       }
@@ -353,7 +392,8 @@ var SV = SV || {};
     {
       this.sync();
 
-      if (localStorage.getItem('xf_sv_warningitemtree') === null) {
+      if (localStorage.getItem('xf_sv_warningitemtree') === null)
+      {
         this.$tree.jstree(true).open_all();
       }
 
@@ -371,7 +411,8 @@ var SV = SV || {};
         'node': data.node
       };
 
-      XenForo.ajax(this.urls.rename, formData, function() {
+      XenForo.ajax(this.urls.rename, formData, function()
+      {
         console.log('Node renamed');
       });
     }

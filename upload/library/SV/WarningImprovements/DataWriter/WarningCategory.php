@@ -38,7 +38,8 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
 
     protected function _getExistingData($data)
     {
-        if (!$id = $this->_getExistingPrimaryKey($data, 'warning_category_id')) {
+        if (!$id = $this->_getExistingPrimaryKey($data, 'warning_category_id'))
+        {
             return false;
         }
 
@@ -61,7 +62,8 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
     {
         $titlePhrase = $this->getExtraData(self::DATA_TITLE);
 
-        if ($titlePhrase !== null && strlen($titlePhrase) == 0) {
+        if ($titlePhrase !== null && strlen($titlePhrase) == 0)
+        {
             $this->error(
                 new XenForo_Phrase('please_enter_valid_title'),
                 'title'
@@ -75,7 +77,8 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
 
         $titlePhrase = $this->getExtraData(self::DATA_TITLE);
 
-        if ($titlePhrase !== null) {
+        if ($titlePhrase !== null)
+        {
             $this->_insertOrUpdateMasterPhrase(
                 $this->_getTitlePhraseName($warningCategoryId),
                 $titlePhrase,
@@ -96,22 +99,29 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
 
         $children = $warningModel->getWarningItemsByParentId($warningCategoryId);
 
-        foreach ($children as $child) {
-            if ($warningModel->isWarningCategory($child)) {
+        foreach ($children as $child)
+        {
+            if ($warningModel->isWarningCategory($child))
+            {
                 $dw = XenForo_DataWriter::create(
                     'SV_WarningImprovements_DataWriter_WarningCategory'
                 );
                 $dw->setExistingData($child['warning_category_id']);
                 $dw->delete();
-            } elseif ($warningModel->isWarningDefinition($child)) {
+            }
+            elseif ($warningModel->isWarningDefinition($child))
+            {
                 $dw = XenForo_DataWriter::create(
                     'XenForo_DataWriter_WarningDefinition'
                 );
 
-                if ($child['warning_definition_id'] !== 0) {
+                if ($child['warning_definition_id'] !== 0)
+                {
                     $dw->setExistingData($child['warning_definition_id']);
                     $dw->delete();
-                } else {
+                }
+                else
+                {
                     $dw->setOption(
                         SV_WarningImprovements_XenForo_DataWriter_WarningDefinition::IS_CUSTOM,
                         1
@@ -132,7 +142,8 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
 
     protected function _verifyParentWarningCategory($parentWarningCategoryId)
     {
-        if ($parentWarningCategoryId === 0) {
+        if ($parentWarningCategoryId === 0)
+        {
             return true;
         }
 
@@ -147,8 +158,10 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
                 $parentWarningCategoryId
             );
 
-            if (!empty($parentWarningCategory)) {
-                if ($parentWarningCategory['parent_warning_category_id'] === 0) {
+            if (!empty($parentWarningCategory))
+            {
+                if ($parentWarningCategory['parent_warning_category_id'] === 0)
+                {
                     return true;
                 }
             }
