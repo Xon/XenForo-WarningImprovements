@@ -137,15 +137,20 @@ var SV = SV || {};
 
       this.$searchInput = $($tree.data('searchinput'));
 
-      this.loadUrl = $tree.data('loadurl');
-      this.syncUrl = $tree.data('syncurl');
-      this.renameUrl = $tree.data('renameurl');
-      this.categoryEditUrl = $tree.data('categoryediturl');
-      this.warningEditUrl = $tree.data('warningediturl');
+      this.urls = {
+        'load':           $tree.data('loadurl'),
+        'sync':           $tree.data('syncurl'),
+        'rename':         $tree.data('renameurl'),
+        'categoryEdit':   $tree.data('categoryediturl'),
+        'categoryDelete': $tree.data('categorydeleteurl'),
+        'warningEdit':    $tree.data('warningediturl'),
+        'warningDelete':  $tree.data('warningdeleteurl'),
+      };
 
       this.phrases = {
+        'rename': $tree.data('renametext'),
         'edit':   $tree.data('edittext'),
-        'rename': $tree.data('renametext')
+        'delete': $tree.data('deletetext')
       };
 
       this.init();
@@ -158,7 +163,7 @@ var SV = SV || {};
 
     init: function()
     {
-      XenForo.ajax(this.loadUrl, '', $.context(function(ajaxData) {
+      XenForo.ajax(this.urls.load, '', $.context(function(ajaxData) {
         this.$tree.jstree({
           'plugins': [
             'contextmenu',
@@ -225,12 +230,45 @@ var SV = SV || {};
 
                   var href;
                   if (node.type == 'category') {
-                    href = this.categoryEditUrl.replace('{id}', id);
+                    href = this.urls.categoryEdit.replace('{id}', id);
                   } else if (node.type == 'definition') {
-                    href = this.warningEditUrl.replace('{id}', id);
+                    href = this.urls.warningEdit.replace('{id}', id);
                   }
 
                   window.location = XenForo.canonicalizeUrl(href);
+                }, this)
+              },
+              'delete': {
+                'label': this.phrases.delete,
+                '_disabled': function(data) {
+                  var inst = $.jstree.reference(data.reference);
+                  var node = inst.get_node(data.reference);
+                  var id = node.id.substr(1);
+
+                  if (id == 0) {
+                    return true;
+                  }
+
+                  return false;
+                },
+                'action': $.context(function(data) {
+                  var inst = $.jstree.reference(data.reference);
+                  var node = inst.get_node(data.reference);
+                  var id = node.id.substr(1);
+
+                  var href;
+                  if (node.type == 'category') {
+                    href = this.urls.categoryDelete.replace('{id}', id);
+                  } else if (node.type == 'definition') {
+                    href = this.urls.warningDelete.replace('{id}', id);
+                  }
+
+                  var overlay = new XenForo.OverlayLoader(
+                    $({'href': href}),
+                    false,
+                    {'speed': XenForo.speed.fast}
+                  );
+                  overlay.load();
                 }, this)
               }
             }
@@ -288,7 +326,7 @@ var SV = SV || {};
         'tree': this.$tree.jstree(true).get_json('#', {'flat': true})
       };
 
-      XenForo.ajax(this.syncUrl, formData, function() {
+      XenForo.ajax(this.urls.sync, formData, function() {
         console.log('Tree synchronized');
       });
     },
@@ -333,7 +371,7 @@ var SV = SV || {};
         'node': data.node
       };
 
-      XenForo.ajax(this.renameUrl, formData, function() {
+      XenForo.ajax(this.urls.rename, formData, function() {
         console.log('Node renamed');
       });
     }

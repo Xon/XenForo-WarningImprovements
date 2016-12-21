@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.2" version_id="1040200" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.3" version_id="1040300" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -186,9 +186,12 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 			data-syncurl="{xen:adminlink warnings/sync-tree}"
 			data-renameurl="{xen:adminlink warnings/rename-tree-item}"
 			data-categoryediturl="{xen:adminlink 'warnings/category-edit&warning_category_id={id}'}"
+			data-categorydeleteurl="{xen:adminlink 'warnings/category-delete&warning_category_id={id}'}"
 			data-warningediturl="{xen:adminlink 'warnings/{id}/edit'}"
+			data-warningdeleteurl="{xen:adminlink 'warnings/{id}/delete'}"
+			data-renametext="{xen:phrase sv_rename}"
 			data-edittext="{xen:phrase edit}"
-			data-renametext="{xen:phrase sv_rename}">
+			data-deletetext="{xen:phrase delete}">
 		</div>
 	<xen:else />
 		<div class="noResults">{xen:phrase no_warnings_have_been_defined}</div>
@@ -749,7 +752,7 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 		</xen:if>
 	</div>
 </div>]]></template>
-    <template title="sv_warning_improvement_js" version_id="2" version_string="0.02"><![CDATA[<script>
+    <template title="sv_warning_improvement_js" version_id="1040300" version_string="1.4.3"><![CDATA[<script>
 !function($, window, document, _undefined)
 {
 	<xen:if is="{$xenOptions.sv_warningimprovements_continue_button}">
@@ -779,16 +782,15 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 	});
 	</xen:if>
 
-	XenForo.WarningDefaultActionFormFillerControl = function($control)
+	XenForo.WarningDefaultActionFormFillerControl = function($input)
 	{
-		$control.trigger('click');
-		<xen:if is='{$xenOptions.sv_warningimprovements_default_content_action} == "delete_content"'>
-		$('input[name=content_action][value=delete_content]').trigger('click');
-		<xen:elseif is='{$xenOptions.sv_warningimprovements_default_content_action} == "public_warning"'/>
-		$('input[name=content_action][value=public_warning]').trigger('click');
-		</xen:if>
+		$('input#customWarning').trigger('click');
+		
+		if ($input.val() == '{$xenOptions.sv_warningimprovements_default_content_action}') {
+			$input.trigger('click');
+		}
 	}
-	XenForo.register('#customWarning', 'XenForo.WarningDefaultActionFormFillerControl');
+	XenForo.register('input[name=content_action]', 'XenForo.WarningDefaultActionFormFillerControl');
 	<xen:if is='{$xenOptions.sv_warningimprovements_copy_title}'>
 	XenForo.CustomWarningTitle = function($control)
 	{
@@ -811,6 +813,22 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 		});
 	}
 	XenForo.register('input[id=customWarning]', 'XenForo.CustomWarningRadioButton');
+	XenForo.WarningDefSelectOption = function($select)
+	{
+		$select.change(function(e, data) {
+			var id = data.selected;
+			
+			if (id != 0)
+			{
+				$('input[name=public_warning]').val($(e.target).find('option[value="'+id+'"]').text());
+			}
+			else
+			{
+				$('input[name=public_warning]').val($('input[name=title]').val());
+			}
+		});
+	}
+	XenForo.register('select.warningItems', 'XenForo.WarningDefSelectOption');
 	</xen:if>
 }
 (jQuery, this, document);
