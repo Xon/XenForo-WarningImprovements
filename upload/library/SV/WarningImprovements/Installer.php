@@ -36,6 +36,11 @@ class SV_WarningImprovements_Installer
                 PRIMARY KEY (warning_category_id)
             ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci'
         );
+        SV_Utils_Install::addColumn(
+            'xf_sv_warning_category',
+            'allowed_user_group_ids',
+            "VARBINARY(255) NOT NULL DEFAULT '2'"
+        );
 
         SV_Utils_Install::addColumn(
             'xf_warning_definition',
@@ -82,14 +87,6 @@ class SV_WarningImprovements_Installer
                 'sv_warning_category_id' => $defaultCategory['warning_category_id'],
                 'sv_display_order'       => 0
             ));
-        }
-
-        if ($version < 1040100) {
-            SV_Utils_Install::addColumn(
-                'xf_sv_warning_category',
-                'allowed_user_group_ids',
-                "VARBINARY(255) NOT NULL DEFAULT '2'"
-            );
         }
 
         $db->query("
