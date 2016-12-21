@@ -178,7 +178,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
             $expiryType = $this->_input->filterSingle(
                 'expiry_type_base',
-                XenForo_Input::String
+                XenForo_Input::STRING
             );
 
             if ($expiryType == 'never') {
