@@ -98,7 +98,9 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
         $options = array();
 
-        foreach ($categories as $categoryId => $category) {
+        foreach ($categories as $category) {
+            $categoryId = $category['warning_category_id'];
+
             $options[$categoryId] = array(
                 'value' => $categoryId,
                 'label' => $category['title'],
