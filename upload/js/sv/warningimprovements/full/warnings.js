@@ -182,7 +182,7 @@ var SV = SV || {};
 
               if (operation == 'move_node') {
                 if (node.type == 'category') {
-                  if (parent.parent != '#') {
+                  if (parent.parent != '#' && parent.parent != null) {
                     return false;
                   }
                 }
