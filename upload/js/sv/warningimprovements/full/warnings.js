@@ -249,8 +249,12 @@ var SV = SV || {};
             'key': 'xf_sv_warningitemtree'
           },
           'types': {
+            '#': {
+              'max_depth': 3,
+              'valid_children': ['category']
+            },
             'category': {
-              'max_depth': '2',
+              'max_depth': 2,
               'valid_children': ['category', 'definition']
             },
             'definition': {
