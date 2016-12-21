@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.1" version_id="1040100" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.2" version_id="1040200" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -146,7 +146,7 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 	</xen:selectunit>
 
 	<xen:spinboxunit label="{xen:phrase display_order}:" name="display_order" value="{$warningCategory.display_order}" min="0" step="10" />
-
+	
 	<xen:checkboxunit id="allowedUserGroups" label="{xen:phrase sv_allowed_user_groups}:" name="allowed_user_group_ids[]" listclass="checkboxColumns">
 		<xen:hint><br /><label><input type="checkbox" class="CheckAll" data-target="#allowedUserGroups" /> {xen:phrase select_all}</label></xen:hint>
 		<xen:options source="$userGroups" />
@@ -578,55 +578,71 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 </xen:foreach>
 </table>
 </div>]]></template>
-    <template title="sv_member_warn_chooser" version_id="1040000" version_string="1.4.0"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
+    <template title="sv_member_warn_chooser" version_id="1040200" version_string="1.4.2"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
 <xen:require css="sv_member_warn_chooser.css" />
 
 <xen:require js="js/chosen/chosen.jquery.min.js" />
 <xen:require js="js/sv/warningimprovements/full/warnings.js" />
 
 <div id="warningViewSelect">
-    <select class="warningItems WarningSelector" name="warning_definition_id"
-        data-customwarningtitle="#customWarningTitle"
-        data-noresultstext="{xen:phrase sv_no_results_match}">
-        data-placeholdertext="{xen:phrase sv_choose_a_warning}"
-        <option></option>
-        <xen:foreach loop="$warningItemsGrouped" value="$warningCategory">
-            <optgroup class="warningCategory" label="{$warningCategory.title}">
-                <xen:foreach loop="$warningCategory.warnings" value="$warning">
-                    <option class="warningDefinition FormFiller" value="{$warning.warning_definition_id}">{$warning.title}</option>
-                </xen:foreach>
-            </optgroup>
-        </xen:foreach>
-    </select>
-    <input id="customWarningTitle" class="textCtrl" style="display:none" type="text" name="title" placeholder="{xen:phrase custom_warning}..." maxlength="255" />
+	<dl class="ctrlUnit">
+		<dt>{xen:phrase warning_type}:</dt>
+		
+		<dd>
+			<select class="warningItems WarningSelector" name="warning_definition_id"
+				data-customwarningtitle="#customWarningTitle"
+				data-noresultstext="{xen:phrase sv_no_results_match}"
+				data-placeholdertext="{xen:phrase sv_choose_a_warning}">
+				<option></option>
+				
+				<xen:foreach loop="$warningCategories" value="$warningCategory">
+					<optgroup class="warningCategory" label="{$warningCategory.title}">
+						<xen:foreach loop="$warningCategory.warnings" value="$warning">
+							<option class="warningDefinition FormFiller" value="{$warning.warning_definition_id}">{$warning.title}</option>
+						</xen:foreach>
+					</optgroup>
+				</xen:foreach>
+			</select>
+			
+			<input id="customWarningTitle" class="textCtrl" style="display:none" type="text" name="title" placeholder="{xen:phrase custom_warning}..." maxlength="255" />
+		</dd>
+	</dl>
 </div>
 
 <div id="warningViewRadio">
-    <ul class="warningItems">
-        <xen:foreach loop="$warningItems" value="$warningItem">
-            <xen:if is="{$warningItem.warning_category_id}">
-                <li class="warningCategory _depth{$warningItem.depth}">{$warningItem.title}</li>
-            <xen:else />
-                <xen:if is="{$warningItem.warning_definition_id} != 0">
-                    <li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" class="FormFiller" value="{$warningItem.warning_definition_id}" /> {$warningItem.title}</label></li>
-                <xen:else />
-                    <li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" class="FormFiller Disabler" value="0" id="customWarning" checked="checked" /> {xen:phrase custom_warning}:</label>
-                        <ul id="customWarning_Disabler">
-                            <li><input type="text" name="title" class="textCtrl" placeholder="{xen:phrase custom_warning}..." maxlength="255" /></li>
-                        </ul>
-                    </li>
-                </xen:if>
-            </xen:if>
-        </xen:foreach>
-    </ul>
+	<xen:foreach loop="$rootWarningCategories" value="$rootWarningCategory">
+		<dl class="ctrlUnit">
+			<dt class="warningCategory">{$rootWarningCategory.title}:</dt>
+			
+			<dd>
+				<ul class="warningItems">
+					<xen:foreach loop="$rootWarningCategory.children" value="$warningItem">
+						<xen:if is="{$warningItem.warning_category_id}">
+							<li class="warningCategory _depth{$warningItem.depth}">{$warningItem.title}</li>
+						<xen:else />
+							<xen:if is="{$warningItem.warning_definition_id} != 0">
+								<li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" class="FormFiller" value="{$warningItem.warning_definition_id}" /> {$warningItem.title}</label></li>
+							<xen:else />
+								<li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" class="FormFiller Disabler" value="0" id="customWarning" checked="checked" /> {xen:phrase custom_warning}:</label>
+									<ul id="customWarning_Disabler">
+										<li><input type="text" name="title" class="textCtrl" placeholder="{xen:phrase custom_warning}..." maxlength="255" /></li>
+									</ul>
+								</li>
+							</xen:if>
+						</xen:if>
+					</xen:foreach>
+				</ul>
+			</dd>
+		</dl>
+	</xen:foreach>
 </div>
 
 <a id="warningViewToggle" class="WarningViewToggler" href="#"
-    data-selectview="#warningViewSelect"
-    data-radioview="#warningViewRadio"
-    data-toggleselecttext="{xen:phrase sv_toggle_select_view}"
-    data-toggleradiotext="{xen:phrase sv_toggle_radio_view}"></a>]]></template>
-    <template title="sv_member_warn_chooser.css" version_id="1040000" version_string="1.4.0"><![CDATA[#warningViewSelect select
+	data-selectview="#warningViewSelect"
+	data-radioview="#warningViewRadio"
+	data-toggleselecttext="{xen:phrase sv_toggle_select_view}"
+	data-toggleradiotext="{xen:phrase sv_toggle_radio_view}"></a>]]></template>
+    <template title="sv_member_warn_chooser.css" version_id="1040200" version_string="1.4.2"><![CDATA[#warningViewSelect select
 {
 	width: 100%;
 }
@@ -636,21 +652,13 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 	margin: 6px 0;
 }
 
-#warningViewRadio li
+#warningViewRadio li:not(:first-child)
 {
 	margin: 6px 0;
 }
 
-.ctrlUnit li._depth0 { padding-left: 0em; }
-.ctrlUnit li._depth1 { padding-left: 2em; }
-.ctrlUnit li._depth2 { padding-left: 4em; }
-.ctrlUnit li._depth3 { padding-left: 6em; }
-.ctrlUnit li._depth4 { padding-left: 8em; }
-.ctrlUnit li._depth5 { padding-left: 10em; }
-.ctrlUnit li._depth6 { padding-left: 12em; }
-.ctrlUnit li._depth7 { padding-left: 14em; }
-.ctrlUnit li._depth8 { padding-left: 16em; }
-.ctrlUnit li._depth9 { padding-left: 18em; }
+.ctrlUnit li._depth1 { padding-left: 0em; }
+.ctrlUnit li._depth2 { padding-left: 2em; }
 
 #warningViewRadio .warningCategory
 {
@@ -659,8 +667,15 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 
 #warningViewToggle
 {
+	box-sizing: border-box;
+	display: block;
 	font-size: 11px;
 	margin-left: 4px;
+	padding-right: 15px;
+	padding-top: 4px;
+	text-align: right;
+	vertical-align: top;
+	width: 32%;
 }]]></template>
     <template title="sv_warningimprovements_member_view_warning_actions" version_id="101000" version_string="1.1.0"><![CDATA[<xen:if is="{$warningActionsCount}">
 	<li id="warningActions" class="profileContent" data-loadUrl="{xen:link members/warning-actions, $user}">
@@ -803,10 +818,8 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
   </templates>
   <public_template_modifications>
     <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn1" description="Display warning items by category with Chosen support" execution_order="10" enabled="1" action="preg_replace">
-      <find><![CDATA[#(<dt>{xen:phrase warning_type}:</dt>.*?<dd>)(.*?)(\s*</dd>)#si]]></find>
-      <replace><![CDATA[$1
-<xen:include template="sv_member_warn_chooser" />
-$3]]></replace>
+      <find><![CDATA[#<dl class="ctrlUnit">\s*<dt>{xen:phrase warning_type}:</dt>.*?<dd>.*?\s*</dd>\s*</dl>#si]]></find>
+      <replace><![CDATA[<xen:include template="sv_member_warn_chooser" />]]></replace>
     </modification>
     <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn2" description="Conversation Inviting" execution_order="10" enabled="1" action="str_replace">
       <find><![CDATA[<input type="checkbox" name="open_invite" value="1"]]></find>

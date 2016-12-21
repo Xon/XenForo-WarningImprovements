@@ -85,6 +85,31 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         );
     }
 
+    public function getRootWarningCategoryByWarningItem(
+        array $warningItem,
+        array $warningCategories = null
+    ) {
+        if (is_null($warningCategories)) {
+            $warningCategories = $this->prepareWarningCategories(
+                $this->getWarningCategories(true)
+            );
+        }
+
+        if ($this->isWarningCategory($warningItem)) {
+            $parentWarningCategoryId = $warningItem['parent_warning_category_id'];
+
+            if ($parentWarningCategoryId === 0) {
+                return $warningItem;
+            }
+        } elseif ($this->isWarningDefinition($warningItem)) {
+            $parentWarningCategoryId = $warningItem['sv_warning_category_id'];
+        }
+
+        $parentWarningCategory = $warningCategories[$parentWarningCategoryId];
+
+        return $this->getRootWarningCategoryByWarningItem($parentWarningCategory);
+    }
+
     public function getWarningCategoryOptions($rootOnly = false)
     {
         if (!$rootOnly) {
@@ -470,6 +495,39 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
 
         return $warningItems;
+    }
+
+    public function groupWarningItemsByRootWarningCategory(array $warningItems)
+    {
+        $warningCategories = array();
+
+        foreach ($warningItems as $warningItem) {
+            if ($this->isWarningCategory($warningItem)) {
+                $warningItemId = $warningItem['warning_category_id'];
+
+                if ($warningItem['parent_warning_category_id'] === 0) {
+                    $warningCategories[$warningItemId] = $warningItem;
+
+                    continue;
+                }
+            } elseif ($this->isWarningDefinition($warningItem)) {
+                $warningItemId = $warningItem['warning_definition_id'];
+            }
+
+            $rootWarningCategory = $this->getRootWarningCategoryByWarningItem(
+                $warningItem
+            );
+            $rootWarningCategoryId = $rootWarningCategory['warning_category_id'];
+            $warningCategories[$rootWarningCategoryId]['children'][] = $warningItem;
+        }
+
+        foreach ($warningCategories as $warningCategoryId => $warningCategory) {
+            if (empty($warningCategory['children'])) {
+                unset($warningCategories[$warningCategoryId]);
+            }
+        }
+
+        return $warningCategories;
     }
 
     public function groupWarningItemsByWarningCategory(array $warningItems)
