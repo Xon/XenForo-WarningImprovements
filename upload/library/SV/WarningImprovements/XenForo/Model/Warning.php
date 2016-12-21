@@ -269,7 +269,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             $this->getWarningDefinitionsByCategoryId($warningCategoryId)
         );
 
-        $warningItems = array_merge($warningCategories, $warningDefinitions);
+        return array_merge($warningCategories, $warningDefinitions);
     }
 
     public function sortWarningItems(array $warningItems)

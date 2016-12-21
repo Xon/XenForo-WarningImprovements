@@ -107,8 +107,25 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
                 $dw = XenForo_DataWriter::create(
                     'XenForo_DataWriter_WarningDefinition'
                 );
-                $dw->setExistingData($child['warning_definition_id']);
-                $dw->delete();
+
+                if ($child['warning_definition_id'] !== 0) {
+                    $dw->setExistingData($child['warning_definition_id']);
+                    $dw->delete();
+                } else {
+                    $dw->setOption(
+                        SV_WarningImprovements_XenForo_DataWriter_WarningDefinition::IS_CUSTOM,
+                        1
+                    );
+                    $dw->setExistingData($child['warning_definition_id']);
+
+                    $warningCategories = $warningModel->getWarningCategories();
+                    $firstCategory = reset($warningCategories);
+                    $dw->set(
+                        'sv_warning_category_id',
+                        $firstCategory['warning_category_id']
+                    );
+                    $dw->save();
+                }
             }
         }
     }
