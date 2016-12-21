@@ -1,6 +1,13 @@
 <?php
 class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprovements_XenForo_Model_Warning
 {
+    /**
+     * Cached warning categories array.
+     *
+     * @var array
+     */
+    public $warningCategories;
+
     public function isWarningCategory($warningCategory)
     {
         return (
@@ -52,14 +59,18 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return 'sv_warning_category_'.$warningCategoryId.'_title';
     }
 
-    public function getWarningCategories()
+    public function getWarningCategories($fromCache = false)
     {
-        return $this->fetchAllKeyed(
-            'SELECT *
-                FROM xf_sv_warning_category
-                ORDER BY parent_warning_category_id, display_order',
-            'warning_category_id'
-        );
+        if (!$fromCache || empty($this->warningCategories)) {
+            $this->warningCategories = $this->fetchAllKeyed(
+                'SELECT *
+                    FROM xf_sv_warning_category
+                    ORDER BY parent_warning_category_id, display_order',
+                'warning_category_id'
+            );
+        }
+
+        return $this->warningCategories;
     }
 
     public function getWarningCategoriesByParentId($warningCategoryId)
@@ -132,7 +143,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         if ($parentWarningCategoryId !== 0) {
             if (is_null($warningCategories)) {
                 $warningCategories = $this->prepareWarningCategories(
-                    $this->getWarningCategories()
+                    $this->getWarningCategories(true)
                 );
             }
 
@@ -205,7 +216,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
         if (is_null($warningCategories)) {
             $warningCategories = $this->prepareWarningCategories(
-                $this->getWarningCategories()
+                $this->getWarningCategories(true)
             );
         }
 
@@ -348,7 +359,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     ) {
         if (is_null($warningCategories)) {
             $warningCategories = $this->prepareWarningCategories(
-                $this->getWarningCategories()
+                $this->getWarningCategories(true)
             );
         }
 
