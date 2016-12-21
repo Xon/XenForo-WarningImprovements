@@ -138,9 +138,11 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
 
         $warningModel = $this->_getWarningModel();
 
-        if (empty($warningModel->getWarningCategoriesByParentId(
-            $this->get('warning_category_id')
-        ))) {
+        if ($this->isInsert() ||
+            empty($warningModel->getWarningCategoriesByParentId(
+                $this->get('warning_category_id')
+            ))
+        ) {
             $parentWarningCategory = $warningModel->getWarningCategoryById(
                 $parentWarningCategoryId
             );
