@@ -31,8 +31,8 @@ var SV = SV || {};
         'toggleRadio':  $toggler.data('toggleradiotext')
       };
 
-      this.cookieName = 'xf_sv_warningview';
-      this.cookie = $.getCookie(this.cookieName);
+      this.storageName = 'xf_sv_warningview';
+      this.setting = localStorage.getItem(this.storageName);
 
       this.init();
 
@@ -41,11 +41,11 @@ var SV = SV || {};
 
     init: function()
     {
-      if (!this.cookie || !this.cookie.length) {
-        this.setCookie('select');
+      if (!this.setting || !this.setting.length) {
+        this.setSetting('select');
       }
 
-      if (this.cookie == 'select') {
+      if (this.setting == 'select') {
         this.$radioView.remove();
         this.$toggler.text(this.phrases.toggleRadio);
       } else {
@@ -56,19 +56,19 @@ var SV = SV || {};
 
     toggle: function()
     {
-      if (this.cookie == 'select') {
-        this.setCookie('radio');
+      if (this.setting == 'select') {
+        this.setSetting('radio');
       } else {
-        this.setCookie('select');
+        this.setSetting('select');
       }
 
       window.location.reload();
     },
 
-    setCookie: function(value)
+    setSetting: function(value)
     {
-      this.cookie = value;
-      $.setCookie(this.cookieName, this.cookie);
+      this.setting = value;
+      localStorage.setItem(this.storageName, this.setting);
     },
 
     eClick: function(e)
