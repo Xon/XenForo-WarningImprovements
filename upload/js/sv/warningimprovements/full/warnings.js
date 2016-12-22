@@ -112,6 +112,7 @@ var SV = SV || {};
     init: function()
     {
       this.$selector.chosen({
+        'width':                   '98%',
         'inherit_select_classes':  true,
         'no_result_text':          this.phrases.noresults,
         'placeholder_text_single': this.phrases.placeholder
