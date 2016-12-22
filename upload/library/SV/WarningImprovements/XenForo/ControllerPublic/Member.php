@@ -74,6 +74,11 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
         $warningModel = $this->getModelFromCache('XenForo_Model_Warning');
         $warningItems = $warningModel->getWarningItems(true);
 
+        if (empty($warningItems))
+        {
+            return $this->responseError(new XenForo_Phrase('sv_no_permission_to_give_warnings'), 403);
+        }
+
         $warningCategories = $warningModel->groupWarningItemsByWarningCategory(
             $warningItems
         );

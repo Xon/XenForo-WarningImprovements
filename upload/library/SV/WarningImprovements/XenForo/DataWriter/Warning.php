@@ -35,7 +35,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
 
             if (!$warningModel->canViewWarningCategory($warningCategory))
             {
-                $this->error(XenForo_Phrase('sv_no_permission_to_give_warning'));
+                $this->error(new XenForo_Phrase('sv_no_permission_to_give_warning'));
                 return false;
             }
 
