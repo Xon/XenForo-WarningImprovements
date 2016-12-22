@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.5" version_id="1040500" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.6" version_id="1040600" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -655,7 +655,12 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 	data-radioview="#warningViewRadio"
 	data-toggleselecttext="{xen:phrase sv_toggle_select_view}"
 	data-toggleradiotext="{xen:phrase sv_toggle_radio_view}"></a>]]></template>
-    <template title="sv_member_warn_chooser.css" version_id="1040200" version_string="1.4.2"><![CDATA[#warningViewSelect select
+    <template title="sv_member_warn_chooser.css" version_id="1040600" version_string="1.4.6"><![CDATA[#warningViewSelect dd
+{
+	overflow: visible;
+}
+
+#warningViewSelect select
 {
 	width: 100%;
 }
@@ -762,7 +767,7 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 		</xen:if>
 	</div>
 </div>]]></template>
-    <template title="sv_warning_improvement_js" version_id="1040300" version_string="1.4.3"><![CDATA[<script>
+    <template title="sv_warning_improvement_js" version_id="1040600" version_string="1.4.6"><![CDATA[<script>
 !function($, window, document, _undefined)
 {
 	<xen:if is="{$xenOptions.sv_warningimprovements_continue_button}">
@@ -825,8 +830,8 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 	XenForo.register('input[id=customWarning]', 'XenForo.CustomWarningRadioButton');
 	XenForo.WarningDefSelectOption = function($select)
 	{
-		$select.change(function(e, data) {
-			var id = data.selected;
+		$select.change(function(e) {
+			var id = $(e.target).val();
 			
 			if (id != 0)
 			{
