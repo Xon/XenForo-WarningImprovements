@@ -168,10 +168,10 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 
 <xen:if is="{$debugMode}">
 	<xen:require js="js/jsTree/jstree.js" />
-	<xen:require js="js/sv/warningimprovements/full/warnings.js" />
+	<xen:require js="js/V/WarningImprovements/full/warnings.js" />
 <xen:else />
 	<xen:require js="js/jsTree/jstree.min.js" />
-	<xen:require js="js/sv/warningimprovements/warnings.js" />
+	<xen:require js="js/SV/WarningImprovements/warnings.js" />
 </xen:if>
 
 <div class="section">
@@ -586,15 +586,15 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 </xen:foreach>
 </table>
 </div>]]></template>
-    <template title="sv_member_warn_chooser" version_id="1040400" version_string="1.4.4"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
+    <template title="sv_member_warn_chooser" version_id="1040500" version_string="1.4.5"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
 <xen:require css="sv_member_warn_chooser.css" />
 
 <xen:if is="{$debugMode}">
 	<xen:require js="js/chosen/chosen.jquery.js" />
-	<xen:require js="js/sv/warningimprovements/full/warnings.js" />
+	<xen:require js="js/SV/WarningImprovements/full/warnings.js" />
 <xen:else />
 	<xen:require js="js/chosen/chosen.jquery.min.js" />
-	<xen:require js="js/sv/warningimprovements/warnings.js" />
+	<xen:require js="js/SV/WarningImprovements/warnings.js" />
 </xen:if>
 
 <div id="warningViewSelect">
