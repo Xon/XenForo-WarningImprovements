@@ -597,7 +597,7 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 	<xen:require js="js/SV/WarningImprovements/warnings.js" />
 </xen:if>
 
-<div id="warningViewSelect">
+<div id="warningViewSelect" class="JsOnly">
 	<dl class="ctrlUnit">
 		<dt>{xen:phrase warning_type}:</dt>
 		
@@ -650,7 +650,7 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 	</xen:foreach>
 </div>
 
-<a id="warningViewToggle" class="WarningViewToggler" href="#"
+<a id="warningViewToggle" class="WarningViewToggler JsOnly" href="#"
 	data-selectview="#warningViewSelect"
 	data-radioview="#warningViewRadio"
 	data-toggleselecttext="{xen:phrase sv_toggle_select_view}"
