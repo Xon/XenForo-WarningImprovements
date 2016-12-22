@@ -112,16 +112,16 @@ var SV = SV || {};
     init: function()
     {
       this.$selector.chosen({
-        'width':                   '98%',
+        'width':                   '100%',
         'inherit_select_classes':  true,
         'no_result_text':          this.phrases.noresults,
         'placeholder_text_single': this.phrases.placeholder
       });
     },
 
-    eChange: function(e, data)
+    eChange: function(e)
     {
-      var id = data.selected;
+      var id = $(e.target).val();
 
       this.$selector.find('option[value="'+id+'"]').trigger('click');
 
