@@ -168,7 +168,7 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 
 <xen:if is="{$debugMode}">
 	<xen:require js="js/jsTree/jstree.js" />
-	<xen:require js="js/V/WarningImprovements/full/warnings.js" />
+	<xen:require js="js/SV/WarningImprovements/full/warnings.js" />
 <xen:else />
 	<xen:require js="js/jsTree/jstree.min.js" />
 	<xen:require js="js/SV/WarningImprovements/warnings.js" />
