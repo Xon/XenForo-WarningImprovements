@@ -83,7 +83,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         ', 'warning_action_id', array($userId));
     }
 
-    public function prepareWarningActions($warningActions)
+    public function prepareWarningActions(array $warningActions)
     {
         $actions = array();
         foreach($warningActions as $warningAction)
