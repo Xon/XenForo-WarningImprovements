@@ -67,27 +67,19 @@ class SV_WarningImprovements_Installer
 
         if ($version < 1040000)
         {
-            // create default warning category
-            $categoryDw = XenForo_DataWriter::create(
-                'SV_WarningImprovements_DataWriter_WarningCategory'
-            );
-            $categoryDw->bulkSet(array(
-                'parent_warning_category_id' => 0,
-                'display_order'              => 0
-            ));
-            $categoryDw->setExtraData(
-                SV_WarningImprovements_DataWriter_WarningCategory::DATA_TITLE,
-                'Warnings'
-            );
-            $categoryDw->save();
-
-            $defaultCategory = $categoryDw->getMergedData();
-
-            // set all warning definitions to be in default warning category
-            $db->update('xf_warning_definition', array(
-                'sv_warning_category_id' => $defaultCategory['warning_category_id'],
-                'sv_display_order'       => 0
-            ));
+            // make sure the model is loaded before accessing the static properties 
+            XenForo_Model::create("XenForo_Model_User"); 
+            // set default permission values for Registered group
+            $user_group_id = XenForo_Model_User::$defaultRegisteredGroupId;
+            // create default warning category, do not use the data writer as that requires the rest of the add-on to be setup
+            $db->query("insert ignore into xf_sv_warning_category (warning_category_id, parent_warning_category_id, display_order, allowed_user_group_ids)
+                values (1, 0, 0, ?)
+            ", array($user_group_id));
+            // set all warning definitions to be in default warning category, note; the phrase is defined in the XML
+            $db->query('update xf_warning_definition
+                set sv_warning_category_id = 1
+                where sv_warning_category_id = 0
+            ');
         }
 
         $db->query("
