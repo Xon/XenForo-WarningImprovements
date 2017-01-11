@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.4.7" version_id="1040700" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.5.0 RC 1" version_id="1050002" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -99,13 +99,73 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 		</xen:if>
 	</xen:submitunit>
 </xen:form>]]></template>
-    <template title="sv_warning_action_edit"><![CDATA[<xen:selectunit label="{xen:phrase sv_warning_node_id}:" name="sv_post_node_id" value="{$action.sv_post_node_id}">
-	<xen:options source="$nodeList" />
-	<xen:explain>{xen:phrase sv_warning_action_post_new_thread}</xen:explain>
-</xen:selectunit>
+    <template title="sv_warning_action_edit"><![CDATA[<fieldset>
+	<xen:selectunit label="{xen:phrase sv_warning_category}:" name="sv_warning_category_id" value="{$action.sv_warning_category_id}">
+		<xen:option value="0" label="({xen:phrase none})" />
+		<xen:options source="$warningCategories" />
+	</xen:selectunit>
+</fieldset>
 
-<xen:spinboxunit label="{xen:phrase sv_warning_thread_id}:" explain="{xen:phrase sv_warning_action_post_thread_reply}" name="sv_post_thread_id" value="{$action.sv_post_thread_id}" />
-<xen:spinboxunit label="{xen:phrase sv_warning_post_as_user_id}:" explain="{xen:phrase sv_warning_action_post_as_user}" name="sv_post_as_user_id" value="{$action.sv_post_as_user_id}" />]]></template>
+<fieldset>
+	<xen:selectunit label="{xen:phrase sv_warning_node_id}:" name="sv_post_node_id" value="{$action.sv_post_node_id}">
+		<xen:options source="$nodeList" />
+		<xen:explain>{xen:phrase sv_warning_action_post_new_thread}</xen:explain>
+	</xen:selectunit>
+
+	<xen:spinboxunit label="{xen:phrase sv_warning_thread_id}:" explain="{xen:phrase sv_warning_action_post_thread_reply}" name="sv_post_thread_id" value="{$action.sv_post_thread_id}" />
+	<xen:spinboxunit label="{xen:phrase sv_warning_post_as_user_id}:" explain="{xen:phrase sv_warning_action_post_as_user}" name="sv_post_as_user_id" value="{$action.sv_post_as_user_id}" />
+</fieldset>]]></template>
+    <template title="sv_warning_action_list"><![CDATA[<xen:if is="{$warningActionCategories}">
+	<xen:form action="{xen:adminlink warnings}" class="section">
+		<h2 class="subHeading">
+			{xen:phrase warning_actions}
+		</h2>
+
+		<ol class="FilterList Scrollable">
+			<xen:foreach loop="$warningActionCategories" key="$warningActionCategoryId" value="$warningActionCategory">
+				<li>
+					<h3 class="textHeading" style="text-align: right">
+						<span style="float: left">
+							<xen:if is="{$warningActionCategoryId}">
+								<a href="{xen:adminlink warnings/category-edit, '', 'warning_category_id={$warningActionCategoryId}'}" title="{xen:phrase edit_category}">{$warningActionCategory.title}</a>
+							<xen:else />
+								{xen:phrase sv_global_warning_actions}
+							</xen:if>
+						</span>
+						<span style="font-weight: normal">
+							<xen:if is="{$warningActionCategoryId}">
+								<a href="{xen:adminlink warnings/category-edit, '', 'warning_category_id={$warningActionCategoryId}'}" title="{xen:phrase edit_category}">{xen:phrase edit}</a>
+								|
+							</xen:if>
+							<a href="{xen:adminlink warnings/action-add, '', 'warning_category_id={$warningActionCategoryId}'}">{xen:phrase create_new_warning_action}</a>
+						</span>
+					</h3>
+					<ol>
+						<xen:foreach loop="$warningActionCategory.actions" value="$action">
+							<xen:listitem
+								id="action-{$action.warning_action_id}"
+								label="{xen:phrase points}: {$action.points}"
+								href="{xen:adminlink warnings/action/edit, $action}"
+								delete="{xen:adminlink warnings/action/delete, $action}"
+							>
+								<xen:snippet>
+									{xen:if "{$action.action} == 'ban'", '{xen:phrase ban}',
+										{xen:if "{$action.action} == 'discourage'", '{xen:phrase discourage}',
+										{xen:if "{$action.action} == 'groups'", '{xen:phrase add_to_selected_groups}'}
+									}},
+									{xen:if "{$action.action_length_type} == 'permanent'", '{xen:phrase permanent}',
+										{xen:if "{$action.action_length_type} == 'points'", '{xen:phrase while_at_or_above_points_threshold}',
+										'{xen:phrase temporary}'
+									}}
+								</xen:snippet>
+							</xen:listitem>
+						</xen:foreach>
+					</ol>
+				</li>
+			</xen:foreach>
+		</ol>
+	</xen:form>
+</xen:if>]]></template>
     <template title="sv_warning_category_delete"><![CDATA[<xen:title>{xen:phrase sv_confirm_deletion_of_warning_category}: {$warningCategory.title}</xen:title>
 <xen:h1>{xen:phrase sv_confirm_deletion_of_warning_category}</xen:h1>
 
@@ -285,6 +345,10 @@ $2]]></replace>
     <modification template="warning_list" modification_key="sv_warningimprovements_warning_list3" description="Display warning items in jsTree instance" execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[#<xen:form action="{xen:adminlink warnings}" class="section">\s*<xen:if is="{\$warnings}">.*?</xen:form>#si]]></find>
       <replace><![CDATA[<xen:include template="sv_warning_list_jstree" />]]></replace>
+    </modification>
+    <modification template="warning_list" modification_key="sv_warningimprovements_warning_list5" description="Groups warning actions by category" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:if is="{\$warningActions}">[\S\s]+</xen:if>#]]></find>
+      <replace><![CDATA[<xen:include template="sv_warning_action_list" />]]></replace>
     </modification>
   </admin_template_modifications>
   <code_events/>
@@ -482,6 +546,7 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="sv_discouraged_display_none" version_id="101000" version_string="1.1.0"><![CDATA[Never]]></phrase>
     <phrase title="sv_edit_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Edit Warning Category]]></phrase>
     <phrase title="sv_edit_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Edit Warning Default]]></phrase>
+    <phrase title="sv_global_warning_actions" version_id="1050001" version_string="1.5.0 Alpha 1"><![CDATA[Global Warning Actions]]></phrase>
     <phrase title="sv_increase_default_expiry_by_x" version_id="102001" version_string="1.2.0"><![CDATA[ increase default expiry by {length}]]></phrase>
     <phrase title="sv_no_permission_to_give_warning" version_id="1040100" version_string="1.4.1"><![CDATA[You don't have permission to give this warning.]]></phrase>
     <phrase title="sv_no_permission_to_give_warnings" version_id="1040500" version_string="1.4.5"><![CDATA[You don't have permission to any warnings.]]></phrase>

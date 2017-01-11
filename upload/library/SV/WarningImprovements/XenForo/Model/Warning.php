@@ -28,6 +28,16 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         );
     }
 
+    public function isWarningAction($warningAction)
+    {
+        return (
+            !(empty($warningAction)) &&
+            is_array($warningAction) &&
+            array_key_exists('warning_action_id', $warningAction) &&
+            array_key_exists('sv_warning_category_id', $warningAction)
+        );
+    }
+
     public function isWarningItemsArray($warningItems)
     {
         if (is_array($warningItems))
@@ -40,7 +50,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             {
                 return (
                     $this->isWarningCategory(reset($warningItems)) or
-                    $this->isWarningDefinition(reset($warningItems))
+                    $this->isWarningDefinition(reset($warningItems)) or
+                    $this->isWarningAction(reset($warningItems))
                 );
             }
         }
@@ -120,6 +131,49 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $parentWarningCategory = $warningCategories[$parentWarningCategoryId];
 
         return $this->getRootWarningCategoryByWarningItem($parentWarningCategory);
+    }
+
+    public function getParentWarningCategoriesByWarningItem(
+        $warningItem,
+        $warningCategories = null,
+        $parentWarningCategories = array()
+    )
+    {
+        if (is_null($warningCategories))
+        {
+            $warningCategories = $this->prepareWarningCategories(
+                $this->getWarningCategories(true)
+            );
+        }
+
+        $parentWarningCategoryId = 0;
+
+        if ($this->isWarningCategory($warningItem))
+        {
+            $parentWarningCategoryId = $warningItem['parent_warning_category_id'];
+        }
+        elseif (
+            $this->isWarningDefinition($warningItem) ||
+            $this->isWarningAction($warningItem)
+        )
+        {
+            $parentWarningCategoryId = $warningItem['sv_warning_category_id'];
+        }
+
+        if ($parentWarningCategoryId === 0)
+        {
+            return $parentWarningCategories;
+        }
+
+        $parentWarningCategory = $warningCategories[$parentWarningCategoryId];
+
+        $parentWarningCategories[$parentWarningCategoryId] = $parentWarningCategory;
+
+        return $this->getParentWarningCategoriesByWarningItem(
+            $parentWarningCategory,
+            $warningCategories,
+            $parentWarningCategories
+        );
     }
 
     public function getWarningCategoryOptions($rootOnly = false)
@@ -285,6 +339,32 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return true;
     }
 
+    public function getWarningActions()
+    {
+        if (SV_WarningImprovements_Globals::$filterActionsByCategory &&
+            SV_WarningImprovements_Globals::$warningDefinitionObj !== null
+        ) {
+            $parentCategories = $this->getParentWarningCategoriesByWarningItem(
+                SV_WarningImprovements_Globals::$warningDefinitionObj
+            );
+
+            $categoryIds = array_merge(array(0), array_column(
+                $parentCategories,
+                'warning_category_id'
+            ));
+
+            return $this->fetchAllKeyed(
+                'SELECT *
+                    FROM xf_warning_action
+                    WHERE sv_warning_category_id
+                        IN ('.$this->_db->quote($categoryIds).')
+                    ORDER BY points',
+                'warning_action_id'
+            );
+        }
+
+        return parent::getWarningActions();
+    }
 
     public function getWarningItems($filterViewable = false)
     {
@@ -603,7 +683,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function groupWarningItemsByWarningCategory(array $warningItems)
     {
-        $warningCategories = array();
+        $warningCategories = array(0 => array());
 
         foreach ($warningItems as $warningItemId => $warningItem)
         {
@@ -618,12 +698,19 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                 $categoryId = $warningItem['sv_warning_category_id'];
                 $warningCategories[$categoryId]['warnings'][$definitionId] = $warningItem;
             }
+            elseif ($this->isWarningAction($warningItem))
+            {
+                $actionId= $warningItem['warning_action_id'];
+                $categoryId = $warningItem['sv_warning_category_id'];
+                $warningCategories[$categoryId]['actions'][$actionId] = $warningItem;
+            }
         }
 
         foreach ($warningCategories as $warningCategoryId => $warningCategory)
         {
-            if (empty($warningCategory['warnings']))
-            {
+            if (empty($warningCategory['warnings']) &&
+                empty($warningCategory['actions'])
+            ) {
                 unset($warningCategories[$warningCategoryId]);
             }
         }
@@ -779,9 +866,17 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     protected $lastWarningAction = null;
 
-    protected function _userWarningPointsIncreased($userId, $newPoints, $oldPoints)
-    {
+    protected function _userWarningPointsIncreased(
+        $userId,
+        $newPoints,
+        $oldPoints
+    ) {
+        SV_WarningImprovements_Globals::$filterActionsByCategory = true;
+
         parent::_userWarningPointsIncreased($userId, $newPoints, $oldPoints);
+
+        SV_WarningImprovements_Globals::$filterActionsByCategory = false;
+
         // only do the last post action
         if ($this->lastWarningAction)
         {

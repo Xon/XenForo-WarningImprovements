@@ -4,9 +4,26 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 {
     public function actionIndex()
     {
-        $view = parent::actionIndex();
-        $view->params['warningEscalatingDefaults'] = $this->_getWarningModel()->getWarningDefaultExtentions();
-        return $view;
+        $response = parent::actionIndex();
+        $viewParams = &$response->params;
+
+        $warningModel = $this->_getWarningModel();
+
+        $warningEscalatingDefaults = $warningModel->getWarningDefaultExtentions();
+
+        $warningCategories = $warningModel->prepareWarningCategories(
+            $warningModel->getWarningCategories(true)
+        );
+        $warningActions = $viewParams['warningActions'];
+        $warningItems = array_merge($warningCategories, $warningActions);
+
+        $warningActionCategories = $warningModel
+            ->groupWarningItemsByWarningCategory($warningItems);
+
+        $viewParams['warningEscalatingDefaults'] = $warningEscalatingDefaults;
+        $viewParams['warningActionCategories'] = $warningActionCategories;
+
+        return $response;
     }
 
     public function actionLoadTree()
@@ -242,9 +259,25 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
     protected function _getActionAddEditResponse(array $action)
     {
+        if (!isset($action['sv_warning_category_id']))
+        {
+            $warningCategoryId = $this->_input->filterSingle(
+                'warning_category_id',
+                \XenForo_Input::UINT
+            );
+
+            $action['sv_warning_category_id'] = $warningCategoryId;
+        }
+
         $response = parent::_getActionAddEditResponse($action);
+
         if ($response instanceof XenForo_ControllerResponse_View)
         {
+            $viewParams = &$response->params;
+
+            $viewParams['warningCategories'] = $this->_getWarningModel()
+                ->getWarningCategoryOptions();
+
             $nodeList = array();
             $nodeModel = XenForo_Model::create('XenForo_Model_Node');
 
@@ -254,7 +287,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                 sprintf('(%s)', new XenForo_Phrase('unspecified'))
             );
 
-            foreach ($nodeList AS &$option)
+            foreach ($nodeList as &$option)
             {
                 if (!empty($option['node_type_id']) && $option['node_type_id'] != 'Forum')
                 {
@@ -264,7 +297,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                 unset($nodeList['node_type_id']);
             }
 
-            $response->params['nodeList'] = $nodeList;
+            $viewParams['nodeList'] = $nodeList;
         }
 
         return $response;
@@ -356,11 +389,17 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
     public function actionActionSave()
     {
         SV_WarningImprovements_Globals::$warningActionInput = $this->_input->filter(array(
-            'sv_post_node_id' => XenForo_Input::UINT,
-            'sv_post_thread_id' => XenForo_Input::UINT,
-            'sv_post_as_user_id' => XenForo_Input::UINT,
+            'sv_post_node_id'        => XenForo_Input::UINT,
+            'sv_post_thread_id'      => XenForo_Input::UINT,
+            'sv_post_as_user_id'     => XenForo_Input::UINT,
+            'sv_warning_category_id' => XenForo_Input::UINT
         ));
-        return parent::actionActionSave();
+
+        $response = parent::actionActionSave();
+
+        SV_WarningImprovements_Globals::$warningActionInput = null;
+
+        return $response;
     }
 
     protected function _getCategoryAddEditResponse(array $warningCategory)

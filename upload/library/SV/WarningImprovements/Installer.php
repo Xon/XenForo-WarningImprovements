@@ -53,6 +53,12 @@ class SV_WarningImprovements_Installer
             'INT UNSIGNED NOT NULL DEFAULT 0'
         );
 
+        SV_Utils_Install::addColumn(
+            'xf_warning_action',
+            'sv_warning_category_id',
+            'INT UNSIGNED NOT NULL DEFAULT 0'
+        );
+
         if ($version == 0)
         {
             // insert the defaults for the custom warning. This can't be normally inserted so fiddle with the sql_mode
