@@ -157,6 +157,11 @@ class SV_WarningImprovements_Installer
             'sv_display_order'
         );
 
+        SV_Utils_Install::dropColumn(
+            'xf_warning_action',
+            'sv_warning_category_id'
+        );
+
         $db->query("
             DELETE FROM xf_permission_entry
             WHERE permission_group_id = 'general' and permission_id = 'sv_editWarningActions'
