@@ -366,6 +366,18 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return parent::getWarningActions();
     }
 
+    public function getWarningActionsByCategoryId($warningCategoryId)
+    {
+        return $this->fetchAllKeyed(
+            'SELECT *
+                FROM xf_warning_action
+                WHERE sv_warning_category_id = ?
+                ORDER BY points',
+            'warning_action_id',
+            $warningCategoryId
+        );
+    }
+
     public function getWarningItems($filterViewable = false)
     {
         $warningCategories = $this->prepareWarningCategories(
@@ -399,8 +411,15 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $warningDefinitions = $this->prepareWarningDefinitions(
             $this->getWarningDefinitionsByCategoryId($warningCategoryId)
         );
+        $warningActions = $this->getWarningActionsByCategoryId(
+            $warningCategoryId
+        );
 
-        return array_merge($warningCategories, $warningDefinitions);
+        return array_merge(
+            $warningCategories,
+            $warningDefinitions,
+            $warningActions
+        );
     }
 
     public function sortWarningItems(array $warningItems)
