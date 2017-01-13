@@ -146,6 +146,7 @@ var SV = SV || {};
     {
       this.$tree = $tree;
 
+      this.overlay = $tree.data('overlay');
       this.$searchInput = $($tree.data('searchinput'));
 
       this.urls = {
@@ -181,7 +182,6 @@ var SV = SV || {};
             'contextmenu',
             'dnd',
             'search',
-            'state',
             'types',
             'wholerow'
           ],
@@ -392,6 +392,11 @@ var SV = SV || {};
     eReady: function()
     {
       this.sync();
+      if (this.overlay)
+      {
+        this.$tree.find('.jstree-anchor').addClass('OverlayTrigger');
+        this.$tree.xfActivate();
+      }
 
       if (localStorage.getItem('xf_sv_warningitemtree') === null)
       {
