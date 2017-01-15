@@ -378,8 +378,10 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         );
     }
 
-    public function getWarningItems($filterViewable = false)
+    public function getWarningItems($filterViewable = false, array $viewingUser = null)
     {
+        $this->standardizeViewingUserReference($viewingUser);
+
         $warningCategories = $this->prepareWarningCategories(
             $this->getWarningCategories()
         );
@@ -393,7 +395,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         {
             $warningItems = $this->filterViewableWarningItems(
                 $warningItems,
-                $warningCategories
+                $warningCategories,
+                $viewingUser
             );
         }
 
@@ -521,8 +524,11 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function filterViewableWarningItems(
         array $warningItems,
-        array $warningCategories = null
+        array $warningCategories = null,
+        array $viewingUser = null
     ) {
+        $this->standardizeViewingUserReference($viewingUser);
+
         if ($warningCategories === null)
         {
             $warningCategories = $this->prepareWarningCategories(
@@ -536,7 +542,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             {
                 if (!$this->canViewWarningCategory(
                     $warningItem,
-                    $warningCategories
+                    $warningCategories,
+                    $viewingUser
                 )) {
                     unset($warningItems[$warningItemId]);
                 }
@@ -545,7 +552,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             {
                 if (!$this->canViewWarningDefinition(
                     $warningItem,
-                    $warningCategories
+                    $warningCategories,
+                    $viewingUser
                 )) {
                     unset($warningItems[$warningItemId]);
                 }
