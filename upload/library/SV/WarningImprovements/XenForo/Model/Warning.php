@@ -107,7 +107,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         array $warningItem,
         array $warningCategories = null
     ) {
-        if (is_null($warningCategories))
+        if ($warningCategories === null)
         {
             $warningCategories = $this->prepareWarningCategories(
                 $this->getWarningCategories(true)
@@ -139,7 +139,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $parentWarningCategories = array()
     )
     {
-        if (is_null($warningCategories))
+        if ($warningCategories === null)
         {
             $warningCategories = $this->prepareWarningCategories(
                 $this->getWarningCategories(true)
@@ -240,7 +240,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $parentWarningCategoryId = $warningCategory['parent_warning_category_id'];
         if ($parentWarningCategoryId !== 0)
         {
-            if (is_null($warningCategories))
+            if ($warningCategories === null)
             {
                 $warningCategories = $this->prepareWarningCategories(
                     $this->getWarningCategories(true)
@@ -317,7 +317,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     ) {
         $this->standardizeViewingUserReference($viewingUser);
 
-        if (is_null($warningCategories))
+        if ($warningCategories === null)
         {
             $warningCategories = $this->prepareWarningCategories(
                 $this->getWarningCategories(true)
@@ -523,7 +523,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         array $warningItems,
         array $warningCategories = null
     ) {
-        if (is_null($warningCategories))
+        if ($warningCategories === null)
         {
             $warningCategories = $this->prepareWarningCategories(
                 $this->getWarningCategories(true)

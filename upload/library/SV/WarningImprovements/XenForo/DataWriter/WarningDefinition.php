@@ -48,7 +48,7 @@ class SV_WarningImprovements_XenForo_DataWriter_WarningDefinition extends XFCP_S
 
         $warningDefinitionInput = SV_WarningImprovements_Globals::$warningDefinitionInput;
 
-        if (!is_null($warningDefinitionInput))
+        if ($warningDefinitionInput !== null)
         {
             $this->bulkSet($warningDefinitionInput);
         }
