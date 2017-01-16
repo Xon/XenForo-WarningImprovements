@@ -1030,7 +1030,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     ) {
         SV_WarningImprovements_Globals::$filterActionsByCategory = true;
 
-        parent::_userWarningPointsIncreased($userId, $newPoints, $oldPoints);
+        // old points may vary by warning action (and be less than $oldPoints)
+        parent::_userWarningPointsIncreased($userId, $newPoints, 0);
 
         SV_WarningImprovements_Globals::$filterActionsByCategory = false;
 
