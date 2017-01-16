@@ -6,7 +6,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
      *
      * @var array
      */
-    public $warningCategories;
+    protected $_warningCategories;
 
     /**
      * Cached user warning points array.
@@ -85,9 +85,9 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function getWarningCategories($fromCache = false)
     {
-        if (!$fromCache || empty($this->warningCategories))
+        if (!$fromCache || empty($this->_warningCategories))
         {
-            $this->warningCategories = $this->fetchAllKeyed(
+            $this->_warningCategories = $this->fetchAllKeyed(
                 'SELECT *
                     FROM xf_sv_warning_category
                     ORDER BY parent_warning_category_id, display_order',
@@ -95,7 +95,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             );
         }
 
-        return $this->warningCategories;
+        return $this->_warningCategories;
     }
 
     public function getWarningCategoriesByParentId(
