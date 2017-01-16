@@ -256,8 +256,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         );
 
         if (!in_array($viewingUser['user_group_id'], $allowedUserGroupIds) &&
-            empty($matchingSecondaryUserGroupIds)
-        ) {
+            empty($matchingSecondaryUserGroupIds))
+        {
             return false;
         }
 
@@ -615,14 +615,21 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                     $node['parent'] = '#';
                 }
                 $node['state']['opened'] = 1;
-                $node['a_attr']["href"] = XenForo_Link::buildAdminLink('warnings/category-edit', array(), array('warning_category_id' => $warningItem['warning_category_id']));
+                $node['a_attr']['href'] = XenForo_Link::buildAdminLink(
+                    'warnings/category-edit',
+                    array(),
+                    array('warning_category_id' => $warningItem['warning_category_id'])
+                );
             }
             elseif ($this->isWarningDefinition($warningItem))
             {
                 $node['id'] = 'd'.$warningItem['warning_definition_id'];
                 $node['type'] = 'definition';
                 $node['parent'] = 'c'.$warningItem['sv_warning_category_id'];
-                $node['a_attr']["href"] = XenForo_Link::buildAdminLink('warnings/edit', $warningItem);
+                $node['a_attr']['href'] = XenForo_Link::buildAdminLink(
+                    'warnings/edit',
+                    $warningItem
+                );
             }
 
             $node['text'] = $warningItem['title'];
@@ -701,18 +708,13 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         {
             if ($this->isWarningCategory($warningItem))
             {
-                $warningItemId = $warningItem['warning_category_id'];
-
                 if ($warningItem['parent_warning_category_id'] === 0)
                 {
+                    $warningItemId = $warningItem['warning_category_id'];
                     $warningCategories[$warningItemId] = $warningItem;
 
                     continue;
                 }
-            }
-            elseif ($this->isWarningDefinition($warningItem))
-            {
-                $warningItemId = $warningItem['warning_definition_id'];
             }
 
             $rootWarningCategory = $this->getRootWarningCategoryByWarningItem(
