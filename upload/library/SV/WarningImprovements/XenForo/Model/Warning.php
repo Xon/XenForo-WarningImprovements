@@ -8,6 +8,13 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
      */
     public $warningCategories;
 
+    /**
+     * Cached user warning points array.
+     *
+     * @var array
+     */
+    protected $_userWarningPoints;
+
     public function isWarningCategory($warningCategory)
     {
         return (
@@ -91,15 +98,32 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $this->warningCategories;
     }
 
-    public function getWarningCategoriesByParentId($warningCategoryId)
-    {
+    public function getWarningCategoriesByParentId(
+        $parentWarningCategoryId,
+        array $warningCategories = null
+    ) {
+        if ($warningCategories !== null)
+        {
+            $children = array();
+
+            foreach ($warningCategories as $warningCategoryId => $warningCategory)
+            {
+                if ($warningCategory['parent_warning_category_id'] === $parentWarningCategoryId)
+                {
+                    $children[$warningCategoryId] = $warningCategory;
+                }
+            }
+
+            return $children;
+        }
+
         return $this->fetchAllKeyed(
             'SELECT *
                 FROM xf_sv_warning_category
                 WHERE parent_warning_category_id = ?
                 ORDER BY display_order',
             'warning_category_id',
-            $warningCategoryId
+            $parentWarningCategoryId
         );
     }
 
@@ -893,6 +917,89 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     protected $lastWarningAction = null;
 
+    protected function getUserWarningPointsByCategory($userId)
+    {
+        if (!empty($this->_userWarningPoints[$userId]))
+        {
+            return $this->_userWarningPoints[$userId];
+        }
+
+        $warningCategories = $this->getWarningCategories(true);
+        $warningDefinitions = $this->getWarningDefinitions();
+        $warnings = $this->getWarningsByUser($userId);
+
+        if (SV_WarningImprovements_Globals::$warningObj !== null)
+        {
+            $newWarning = SV_WarningImprovements_Globals::$warningObj;
+        }
+        else
+        {
+            $newWarning = null;
+        }
+
+        $warningPoints = array();
+        foreach ($warnings as $warning)
+        {
+            $warningDefinitionId = $warning['warning_definition_id'];
+
+            if (empty($warningDefinitions[$warningDefinitionId]))
+            {
+                continue;
+            }
+
+            $warningDefinition = $warningDefinitions[$warningDefinitionId];
+            $warningCategoryId = $warningDefinition['sv_warning_category_id'];
+
+            if (empty($warningPoints[$warningCategoryId]))
+            {
+                $warningPoints[$warningCategoryId]['old'] = 0;
+                $warningPoints[$warningCategoryId]['new'] = 0;
+            }
+
+            if ($newWarning === null ||
+                $warning['warning_id'] != $newWarning['warning_id'])
+            {
+                $warningPoints[$warningCategoryId]['old'] += $warning['points'];
+            }
+
+            $warningPoints[$warningCategoryId]['new'] += $warning['points'];
+        }
+
+        $warningPointsCumulative = array();
+        foreach ($warningCategories as $warningCategoryId => $warningCategory)
+        {
+            if (empty($warningPoints[$warningCategoryId]))
+            {
+                $warningPoints[$warningCategoryId]['old'] = 0;
+                $warningPoints[$warningCategoryId]['new'] = 0;
+            }
+
+            $oldPoints = $warningPoints[$warningCategoryId]['old'];
+            $newPoints = $warningPoints[$warningCategoryId]['new'];
+
+            $children = $this->getWarningCategoriesByParentId(
+                $warningCategoryId,
+                $warningCategories
+            );
+
+            foreach ($children as $childCategoryId => $child)
+            {
+                if (!empty($warningPoints[$childCategoryId]))
+                {
+                    $oldPoints += $warningPoints[$childCategoryId]['old'];
+                    $newPoints += $warningPoints[$childCategoryId]['new'];
+                }
+            }
+
+            $warningPointsCumulative[$warningCategoryId]['old'] = $oldPoints;
+            $warningPointsCumulative[$warningCategoryId]['new'] = $newPoints;
+        }
+
+        $this->_userWarningPoints[$userId] = $warningPointsCumulative;
+
+        return $warningPointsCumulative;
+    }
+
     protected function _userWarningPointsIncreased(
         $userId,
         $newPoints,
@@ -928,13 +1035,29 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function triggerWarningAction($userId, array $action)
     {
+        $userWarningPoints = $this->getUserWarningPointsByCategory($userId);
+
+        $warningCategoryId = $action['sv_warning_category_id'];
+        $points = $userWarningPoints[$warningCategoryId];
+
+        if ($action['points'] <= $points['old'])
+        {
+            return false;
+        }
+        elseif ($action['points'] > $points['new'])
+        {
+            return false;
+        }
+
         $triggerId = parent::triggerWarningAction($userId, $action);
+
         if (SV_WarningImprovements_Globals::$NotifyOnWarningAction &&
             (empty($this->lastWarningAction) || $action['points'] > $this->lastWarningAction['points']) &&
             (!empty($action['sv_post_node_id']) || !empty($action['sv_post_thread_id'])))
         {
             $this->lastWarningAction = $action;
         }
+
         return $triggerId;
     }
 
