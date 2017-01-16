@@ -262,23 +262,24 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
 
         $parentWarningCategoryId = $warningCategory['parent_warning_category_id'];
-        if ($parentWarningCategoryId !== 0)
-        {
-            if ($warningCategories === null)
-            {
-                $warningCategories = $this->prepareWarningCategories(
-                    $this->getWarningCategories(true)
-                );
-            }
 
-            return $this->canViewWarningCategory(
-                $warningCategories[$parentWarningCategoryId],
-                $warningCategories,
-                $viewingUser
+        if ($parentWarningCategoryId === 0)
+        {
+            return true;
+        }
+
+        if ($warningCategories === null)
+        {
+            $warningCategories = $this->prepareWarningCategories(
+                $this->getWarningCategories(true)
             );
         }
 
-        return true;
+        return $this->canViewWarningCategory(
+            $warningCategories[$parentWarningCategoryId],
+            $warningCategories,
+            $viewingUser
+        );
     }
 
     public function prepareWarningCategory(array $warningCategory)
