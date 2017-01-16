@@ -917,7 +917,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     protected $lastWarningAction = null;
 
-    protected function getUserWarningPointsByCategory($userId)
+    public function getUserWarningPointsByCategory($userId)
     {
         if (!empty($this->_userWarningPoints[$userId]))
         {
@@ -938,34 +938,57 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
 
         $warningPoints = array();
+        $warningPointsCumulative = array(
+            0 => array(
+                'old' => 0,
+                'new' => 0
+            )
+        );
+
         foreach ($warnings as $warning)
         {
-            $warningDefinitionId = $warning['warning_definition_id'];
-
-            if (empty($warningDefinitions[$warningDefinitionId]))
+            if ($warning['is_expired'])
             {
                 continue;
             }
 
-            $warningDefinition = $warningDefinitions[$warningDefinitionId];
-            $warningCategoryId = $warningDefinition['sv_warning_category_id'];
+            $warningDefinitionId = $warning['warning_definition_id'];
 
-            if (empty($warningPoints[$warningCategoryId]))
+            if (empty($warningDefinitions[$warningDefinitionId]))
             {
-                $warningPoints[$warningCategoryId]['old'] = 0;
-                $warningPoints[$warningCategoryId]['new'] = 0;
+                $warningCategoryId = false;
+            }
+            else
+            {
+                $warningDefinition = $warningDefinitions[$warningDefinitionId];
+                $warningCategoryId = $warningDefinition['sv_warning_category_id'];
+
+                if (empty($warningPoints[$warningCategoryId]))
+                {
+                    $warningPoints[$warningCategoryId]['old'] = 0;
+                    $warningPoints[$warningCategoryId]['new'] = 0;
+                }
             }
 
             if ($newWarning === null ||
                 $warning['warning_id'] != $newWarning['warning_id'])
             {
-                $warningPoints[$warningCategoryId]['old'] += $warning['points'];
+                $warningPointsCumulative[0]['old'] += $warning['points'];
+
+                if ($warningCategoryId)
+                {
+                    $warningPoints[$warningCategoryId]['old'] += $warning['points'];
+                }
             }
 
-            $warningPoints[$warningCategoryId]['new'] += $warning['points'];
+            $warningPointsCumulative[0]['new'] += $warning['points'];
+
+            if ($warningCategoryId)
+            {
+                $warningPoints[$warningCategoryId]['new'] += $warning['points'];
+            }
         }
 
-        $warningPointsCumulative = array();
         foreach ($warningCategories as $warningCategoryId => $warningCategory)
         {
             if (empty($warningPoints[$warningCategoryId]))
@@ -1035,20 +1058,17 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     public function triggerWarningAction($userId, array $action)
     {
-        if ($action['sv_warning_category_id'] !== 0)
-        {
-            $userWarningPoints = $this->getUserWarningPointsByCategory($userId);
-            $warningCategoryId = $action['sv_warning_category_id'];
+        $userWarningPoints = $this->getUserWarningPointsByCategory($userId);
+        $warningCategoryId = $action['sv_warning_category_id'];
 
-            $points = $userWarningPoints[$warningCategoryId];
-            if ($action['points'] <= $points['old'])
-            {
-                return false;
-            }
-            elseif ($action['points'] > $points['new'])
-            {
-                return false;
-            }
+        $points = $userWarningPoints[$warningCategoryId];
+        if ($action['points'] <= $points['old'])
+        {
+            return false;
+        }
+        elseif ($action['points'] > $points['new'])
+        {
+            return false;
         }
 
         $triggerId = parent::triggerWarningAction($userId, $action);
