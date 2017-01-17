@@ -18,16 +18,24 @@ class SV_WarningImprovements_XenForo_Model_Warning_Patch extends XFCP_SV_Warning
         $db = $this->_getDb();
         XenForo_Db::beginTransaction($db);
 
-        foreach ($actions AS $action)
+        foreach ($actions as $action)
         {
             $warningCategoryId = $action['sv_warning_category_id'];
-            $points = $warningPoints[$warningCategoryId];
+
+            if (isset($warningPoints[$warningCategoryId]))
+            {
+                $points = $warningPoints[$warningCategoryId];
+            }
+            else
+            {
+                $points = array('old' => $oldPoints, 'new' => $newPoints);
+            }
 
             if ($action['points'] <= $points['old'])
             {
                 continue; // already triggered
             }
-            else if ($action['points'] > $points['new'])
+            elseif ($action['points'] > $points['new'])
             {
                 continue; // no trigger yet
             }
@@ -55,13 +63,20 @@ class SV_WarningImprovements_XenForo_Model_Warning_Patch extends XFCP_SV_Warning
         $db = $this->_getDb();
         XenForo_Db::beginTransaction($db);
 
-        foreach ($triggers AS $trigger)
+        foreach ($triggers as $trigger)
         {
             $warningActionId = $trigger['warning_action_id'];
             $warningAction = $warningActions[$warningActionId];
             $warningCategoryId = $warningAction['sv_warning_category_id'];
 
-            $points = $warningPoints[$warningCategoryId];
+            if (isset($warningPoints[$warningCategoryId]))
+            {
+                $points = $warningPoints[$warningCategoryId];
+            }
+            else
+            {
+                $points = array('old' => $oldPoints, 'new' => $newPoints);
+            }
 
             if ($trigger['trigger_points'] > $points['new'])
             {
