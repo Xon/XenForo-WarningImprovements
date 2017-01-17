@@ -364,33 +364,6 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return true;
     }
 
-    public function getWarningActions()
-    {
-        if (SV_WarningImprovements_Globals::$filterActionsByCategory &&
-            SV_WarningImprovements_Globals::$warningDefinitionObj !== null
-        ) {
-            $parentCategories = $this->getParentWarningCategoriesByWarningItem(
-                SV_WarningImprovements_Globals::$warningDefinitionObj
-            );
-
-            $categoryIds = array_merge(array(0), array_column(
-                $parentCategories,
-                'warning_category_id'
-            ));
-
-            return $this->fetchAllKeyed(
-                'SELECT *
-                    FROM xf_warning_action
-                    WHERE sv_warning_category_id
-                        IN ('.$this->_db->quote($categoryIds).')
-                    ORDER BY points',
-                'warning_action_id'
-            );
-        }
-
-        return parent::getWarningActions();
-    }
-
     public function getWarningActionsByCategoryId($warningCategoryId)
     {
         return $this->fetchAllKeyed(
@@ -1031,12 +1004,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $newPoints,
         $oldPoints
     ) {
-        SV_WarningImprovements_Globals::$filterActionsByCategory = true;
-
-        // old points may vary by warning action (and be less than $oldPoints)
-        parent::_userWarningPointsIncreased($userId, $newPoints, 0);
-
-        SV_WarningImprovements_Globals::$filterActionsByCategory = false;
+        parent::_userWarningPointsIncreased($userId, $newPoints, $oldPoints);
 
         // only do the last post action
         if ($this->lastWarningAction)

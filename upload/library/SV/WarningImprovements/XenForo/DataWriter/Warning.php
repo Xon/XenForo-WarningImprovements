@@ -30,8 +30,6 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
                 $warningDefinitionId
             );
 
-            SV_WarningImprovements_Globals::$warningDefinitionObj = $warning;
-
             $warningCategory = $warningModel->getWarningCategoryById(
                 $warning['sv_warning_category_id']
             );
@@ -72,8 +70,6 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         SV_WarningImprovements_Globals::$reportObj = $this->_getReportModel()->getReportByContent(SV_WarningImprovements_Globals::$warningObj['content_type'], SV_WarningImprovements_Globals::$warningObj['content_id']);
 
         parent::_postSave();
-
-        SV_WarningImprovements_Globals::$warningDefinitionObj = null;
     }
 
     protected function _postSaveAfterTransaction()
