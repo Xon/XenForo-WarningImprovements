@@ -893,7 +893,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     protected $lastWarningAction = null;
 
-    public function getUserWarningPointsByCategory($userId)
+    public function getCategoryWarningPointsByUser($userId)
     {
         if (!empty($this->_userWarningPoints[$userId]))
         {
@@ -1028,31 +1028,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
     }
 
-    protected function _userWarningPointsDecreased(
-        $userId,
-        $newPoints,
-        $oldPoints
-    ) {
-
-        // new points may vary by warning action - set to 0 to try all
-        parent::_userWarningPointsDecreased($userId, 0, $oldPoints);
-    }
-
     public function triggerWarningAction($userId, array $action)
     {
-        $userWarningPoints = $this->getUserWarningPointsByCategory($userId);
-        $warningCategoryId = $action['sv_warning_category_id'];
-
-        $points = $userWarningPoints[$warningCategoryId];
-        if ($action['points'] <= $points['old'])
-        {
-            return false;
-        }
-        elseif ($action['points'] > $points['new'])
-        {
-            return false;
-        }
-
         $triggerId = parent::triggerWarningAction($userId, $action);
 
         if (SV_WarningImprovements_Globals::$NotifyOnWarningAction &&
@@ -1063,24 +1040,6 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
 
         return $triggerId;
-    }
-
-    public function removeWarningActionTrigger($userId, array $trigger)
-    {
-        $userWarningPoints = $this->getUserWarningPointsByCategory($userId);
-        $warningActions = $this->getWarningActions();
-
-        $warningActionId = $trigger['warning_action_id'];
-        $warningAction = $warningActions[$warningActionId];
-        $warningCategoryId = $warningAction['sv_warning_category_id'];
-
-        $points = $userWarningPoints[$warningCategoryId];
-        if ($trigger['trigger_points'] <= $points['new'])
-        {
-            return false;
-        }
-
-        return parent::removeWarningActionTrigger($userId, $trigger);
     }
 
     protected function postReply(array $action, $userId, $threadId, $posterUserId, $warning, $report, $dateStr)
