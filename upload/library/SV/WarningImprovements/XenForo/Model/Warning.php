@@ -1060,6 +1060,16 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
     }
 
+    protected function _userWarningPointsDecreased(
+        $userId,
+        $newPoints,
+        $oldPoints
+    ) {
+
+        // new points may vary by warning action - set to 0 to try all
+        parent::_userWarningPointsDecreased($userId, 0, $oldPoints);
+    }
+
     public function triggerWarningAction($userId, array $action)
     {
         $userWarningPoints = $this->getUserWarningPointsByCategory($userId);
@@ -1085,6 +1095,24 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
 
         return $triggerId;
+    }
+
+    public function removeWarningActionTrigger($userId, array $trigger)
+    {
+        $userWarningPoints = $this->getUserWarningPointsByCategory($userId);
+        $warningActions = $this->getWarningActions();
+
+        $warningActionId = $trigger['warning_action_id'];
+        $warningAction = $warningActions[$warningActionId];
+        $warningCategoryId = $warningAction['sv_warning_category_id'];
+
+        $points = $userWarningPoints[$warningCategoryId];
+        if ($action['points'] <= $points['new'])
+        {
+            return false;
+        }
+
+        return parent::removeWarningActionTrigger($userId, $trigger);
     }
 
     protected function postReply(array $action, $userId, $threadId, $posterUserId, $warning, $report, $dateStr)
