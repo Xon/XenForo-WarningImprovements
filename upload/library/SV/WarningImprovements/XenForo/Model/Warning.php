@@ -1107,7 +1107,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $warningCategoryId = $warningAction['sv_warning_category_id'];
 
         $points = $userWarningPoints[$warningCategoryId];
-        if ($action['points'] <= $points['new'])
+        if ($trigger['trigger_points'] <= $points['new'])
         {
             return false;
         }
