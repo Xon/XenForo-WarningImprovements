@@ -20,15 +20,15 @@ class SV_WarningImprovements_XenForo_Model_Warning_Patch extends XFCP_SV_Warning
 
         foreach ($actions as $action)
         {
-            $warningCategoryId = $action['sv_warning_category_id'];
+            $points = array(
+                'old' => $oldPoints,
+                'new' => $newPoints
+            );
 
-            if (isset($warningPoints[$warningCategoryId]))
+            $warningCategoryId = $action['sv_warning_category_id'];
+            if (!empty($warningPoints[$warningCategoryId]))
             {
                 $points = $warningPoints[$warningCategoryId];
-            }
-            else
-            {
-                $points = array('old' => $oldPoints, 'new' => $newPoints);
             }
 
             if ($action['points'] <= $points['old'])
@@ -57,25 +57,29 @@ class SV_WarningImprovements_XenForo_Model_Warning_Patch extends XFCP_SV_Warning
             return;
         }
 
-        $warningPoints = $this->getCategoryWarningPointsByUser($userId);
         $warningActions = $this->getWarningActions();
+        $warningPoints = $this->getCategoryWarningPointsByUser($userId);
 
         $db = $this->_getDb();
         XenForo_Db::beginTransaction($db);
 
         foreach ($triggers as $trigger)
         {
-            $warningActionId = $trigger['warning_action_id'];
-            $warningAction = $warningActions[$warningActionId];
-            $warningCategoryId = $warningAction['sv_warning_category_id'];
+            $points = array(
+                'old' => $oldPoints,
+                'new' => $newPoints
+            );
 
-            if (isset($warningPoints[$warningCategoryId]))
+            $warningActionId = $trigger['warning_action_id'];
+            if (!empty($warningActions[$warningActionId]))
             {
-                $points = $warningPoints[$warningCategoryId];
-            }
-            else
-            {
-                $points = array('old' => $oldPoints, 'new' => $newPoints);
+                $warningAction = $warningActions[$warningActionId];
+
+                $warningCategoryId = $warningAction['sv_warning_category_id'];
+                if (!empty($warningPoints[$warningCategoryId]))
+                {
+                    $points = $warningPoints[$warningCategoryId];
+                }
             }
 
             if ($trigger['trigger_points'] > $points['new'])
