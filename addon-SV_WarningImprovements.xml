@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.5.0 RC 4" version_id="1050004" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.5.0 RC 5" version_id="1050005" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -834,7 +834,7 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 		</xen:if>
 	</div>
 </div>]]></template>
-    <template title="sv_warning_improvement_js" version_id="1040700" version_string="1.4.7"><![CDATA[<script>
+    <template title="sv_warning_improvement_js" version_id="1050005" version_string="1.5.0 RC 5"><![CDATA[<script>
 !function($, window, document, _undefined)
 {
 	<xen:if is="{$xenOptions.sv_warningimprovements_continue_button}">
@@ -864,11 +864,6 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 	});
 	</xen:if>
 
-	XenForo.CustomWarningRadioTrigger = function ($input)
-	{
-		$input.trigger('click');
-	}
-	XenForo.register('input#customWarning', 'XenForo.CustomWarningRadioTrigger');
 	XenForo.WarningDefaultActionFormFillerControl = function($input)
 	{
 		if ($input.val() == '{$xenOptions.sv_warningimprovements_default_content_action}') {
@@ -891,13 +886,20 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 		});
 	}
 	XenForo.register('input[name=warning_definition_id][id!=customWarning]', 'XenForo.WarningDefRadioButton');
-	XenForo.CustomWarningRadioButton = function($control)
+	XenForo.CustomWarningRadioButton = function($input)
 	{
-		$control.change(function (e){
-			$('input[name=public_warning]').val($('input[name=title]').val());
+		var $titleInput = $input.closest('li').find('input[name=title]');
+		
+		$input.on('click', function() {
+			setTimeout(function() {
+				console.log($titleInput);
+				$titleInput.focus();
+			}, 100);
 		});
+		
+		$input.trigger('click');
 	}
-	XenForo.register('input[id=customWarning]', 'XenForo.CustomWarningRadioButton');
+	XenForo.register('input#customWarning', 'XenForo.CustomWarningRadioButton');
 	XenForo.WarningDefSelectOption = function($select)
 	{
 		$select.change(function(e) {

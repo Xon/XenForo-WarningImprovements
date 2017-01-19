@@ -128,6 +128,11 @@ var SV = SV || {};
       if (id == 0)
       {
         this.$customWarningTitle.show();
+
+        setTimeout($.context(function()
+        {
+          this.$customWarningTitle.focus();
+        }, this), 100);
       }
       else
       {
