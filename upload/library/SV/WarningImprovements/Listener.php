@@ -8,4 +8,9 @@ class SV_WarningImprovements_Listener
     {
         $extend[] = self::AddonNameSpace.$class;
     }
+
+    public static function load_class_patch($class, array &$extend)
+    {
+        $extend[] = self::AddonNameSpace.$class.'_Patch';
+    }
 }

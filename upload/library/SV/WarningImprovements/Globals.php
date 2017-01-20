@@ -7,8 +7,6 @@ class SV_WarningImprovements_Globals
     public static $warning_user_id = null;
     public static $NotifyOnWarningAction = false;
     public static $SendWarningAlert = false;
-    public static $filterActionsByCategory = false;
-    public static $warningDefinitionObj = null;
     public static $warningObj = null;
     public static $reportObj = null;
     public static $scaleWarningExpiry = false;
