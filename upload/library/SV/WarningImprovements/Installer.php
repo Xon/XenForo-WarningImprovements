@@ -77,22 +77,92 @@ class SV_WarningImprovements_Installer
             $db->query("SET SESSION sql_mode='STRICT_ALL_TABLES'");
         }
 
-        if ($version < 1040000)
+        $requireDefault = true;
+        // import from Waindigo/TH Warnings add-on
+        if (SV_Utils_AddOn::addOnIsActive('Waindigo_Warnings'))
         {
-            // make sure the model is loaded before accessing the static properties 
-            XenForo_Model::create("XenForo_Model_User"); 
+            $phraseModel = XenForo_Model::create("XenForo_Model_Phrase");
+            // make sure the model is loaded before accessing the static properties
+            XenForo_Model::create("XenForo_Model_User");
+            // set default permission values for Registered group
+            $user_group_id = XenForo_Model_User::$defaultRegisteredGroupId;
+
+            // copy xf_warning_group => xf_sv_warning_category
+            $warningGroups = $db->fetchAll('
+                select *
+                from xf_warning_group
+            ');
+            foreach($warningGroups as $warningGroup)
+            {
+                if ($warningGroup['warning_group_id'] == 1)
+                {
+                    $requireDefault = false;
+                }
+                $db->query("insert ignore into xf_sv_warning_category (warning_category_id, parent_warning_category_id, display_order, allowed_user_group_ids)
+                    values (?, 0, ?, ?)
+                ", array($warningGroup['warning_group_id'], $warningGroup['display_order'], $user_group_id));
+                // copy the phrase
+                $text = $phraseModel->getMasterPhraseValue('warning_group_'.$warningGroup['warning_group_id']);
+                $phraseModel->insertOrUpdateMasterPhrase('sv_warning_category_'.$warningGroup['warning_group_id'].'_title', $text, '', array(),  array(
+                    XenForo_DataWriter_Phrase::OPTION_REBUILD_LANGUAGE_CACHE => false,
+                    XenForo_DataWriter_Phrase::OPTION_RECOMPILE_TEMPLATE => false
+                ));
+            }
+            // update warning definitions
+            $db->query('update xf_warning_definition
+                set sv_warning_category_id = warning_group_id, sv_display_order = display_order
+                where sv_warning_category_id = 0
+            ');
+            // update warning actions
+            $warningActions = $db->fetchAll('
+                select*
+                from xf_warning_action
+            ');
+            foreach($warningActions as $warningAction)
+            {
+                $groups = explode(',', $warningAction['warning_groups']);
+                switch (count($groups))
+                {
+                    case 0:
+                        continue;
+                    case 1:
+                        $db->query('update xf_warning_action
+                            set sv_warning_category_id = ?
+                            where warning_action_id = ?
+                        ', array(reset($groups), $warningAction['warning_action_id']));
+                        continue;
+                    default:
+                        break;
+                }
+                // copy a warning action for each category
+                unset($warningAction['warning_action_id']);
+                unset($warningAction['warning_groups']);
+                foreach($groups as $group)
+                {
+                    $warningAction['sv_warning_category_id'] = $group;
+                    $db->query("insert ignore into xf_warning_action (".implode(',', $warningAction).")
+                        values (".implode(',', array_fill(0, count($warningAction), '?')).")
+                    ", $warningAction);
+               }
+            }
+        }
+
+        if ($requireDefault && $version < 1040000)
+        {
+            // make sure the model is loaded before accessing the static properties
+            XenForo_Model::create("XenForo_Model_User");
             // set default permission values for Registered group
             $user_group_id = XenForo_Model_User::$defaultRegisteredGroupId;
             // create default warning category, do not use the data writer as that requires the rest of the add-on to be setup
             $db->query("insert ignore into xf_sv_warning_category (warning_category_id, parent_warning_category_id, display_order, allowed_user_group_ids)
                 values (1, 0, 0, ?)
             ", array($user_group_id));
-            // set all warning definitions to be in default warning category, note; the phrase is defined in the XML
-            $db->query('update xf_warning_definition
-                set sv_warning_category_id = 1
-                where sv_warning_category_id = 0
-            ');
         }
+        // set all warning definitions to be in default warning category, note; the phrase is defined in the XML
+        $db->query('update xf_warning_definition
+            set sv_warning_category_id = 1
+            where sv_warning_category_id = 0
+        ');
 
         $db->query("
             INSERT IGNORE INTO xf_content_type
