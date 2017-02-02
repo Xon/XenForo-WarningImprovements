@@ -573,10 +573,21 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="sv_warning_action_expiry" version_id="101000" version_string="1.1.0"><![CDATA[Warning Action Expiry]]></phrase>
     <phrase title="sv_warning_action_for_x" version_id="101000" version_string="1.1.0"><![CDATA[Warning action for {name}]]></phrase>
     <phrase title="sv_warning_action_post_as_user" version_id="1020200" version_string="1.2.2"><![CDATA[The User Id to post as. 0 to user the user triggering the infraction.]]></phrase>
-    <phrase title="sv_warning_action_post_new_thread" version_id="1020200" version_string="1.2.2"><![CDATA[Post message to a new thread in the given forum when this warning action is triggered. Zero to disable.<br/>
+    <phrase title="sv_warning_action_post_new_thread" version_id="1050007" version_string="1.5.0 RC 7"><![CDATA[Post message to a new thread in the given forum when this warning action is triggered. Zero to disable.<br/>
 <br/>
-New Thread trumps replying to a thread. Only the last warning action is applied when posting.]]></phrase>
-    <phrase title="sv_warning_action_post_thread_reply" version_id="1020200" version_string="1.2.2"><![CDATA[Post message to an existing thread when this warning action is triggered. Zero to disable.]]></phrase>
+New Thread trumps replying to a thread. Only the last warning action is applied when posting.<br/>
+<br/>
+Edit the phases:<ul>
+<li>Warning_Thread_Message</li>
+<li>Warning_Thread_Title</li>
+</ul>
+]]></phrase>
+    <phrase title="sv_warning_action_post_thread_reply" version_id="1050007" version_string="1.5.0 RC 7"><![CDATA[Post message to an existing thread when this warning action is triggered. Zero to disable.<br/>
+<br/>
+Edit the phases:<ul>
+<li>Warning_Thread_Message</li>
+</ul>
+]]></phrase>
     <phrase title="sv_warning_action_result" version_id="101000" version_string="1.1.0"><![CDATA[Result]]></phrase>
     <phrase title="sv_warning_action_type" version_id="101000" version_string="1.1.0"><![CDATA[Action Type]]></phrase>
     <phrase title="sv_warning_categories" version_id="1040000" version_string="1.4.0"><![CDATA[Warning Categories]]></phrase>
@@ -591,7 +602,6 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
     <phrase title="sv_warning_thread_id" version_id="1030007" version_string="1.3.0 RC7"><![CDATA[Reply to thread]]></phrase>
     <phrase title="sv_wa_minutes" version_id="101000" version_string="1.1.0"><![CDATA[Minutes]]></phrase>
     <phrase title="sv_x_weeks" version_id="102001" version_string="1.2.0"><![CDATA[{weeks} Weeks]]></phrase>
-    <phrase title="sv_x_years" version_id="102001" version_string="1.2.0"><![CDATA[{years} Years]]></phrase>
     <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>
     <phrase title="user_has_received_at_most_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at most X warnings points]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
@@ -835,7 +845,7 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 		</xen:if>
 	</div>
 </div>]]></template>
-    <template title="sv_warning_improvement_js" version_id="1050005" version_string="1.5.0 RC 5"><![CDATA[<script>
+    <template title="sv_warning_improvement_js" version_id="1040700" version_string="1.4.7"><![CDATA[<script>
 !function($, window, document, _undefined)
 {
 	<xen:if is="{$xenOptions.sv_warningimprovements_continue_button}">
@@ -865,6 +875,11 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 	});
 	</xen:if>
 
+	XenForo.CustomWarningRadioTrigger = function ($input)
+	{
+		$input.trigger('click');
+	}
+	XenForo.register('input#customWarning', 'XenForo.CustomWarningRadioTrigger');
 	XenForo.WarningDefaultActionFormFillerControl = function($input)
 	{
 		if ($input.val() == '{$xenOptions.sv_warningimprovements_default_content_action}') {
@@ -887,20 +902,13 @@ New Thread trumps replying to a thread. Only the last warning action is applied 
 		});
 	}
 	XenForo.register('input[name=warning_definition_id][id!=customWarning]', 'XenForo.WarningDefRadioButton');
-	XenForo.CustomWarningRadioButton = function($input)
+	XenForo.CustomWarningRadioButton = function($control)
 	{
-		var $titleInput = $input.closest('li').find('input[name=title]');
-		
-		$input.on('click', function() {
-			setTimeout(function() {
-				console.log($titleInput);
-				$titleInput.focus();
-			}, 100);
+		$control.change(function (e){
+			$('input[name=public_warning]').val($('input[name=title]').val());
 		});
-		
-		$input.trigger('click');
 	}
-	XenForo.register('input#customWarning', 'XenForo.CustomWarningRadioButton');
+	XenForo.register('input[id=customWarning]', 'XenForo.CustomWarningRadioButton');
 	XenForo.WarningDefSelectOption = function($select)
 	{
 		$select.change(function(e) {
