@@ -14,28 +14,34 @@ class SV_WarningImprovements_Installer
                                    'SVViewOwnWarnings' => array());
         SV_Utils_Install::removeOldAddons($addonsToUninstall);
 
+        if (!$db->fetchRow("SHOW TABLES LIKE 'xf_sv_warning_default'"))
+        {
+            $db->query("
+                CREATE TABLE IF NOT EXISTS xf_sv_warning_default
+                (
+                    `warning_default_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                    `threshold_points` SMALLINT NOT NULL DEFAULT '0',
+                    `expiry_type` ENUM('never','days','weeks','months','years') NOT NULL,
+                    `expiry_extension` SMALLINT UNSIGNED NOT NULL,
+                    `active` tinyint(3) unsigned NOT NULL DEFAULT '1',
+                    PRIMARY KEY (`warning_default_id`),
+                    KEY (`threshold_points`, `active`)
+                ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci
+            ");
+        }
 
-        $db->query("
-            CREATE TABLE IF NOT EXISTS xf_sv_warning_default
-            (
-                `warning_default_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                `threshold_points` SMALLINT NOT NULL DEFAULT '0',
-                `expiry_type` ENUM('never','days','weeks','months','years') NOT NULL,
-                `expiry_extension` SMALLINT UNSIGNED NOT NULL,
-                `active` tinyint(3) unsigned NOT NULL DEFAULT '1',
-                PRIMARY KEY (`warning_default_id`),
-                KEY (`threshold_points`, `active`)
-            ) ENGINE=InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci
-        ");
+        if (!$db->fetchRow("SHOW TABLES LIKE 'xf_sv_warning_category'"))
+        {
+            $db->query(
+                'CREATE TABLE IF NOT EXISTS xf_sv_warning_category (
+                    warning_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                    parent_warning_category_id INT UNSIGNED NOT NULL DEFAULT 0,
+                    display_order INT UNSIGNED NOT NULL DEFAULT 0,
+                    PRIMARY KEY (warning_category_id)
+                ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci'
+            );
+        }
 
-        $db->query(
-            'CREATE TABLE IF NOT EXISTS xf_sv_warning_category (
-                warning_category_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-                parent_warning_category_id INT UNSIGNED NOT NULL DEFAULT 0,
-                display_order INT UNSIGNED NOT NULL DEFAULT 0,
-                PRIMARY KEY (warning_category_id)
-            ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci'
-        );
         SV_Utils_Install::addColumn(
             'xf_sv_warning_category',
             'allowed_user_group_ids',
