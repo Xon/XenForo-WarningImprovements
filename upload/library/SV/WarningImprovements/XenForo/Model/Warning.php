@@ -1080,6 +1080,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             'points' => $user['warning_points'],
             'report' => empty($report) ? 'N/A' : XenForo_Link::buildPublicLink('full:reports', $report),
             'date' => $dateStr,
+            'warning_title' =>  empty($warning['title']) ? new XenForo_Phrase('n_a') : $warning['title'],
             'warning_points' => empty($warning) ? '0' : $warning['points'],
             'threshold' => $action['points'],
         );
@@ -1133,8 +1134,9 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $input = array(
             'username' => $user['username'],
             'points' => $user['warning_points'],
-            'report' => empty($report) ? 'N/A' : XenForo_Link::buildPublicLink('full:reports', $report),
+            'report' => empty($report) ? new XenForo_Phrase('n_a') : XenForo_Link::buildPublicLink('full:reports', $report),
             'date' => $dateStr,
+            'warning_title' =>  empty($warning['title']) ? new XenForo_Phrase('n_a') : $warning['title'],
             'warning_points' => empty($warning) ? '0' : $warning['points'],
             'threshold' => $action['points'],
         );
