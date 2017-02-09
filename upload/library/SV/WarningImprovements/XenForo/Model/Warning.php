@@ -231,11 +231,11 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     }
 
     public function canViewWarningCategory(
-        array $warningCategory,
+        array $warningCategory = null,
         array $warningCategories = null,
         array $viewingUser = null
     ) {
-        if (empty($warningCategory['allowed_user_group_ids']))
+        if (empty($warningCategory) || empty($warningCategory['allowed_user_group_ids']))
         {
             return false;
         }
@@ -349,9 +349,11 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             );
         }
 
-        $warningCategory = $warningCategories[
-            $warningDefinition['sv_warning_category_id']
-        ];
+        if (empty($warningDefinition['sv_warning_category_id']) || empty($warningCategories[$warningDefinition['sv_warning_category_id']]))
+        {
+            return false;
+        }
+        $warningCategory = $warningCategories[$warningDefinition['sv_warning_category_id']];
 
         if (!$this->canViewWarningCategory(
             $warningCategory,
