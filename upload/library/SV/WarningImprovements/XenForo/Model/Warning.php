@@ -1084,6 +1084,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             'date' => $dateStr,
             'warning_title' =>  empty($warning['title']) ? new XenForo_Phrase('n_a') : $warning['title'],
             'warning_points' => empty($warning) ? '0' : $warning['points'],
+            'warning_category' => (new XenForo_Phrase($this->getWarningCategoryTitlePhraseName($warning['warning_category_id'])))->render(false),
             'threshold' => $action['points'],
         );
 
@@ -1140,6 +1141,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             'date' => $dateStr,
             'warning_title' =>  empty($warning['title']) ? new XenForo_Phrase('n_a') : $warning['title'],
             'warning_points' => empty($warning) ? '0' : $warning['points'],
+            'warning_category' => (new XenForo_Phrase($this->getWarningCategoryTitlePhraseName($warning['warning_category_id'])))->render(false),
             'threshold' => $action['points'],
         );
 
