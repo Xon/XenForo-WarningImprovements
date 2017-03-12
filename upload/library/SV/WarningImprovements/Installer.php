@@ -120,16 +120,20 @@ class SV_WarningImprovements_Installer
             ');
             foreach($warningActions as $warningAction)
             {
-                $groups = explode(',', $warningAction['warning_groups']);
+                $groups = array_filter(explode(',', $warningAction['warning_groups']));
                 switch (count($groups))
                 {
                     case 0:
                         continue;
                     case 1:
-                        $db->query('update xf_warning_action
-                            set sv_warning_category_id = ?
-                            where warning_action_id = ?
-                        ', array(reset($groups), $warningAction['warning_action_id']));
+                        $group = reset($groups);
+                        if ($group)
+                        {
+                            $db->query('update xf_warning_action
+                                set sv_warning_category_id = ?
+                                where warning_action_id = ?
+                            ', array($group, $warningAction['warning_action_id']));
+                        }
                         continue;
                     default:
                         break;
