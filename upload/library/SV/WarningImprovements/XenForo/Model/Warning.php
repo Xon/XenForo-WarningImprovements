@@ -1044,6 +1044,19 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $triggerId;
     }
 
+    protected function getWarningCategoryForWarning($warning)
+    {
+        if (isset($warning['sv_warning_category_id']))
+        {
+            return (new XenForo_Phrase($this->getWarningCategoryTitlePhraseName($warning['sv_warning_category_id'])))->render(false);
+        }
+        if (isset($warning['warning_category_id']))
+        {
+            return (new XenForo_Phrase($this->getWarningCategoryTitlePhraseName($warning['warning_category_id'])))->render(false);
+        }
+        return  '';
+    }
+
     protected function postReply(array $action, $userId, $threadId, $posterUserId, $warning, $report, $dateStr)
     {
         $thread = $this->_getThreadModel()->getThreadById($threadId);
@@ -1084,7 +1097,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             'date' => $dateStr,
             'warning_title' =>  empty($warning['title']) ? new XenForo_Phrase('n_a') : $warning['title'],
             'warning_points' => empty($warning) ? '0' : $warning['points'],
-            'warning_category' => (new XenForo_Phrase($this->getWarningCategoryTitlePhraseName($warning['warning_category_id'])))->render(false),
+            'warning_category' =>  $this->getWarningCategoryForWarning($warning),
             'threshold' => $action['points'],
         );
 
@@ -1141,7 +1154,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             'date' => $dateStr,
             'warning_title' =>  empty($warning['title']) ? new XenForo_Phrase('n_a') : $warning['title'],
             'warning_points' => empty($warning) ? '0' : $warning['points'],
-            'warning_category' => (new XenForo_Phrase($this->getWarningCategoryTitlePhraseName($warning['warning_category_id'])))->render(false),
+            'warning_category' => $this->getWarningCategoryForWarning($warning),
             'threshold' => $action['points'],
         );
 
