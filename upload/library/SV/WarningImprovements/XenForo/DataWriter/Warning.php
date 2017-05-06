@@ -70,6 +70,11 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         SV_WarningImprovements_Globals::$reportObj = $this->_getReportModel()->getReportByContent(SV_WarningImprovements_Globals::$warningObj['content_type'], SV_WarningImprovements_Globals::$warningObj['content_id']);
 
         parent::_postSave();
+
+        if ($this->isInsert() && $this->get('is_expired') == 1)
+        {
+            $this->_warningExpiredOrDeleted();
+        }
     }
 
     protected function _postSaveAfterTransaction()
