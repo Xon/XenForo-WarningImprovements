@@ -65,6 +65,11 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
 
     protected function _postSave()
     {
+        if ($this->isInsert() && $this->get('is_expired') == 1)
+        {
+            $this->deleteGuard = 1;
+        }
+
         // capture warning & report objects for later when XenForo_DataWriter_User triggers
         SV_WarningImprovements_Globals::$warningObj = $this->getMergedData();
         SV_WarningImprovements_Globals::$reportObj = $this->_getReportModel()->getReportByContent(SV_WarningImprovements_Globals::$warningObj['content_type'], SV_WarningImprovements_Globals::$warningObj['content_id']);
@@ -75,6 +80,20 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         {
             $this->_warningExpiredOrDeleted();
         }
+    }
+
+    protected $deleteGuard = 0;
+    protected function _warningExpiredOrDeleted($isDelete = false)
+    {
+        if ($this->deleteGuard === 2)
+        {
+            return;
+        }
+        if ($this->deleteGuard === 1)
+        {
+            $this->deleteGuard = 2;
+        }
+        $this->_warningExpiredOrDeleted($isDelete);
     }
 
     protected function _postSaveAfterTransaction()
