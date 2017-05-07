@@ -93,7 +93,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         {
             $this->deleteGuard = 2;
         }
-        $this->_warningExpiredOrDeleted($isDelete);
+        parent::_warningExpiredOrDeleted($isDelete);
     }
 
     protected function _postSaveAfterTransaction()
