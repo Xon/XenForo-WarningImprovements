@@ -35,11 +35,12 @@ class SV_WarningImprovements_XenForo_DataWriter_WarningAction extends XFCP_SV_Wa
         }
     }
 
-    protected function _verifyWarningCategoryId($warningCategoryId)
+    protected function _verifyWarningCategoryId(&$warningCategoryId)
     {
+        $warningCategoryId = intval($warningCategoryId);
         if (empty($warningCategoryId))
         {
-            return false;
+            return true;
         }
 
         $warningCategory = $this->_getWarningModel()->getWarningCategoryById(
