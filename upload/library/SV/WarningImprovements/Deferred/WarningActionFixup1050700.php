@@ -6,6 +6,7 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
     {
         $increment = 200;
         $action_trigger_id = isset($data['action_trigger_id']) ? $data['action_trigger_id'] : -1;
+        $fixedUsers = isset($data['users']) ? $data['users'] : array();
 
         $db = XenForo_Application::getDb();
 
@@ -50,6 +51,11 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
 
         foreach ($actionTriggers as $actionTrigger)
         {
+            if (isset($fixedUsers[$actionTrigger['user_id']]))
+            {
+                continue;
+            }
+            $fixedUsers[$actionTrigger['user_id']] = true;
             if (empty($users[$actionTrigger['user_id']]))
             {
                 continue;
@@ -66,13 +72,13 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
             }
             if ($user['warning_points'] < $actionTrigger['trigger_points'])
             {
-                XenForo_Error::logException(new Exception("Fixing up user:{$user['username']} - {$user['user_id']}"), false);
+                XenForo_Error::logException(new Exception("Fixing warnings for user:{$user['username']} - {$user['user_id']}"), false);
                 $warningModel->userWarningPointsChanged($user['user_id'], $user['warning_points'], $user['warning_points'] + 1);
             }
 
             $action_trigger_id = $actionTrigger['action_trigger_id'];
         }
 
-        return array('action_trigger_id' => $action_trigger_id);
+        return array('action_trigger_id' => $action_trigger_id, 'users' => $fixedUsers);
     }
 }
