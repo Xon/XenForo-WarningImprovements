@@ -203,7 +203,7 @@ class SV_WarningImprovements_Installer
 
         if ($version && $version < 1050700)
         {
-            XenForo_Application::defer('SV_WarningImprovements_Deferred_WarningActionFixup1050700', array('warning_id' => 0));
+            XenForo_Application::defer('SV_WarningImprovements_Deferred_WarningActionFixup1050700', array());
         }
 
         return true;
