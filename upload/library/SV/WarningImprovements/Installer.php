@@ -2,8 +2,6 @@
 
 class SV_WarningImprovements_Installer
 {
-    const AddonNameSpace = 'SV_WarningImprovements';
-
     public static function install($existingAddOn, $addOnData)
     {
         $version = isset($existingAddOn['version_id']) ? $existingAddOn['version_id'] : 0;
@@ -175,14 +173,14 @@ class SV_WarningImprovements_Installer
             INSERT IGNORE INTO xf_content_type
                 (content_type, addon_id, fields)
             VALUES
-                ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', '".self::AddonNameSpace."', '')
+                ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', 'SV_WarningImprovements', '')
         ");
 
         $db->query("
             INSERT IGNORE INTO xf_content_type_field
                 (content_type, field_name, field_value)
             VALUES
-                ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', 'alert_handler_class', '".self::AddonNameSpace."_AlertHandler_Warning')
+                ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', 'alert_handler_class', 'SV_WarningImprovements_AlertHandler_Warning')
         ");
 
         XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
@@ -212,12 +210,12 @@ class SV_WarningImprovements_Installer
 
         $db->query("
             DELETE FROM xf_content_type_field
-            WHERE xf_content_type_field.field_value = '".self::AddonNameSpace."_AlertHandler_Warning'
+            WHERE xf_content_type_field.field_value = 'SV_WarningImprovements_AlertHandler_Warning'
         ");
 
         $db->query("
             DELETE FROM xf_content_type
-            WHERE xf_content_type.addon_id = '".self::AddonNameSpace."'
+            WHERE xf_content_type.addon_id = 'SV_WarningImprovements'
         ");
 
         $db->query("
