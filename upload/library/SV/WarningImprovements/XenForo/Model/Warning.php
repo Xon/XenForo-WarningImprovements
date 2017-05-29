@@ -895,7 +895,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     protected $lastWarningAction = null;
 
-    public function getCategoryWarningPointsByUser($userId)
+    public function getCategoryWarningPointsByUser($userId, $removePoints = false)
     {
         if (!empty($this->_userWarningPoints[$userId]))
         {
@@ -906,13 +906,18 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $warningDefinitions = $this->getWarningDefinitions();
         $warnings = $this->getWarningsByUser($userId);
 
+        $oldWarning = null;
+        $newWarning = null;
         if (SV_WarningImprovements_Globals::$warningObj !== null)
         {
-            $newWarning = SV_WarningImprovements_Globals::$warningObj;
-        }
-        else
-        {
-            $newWarning = null;
+            if($removePoints)
+            {
+                $oldWarning = SV_WarningImprovements_Globals::$warningObj;
+            }
+            else
+            {
+                $newWarning = SV_WarningImprovements_Globals::$warningObj;
+            }
         }
 
         $warningPoints = array();
@@ -959,11 +964,15 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                 }
             }
 
-            $warningPointsCumulative[0]['new'] += $warning['points'];
-
-            if ($warningCategoryId)
+            if ($oldWarning === null ||
+                $warning['warning_id'] != $oldWarning['warning_id'])
             {
-                $warningPoints[$warningCategoryId]['new'] += $warning['points'];
+                $warningPointsCumulative[0]['new'] += $warning['points'];
+
+                if ($warningCategoryId)
+                {
+                    $warningPoints[$warningCategoryId]['new'] += $warning['points'];
+                }
             }
         }
 

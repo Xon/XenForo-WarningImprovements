@@ -13,7 +13,7 @@ class SV_WarningImprovements_XenForo_Model_Warning_Patch extends XFCP_SV_Warning
             return;
         }
 
-        $warningPoints = $this->getCategoryWarningPointsByUser($userId);
+        $warningPoints = $this->getCategoryWarningPointsByUser($userId, false);
 
         $db = $this->_getDb();
         XenForo_Db::beginTransaction($db);
@@ -58,7 +58,9 @@ class SV_WarningImprovements_XenForo_Model_Warning_Patch extends XFCP_SV_Warning
         }
 
         $warningActions = $this->getWarningActions();
-        $warningPoints = $this->getCategoryWarningPointsByUser($userId);
+        // $newPoints are uncategorized, SV_WarningImprovements_Globals::$warningObj should be set to the warning which inflicted the changes
+        // getCategoryWarningPointsByUser will use this to work out the actual warning points.
+        $warningPoints = $this->getCategoryWarningPointsByUser($userId, true);
 
         $db = $this->_getDb();
         XenForo_Db::beginTransaction($db);
