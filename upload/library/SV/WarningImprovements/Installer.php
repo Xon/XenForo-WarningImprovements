@@ -163,9 +163,9 @@ class SV_WarningImprovements_Installer
         // set all warning definitions to be in default warning category, note; the phrase is defined in the XML
         $db->query('update xf_warning_definition
             set sv_warning_category_id = 1
-            where sv_warning_category_id = 0 or 
-                  not exists (select * 
-                              from xf_sv_warning_category 
+            where sv_warning_category_id = 0 or
+                  not exists (select *
+                              from xf_sv_warning_category
                               where xf_warning_definition.sv_warning_category_id = xf_sv_warning_category.warning_category_id)
         ');
 
