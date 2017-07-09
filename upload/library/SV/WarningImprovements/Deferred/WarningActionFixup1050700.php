@@ -49,12 +49,12 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
         // ensure point totals are sane
         $db->query("
             update xf_user
-            set warning_points = (select sum(points)
+            set warning_points = coalesce((select sum(coalesce(points,0))
                  from xf_warning
                  where
                     is_expired = 0 and
                     xf_warning.user_id = xf_user.user_id
-                )
+                ),0)
             where user_id in (".$db->quote($userIds).")
         ");
         // cleanup any expired warnings
