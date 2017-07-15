@@ -139,7 +139,7 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
             }
             elseif ($warningModel->isWarningAction($child))
             {
-                $dw = XenForo_DataWriter::create('XenForo_DataWriter_Action');
+                $dw = XenForo_DataWriter::create('XenForo_DataWriter_WarningAction');
                 $dw->setExistingData($child['warning_action_id']);
                 $dw->delete();
             }
