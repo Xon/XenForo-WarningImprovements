@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.5.8" version_id="1050801" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.5.9" version_id="1050900" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -17,14 +17,16 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 		<input type="checkbox" name="user_criteria[warning_points_l][rule]" value="warning_points_l" class="Disabler" id="ucrit_warning_points_l" {xen:checked $userCriteria.warning_points_l} />
 		{xen:phrase user_has_received_at_least_x_warnings_points}:</label>
 		<div class="criteriaQualifier" id="ucrit_warning_points_l_Disabler">
-			<xen:spinbox name="user_criteria[warning_points_l][data][points]" value="{$userCriteria.warning_points_l.points}" size="5" min="0" step="7" />
+			<xen:spinbox name="user_criteria[warning_points_l][data][points]" value="{$userCriteria.warning_points_l.points}" size="5" min="0" step="1" />
+			{xen:phrase days}: <xen:spinbox name="user_criteria[warning_points_l][data][days]" value="{$userCriteria.warning_points_l.days}" size="5" min="0" step="1" />
 		</div>
 	</li>
 	<li><label>
 		<input type="checkbox" name="user_criteria[warning_points_m][rule]" value="warning_points_m" class="Disabler" id="ucrit_warning_points_m" {xen:checked $userCriteria.warning_points_m} />
 		{xen:phrase user_has_received_at_most_x_warnings_points}:</label>
 		<div class="criteriaQualifier" id="ucrit_warning_points_m_Disabler">
-			<xen:spinbox name="user_criteria[warning_points_m][data][points]" value="{$userCriteria.warning_points_m.points}" size="5" min="0" step="7" />
+			<xen:spinbox name="user_criteria[warning_points_m][data][points]" value="{$userCriteria.warning_points_m.points}" size="5" min="0" step="1" />
+			{xen:phrase days}: <xen:spinbox name="user_criteria[warning_points_l][data][days]" value="{$userCriteria.warning_points_l.days}" size="5" min="0" step="1" />
 		</div>
 	</li>]]></template>
     <template title="sv_warningimprovements_escalating_defaults"><![CDATA[<xen:if is="{$warningEscalatingDefaults}">

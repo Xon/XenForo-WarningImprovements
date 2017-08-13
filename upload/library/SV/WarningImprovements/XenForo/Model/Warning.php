@@ -1,6 +1,33 @@
 <?php
 class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprovements_XenForo_Model_Warning
 {
+
+    protected $userWarningCountCache = array();
+
+    public function getWarningPointsInLastXDays($userId, $days, $includeExpired = false)
+    {
+        if (isset($this->userWarningCountCache[$userId][$days]))
+        {
+            return $this->userWarningCountCache[$userId][$days];
+        }
+
+        $whereSQL = '';
+        $args = array($userId, XenForo_Application::$time - 86400 * $days);
+        if (!$includeExpired)
+        {
+            $whereSQL .= ' and is_expired = 0 ';
+        }
+
+        $db = $this->_getDb();
+        $this->userWarningCountCache[$userId][$days] = $db->fetchOne('
+            select sum(points)
+            from xf_warning
+            where user_id = ? and warning_date > ? ' . $whereSQL . '
+        ', $args);
+
+        return $this->userWarningCountCache[$userId][$days];
+    }
+
     /**
      * Cached warning categories array.
      *
