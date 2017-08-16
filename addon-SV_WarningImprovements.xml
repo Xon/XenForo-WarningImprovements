@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.5.9" version_id="1050900" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.5.10" version_id="1051000" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -19,6 +19,7 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 		<div class="criteriaQualifier" id="ucrit_warning_points_l_Disabler">
 			<xen:spinbox name="user_criteria[warning_points_l][data][points]" value="{$userCriteria.warning_points_l.points}" size="5" min="0" step="1" />
 			{xen:phrase days}: <xen:spinbox name="user_criteria[warning_points_l][data][days]" value="{$userCriteria.warning_points_l.days}" size="5" min="0" step="1" />
+			<br/><input type="checkbox" name="user_criteria[sv_warning_minimum][data][expired]" value="1" {xen:checked $userCriteria.sv_warning_minimum.expired} /> {xen:phrase sv_warning_include_expired}
 		</div>
 	</li>
 	<li><label>
@@ -26,7 +27,26 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 		{xen:phrase user_has_received_at_most_x_warnings_points}:</label>
 		<div class="criteriaQualifier" id="ucrit_warning_points_m_Disabler">
 			<xen:spinbox name="user_criteria[warning_points_m][data][points]" value="{$userCriteria.warning_points_m.points}" size="5" min="0" step="1" />
-			{xen:phrase days}: <xen:spinbox name="user_criteria[warning_points_l][data][days]" value="{$userCriteria.warning_points_l.days}" size="5" min="0" step="1" />
+			{xen:phrase days}: <xen:spinbox name="user_criteria[warning_points_m][data][days]" value="{$userCriteria.warning_points_m.days}" size="5" min="0" step="1" />
+			<br/><input type="checkbox" name="user_criteria[sv_warning_minimum][data][expired]" value="1" {xen:checked $userCriteria.sv_warning_minimum.expired} /> {xen:phrase sv_warning_include_expired}
+		</div>
+	</li>
+	<li><label>
+		<input type="checkbox" name="user_criteria[sv_warning_minimum][rule]" value="sv_warning_minimum" class="Disabler" id="ucrit_sv_warning_minimum" {xen:checked $userCriteria.sv_warning_minimum} />
+		{xen:phrase user_has_received_at_least_x_warnings_count}:</label>
+		<div class="criteriaQualifier" id="ucrit_sv_warning_minimum_Disabler">
+			<xen:spinbox name="user_criteria[sv_warning_minimum][data][count]" value="{$userCriteria.sv_warning_minimum.count}" size="5" min="0" step="1" />
+			{xen:phrase days}: <xen:spinbox name="user_criteria[sv_warning_minimum][data][days]" value="{$userCriteria.sv_warning_minimum.days}" size="5" min="0" step="1" />
+			<br/><input type="checkbox" name="user_criteria[sv_warning_minimum][data][expired]" value="1" {xen:checked $userCriteria.sv_warning_minimum.expired} /> {xen:phrase sv_warning_include_expired}
+		</div>
+	</li>
+	<li><label>
+		<input type="checkbox" name="user_criteria[sv_warning_maximum][rule]" value="sv_warning_maximum" class="Disabler" id="ucrit_sv_warning_maximum" {xen:checked $userCriteria.sv_warning_maximum} />
+		{xen:phrase user_has_received_at_most_x_warnings_count}:</label>
+		<div class="criteriaQualifier" id="ucrit_sv_warning_maximum_Disabler">
+			<xen:spinbox name="user_criteria[sv_warning_maximum][data][count]" value="{$userCriteria.sv_warning_maximum.count}" size="5" min="0" step="1" />
+			{xen:phrase days}: <xen:spinbox name="user_criteria[sv_warning_maximum][data][days]" value="{$userCriteria.sv_warning_maximum.days}" size="5" min="0" step="1" />
+			<br/><input type="checkbox" name="user_criteria[sv_warning_minimum][data][expired]" value="1" {xen:checked $userCriteria.sv_warning_minimum.expired} /> {xen:phrase sv_warning_include_expired}
 		</div>
 	</li>]]></template>
     <template title="sv_warningimprovements_escalating_defaults"><![CDATA[<xen:if is="{$warningEscalatingDefaults}">
@@ -599,12 +619,14 @@ Edit the phases:<ul>
     <phrase title="sv_warning_default_is_active" version_id="102001" version_string="1.2.0"><![CDATA[Is active]]></phrase>
     <phrase title="sv_warning_expiry_extension" version_id="102001" version_string="1.2.0"><![CDATA[Expiry Extension]]></phrase>
     <phrase title="sv_warning_expiry_extension_explain" version_id="102001" version_string="1.2.0"><![CDATA[The duration to add to the warning's default expiry period when above the threshold]]></phrase>
+    <phrase title="sv_warning_include_expired" version_id="1051000" version_string="1.5.10"><![CDATA[Include Expired]]></phrase>
     <phrase title="sv_warning_node_id" version_id="1030007" version_string="1.3.0 RC7"><![CDATA[Post to Forum]]></phrase>
     <phrase title="sv_warning_post_as_user_id" version_id="1020200" version_string="1.2.2"><![CDATA[User Id To Post As]]></phrase>
     <phrase title="sv_warning_thread_id" version_id="1030007" version_string="1.3.0 RC7"><![CDATA[Reply to thread]]></phrase>
     <phrase title="sv_wa_minutes" version_id="101000" version_string="1.1.0"><![CDATA[Minutes]]></phrase>
     <phrase title="sv_x_weeks" version_id="102001" version_string="1.2.0"><![CDATA[{weeks} Weeks]]></phrase>
     <phrase title="user_has_received_at_least_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at least X warnings points]]></phrase>
+    <phrase title="user_has_received_at_most_x_warnings_count" version_id="1051000" version_string="1.5.10"><![CDATA[User has received at most X warnings]]></phrase>
     <phrase title="user_has_received_at_most_x_warnings_points" version_id="3" version_string="0.0.3"><![CDATA[User has received at most X warnings points]]></phrase>
     <phrase title="WarningStaff" version_id="100" version_string="1.0.0"><![CDATA[Moderation Staff]]></phrase>
     <phrase title="warning_alert_text" version_id="100000" version_string="1.0.0"><![CDATA[{name} issued you a warning for <a {warning_attributes}>{warning_title}</a> for {points} points.]]></phrase>

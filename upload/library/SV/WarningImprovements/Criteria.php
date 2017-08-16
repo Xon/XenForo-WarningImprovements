@@ -23,7 +23,8 @@ class SV_WarningImprovements_Criteria
         {
             case 'warning_points_l':
                 $days = empty($data['days']) ? 0 : intval($data['days']);
-                $points = $days ? self::getWarningModel()->getWarningPointsInLastXDays($user['user_id'], $days) : $user['warning_points'];
+                $expired = empty($data['expired']) ? false : true;
+                $points = $days ? self::getWarningModel()->getWarningPointsInLastXDays($user['user_id'], $days, $expired) : $user['warning_points'];
                 if ($points >= $data['points'])
                 {
                     $returnValue = true;
@@ -32,8 +33,29 @@ class SV_WarningImprovements_Criteria
 
             case 'warning_points_m':
                 $days = empty($data['days']) ? 0 : intval($data['days']);
-                $points = $days ? self::getWarningModel()->getWarningPointsInLastXDays($user['user_id'], $days) : $user['warning_points'];
+                $expired = empty($data['expired']) ? false : true;
+                $points = $days ? self::getWarningModel()->getWarningPointsInLastXDays($user['user_id'], $days, $expired) : $user['warning_points'];
                 if ($points <= $data['points'])
+                {
+                    $returnValue = true;
+                }
+                break;
+
+            case 'sv_warning_minimum':
+                $days = empty($data['days']) ? 0 : intval($data['days']);
+                $expired = empty($data['expired']) ? false : true;
+                $points = $days ? self::getWarningModel()->getWarningCountsInLastXDays($user['user_id'], $days, $expired) : $user['warning_points'];
+                if ($points >= $data['count'])
+                {
+                    $returnValue = true;
+                }
+                break;
+
+            case 'sv_warning_maximum':
+                $days = empty($data['days']) ? 0 : intval($data['days']);
+                $expired = empty($data['expired']) ? false : true;
+                $points = $days ? self::getWarningModel()->getWarningCountsInLastXDays($user['user_id'], $days, $expired) : $user['warning_points'];
+                if ($points <= $data['count'])
                 {
                     $returnValue = true;
                 }

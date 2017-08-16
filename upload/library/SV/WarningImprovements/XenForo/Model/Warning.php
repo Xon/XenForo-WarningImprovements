@@ -4,7 +4,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
     protected $userWarningCountCache = array();
 
-    public function getWarningPointsInLastXDays($userId, $days, $includeExpired = false)
+    protected function getCachedWarningsForUser($userId, $days, $includeExpired)
     {
         if (isset($this->userWarningCountCache[$userId][$days]))
         {
@@ -19,13 +19,36 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         }
 
         $db = $this->_getDb();
-        $this->userWarningCountCache[$userId][$days] = $db->fetchOne('
-            select sum(points)
+        $this->userWarningCountCache[$userId][$days] = $db->fetchRow('
+            select sum(points) as total, count(points) as `count`
             from xf_warning
             where user_id = ? and warning_date > ? ' . $whereSQL . '
+            group by user_id
         ', $args);
 
         return $this->userWarningCountCache[$userId][$days];
+    }
+
+    public function getWarningPointsInLastXDays($userId, $days, $includeExpired = false)
+    {
+        $value = $this->getCachedWarningsForUser($userId, $days, $includeExpired);
+        if (isset($value['total']))
+        {
+            return $value['total'];
+        }
+
+        return 0;
+    }
+
+    public function getWarningCountsInLastXDays($userId, $days, $includeExpired = false)
+    {
+        $value = $this->getCachedWarningsForUser($userId, $days, $includeExpired);
+        if (isset($value['count']))
+        {
+            return $value['count'];
+        }
+
+        return 0;
     }
 
     /**
