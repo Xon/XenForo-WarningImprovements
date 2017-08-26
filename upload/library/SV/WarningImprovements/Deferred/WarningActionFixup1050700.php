@@ -4,7 +4,7 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
 {
     public function execute(array $deferred, array $data, $targetRunTime, &$status)
     {
-        $increment = 200;
+        $increment = 500;
         $action_trigger_id = isset($data['action_trigger_id']) ? $data['action_trigger_id'] : -1;
         $fixedUsers = isset($data['users']) ? $data['users'] : array();
 
@@ -60,6 +60,7 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
         // cleanup any expired warnings
         $warningModel->processExpiredWarnings();
 
+        $s = microtime(true);
         foreach ($actionTriggers as $actionTrigger)
         {
             if (isset($fixedUsers[$actionTrigger['user_id']]))
@@ -88,6 +89,11 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
             }
 
             $action_trigger_id = $actionTrigger['action_trigger_id'];
+
+            if ($targetRunTime && microtime(true) - $s > $targetRunTime)
+            {
+                break;
+            }
         }
 
         return array('action_trigger_id' => $action_trigger_id, 'users' => $fixedUsers);
