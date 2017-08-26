@@ -1,11 +1,9 @@
 <?php
 class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprovements_XenForo_Model_Warning
 {
-    public function updatePendingExpiryFor($userId, $checkBannedStatus)
+    public function getEffectiveNextExpiry($userId, $checkBannedStatus)
     {
         $db = $this->_getDb();
-
-        XenForo_Db::beginTransaction($db);
 
         $nextWarningExpiry = $db->fetchOne('
             select min(expiry_date)
@@ -54,6 +52,15 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         {
             $effectiveNextExpiry = $banExpiry;
         }
+    }
+
+    public function updatePendingExpiryFor($userId, $checkBannedStatus)
+    {
+        $db = $this->_getDb();
+
+        XenForo_Db::beginTransaction($db);
+
+        $effectiveNextExpiry = $this->getEffectiveNextExpiry($userId, $checkBannedStatus);
 
         $db->query('
             update xf_user_option
@@ -63,10 +70,10 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
         XenForo_Db::commit($db);
 
-        return $effectiveNextExpiry === null;
+        return $effectiveNextExpiry;
     }
 
-    public function processExpiredWarningsForUser($userId, $checkBannedStatus, $updatePendingExpiry)
+    public function processExpiredWarningsForUser($userId, $checkBannedStatus)
     {
         if (empty($userId))
         {
@@ -112,10 +119,6 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
             }
         }
 
-        if ($updatePendingExpiry)
-        {
-            $expired = $this->updatePendingExpiryFor($userId, $checkBannedStatus);
-        }
         return $expired;
     }
 
