@@ -23,7 +23,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         return $this->_getDb()->fetchRow('
             SELECT xf_user_change_temp.*, user_change_temp_id as warning_action_id
             FROM xf_user_change_temp
-            WHERE user_change_temp_id = ?
+            WHERE user_change_temp_id = ? change_key like \'warning_action_%\'
         ', $id);
     }
 
@@ -47,7 +47,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         return $this->_getDb()->fetchOne('
             SELECT COUNT(' . $select . ')
             FROM xf_user_change_temp
-            WHERE user_id = ? ' . $sql . '
+            WHERE user_id = ? ' . $sql . ' and change_key like \'warning_action_%\'
         ', $userId);
     }
 
@@ -78,7 +78,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
             SELECT xf_user_change_temp.*, user_change_temp_id as warning_action_id,
                 IFNULL(expiry_date, 0xFFFFFFFF) as expiry_date_sort
             FROM xf_user_change_temp
-            WHERE ' . $where . '
+            WHERE ' . $where . ' and change_key like \'warning_action_%\'
             ORDER BY expiry_date_sort DESC
         ', 'warning_action_id', array($userId));
     }
