@@ -100,6 +100,8 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
     {
         parent::_postSaveAfterTransaction();
 
+        $this->_getWarningModel()->updatePendingExpiryFor($this->get('user_id'), true);
+
         if (!$this->isInsert())
         {
             return;
@@ -190,6 +192,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
     {
         parent::_postDelete();
 
+        $this->_getWarningModel()->updatePendingExpiryFor($this->get('user_id'), true);
         $this->getModelFromCache('XenForo_Model_Alert')->deleteAlerts('warning', $this->get('warning_id'));
     }
 

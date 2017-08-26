@@ -7,6 +7,13 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         return $this->expireTempUserChange($warningAction);
     }
 
+    public function expireTempUserChange(array $change)
+    {
+        $ret = parent::expireTempUserChange($change);
+        $this->_getWarningModel()->updatePendingExpiryFor($change['user_id'], true);
+        return $ret;
+    }
+
     public function updateWarningActionExpiryDate($warningActionId, $expiryDate)
     {
         $res = $this->_getDb()->query('
@@ -14,8 +21,14 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
             SET expiry_date = ?
             WHERE user_change_temp_id = ?
         ', array($expiryDate, $warningActionId));
+        $rowCount = $res->rowCount();
 
-        return $res->rowCount();
+        if($rowCount)
+        {
+            $this->_getWarningModel()->updatePendingExpiryFor($userId, true);
+        }
+
+        return $rowCount;
     }
 
     public function getWarningActionById($id)
@@ -78,7 +91,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         {
             $where .= ' and expiry_date is not null and expiry_date > 0 and expiry_date < '. intval(XenForo_Application::$time) . ' ';
         }
-        
+
         return $this->fetchAllKeyed('
             SELECT xf_user_change_temp.*, user_change_temp_id as warning_action_id,
                 IFNULL(expiry_date, 0xFFFFFFFF) as expiry_date_sort
@@ -235,5 +248,10 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
     protected function _getHelper()
     {
         return $this->getModelFromCache('XenForo_Helper_UserChangeLog');
+    }
+
+    protected function _getWarningModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_Warning');
     }
 }
