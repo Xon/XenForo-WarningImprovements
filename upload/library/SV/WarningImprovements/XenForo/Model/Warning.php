@@ -1,6 +1,123 @@
 <?php
 class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprovements_XenForo_Model_Warning
 {
+    public function updatePendingExpiryFor($userId, $checkBannedStatus)
+    {
+        $db = $this->_getDb();
+
+        XenForo_Db::beginTransaction($db);
+
+        $nextWarningExpiry = $db->fetchOne('
+            select min(expiry_date)
+            from xf_warning
+            WHERE user_id = ? and expiry_date > 0 AND is_expired = 0
+        ', $userId);
+        if (empty($nextWarningExpiry))
+        {
+            $nextWarningExpiry = null;
+        }
+
+        $warningActionExpiry = $db->fetchOne('
+            select min(expiry_date)
+            from xf_user_change_temp
+            WHERE user_id = ? and expiry_date > 0 AND change_key like \'warning_action_%\';
+        ', $userId);
+        if (empty($warningActionExpiry))
+        {
+            $warningActionExpiry = null;
+        }
+
+        $banExpiry = null;
+        if ($checkBannedStatus)
+        {
+            $banExpiry = $db->fetchOne('
+                SELECT min(end_date)
+                FROM xf_user_ban
+                WHERE user_id = ? and end_date > 0
+            ', $userId);
+            if (empty($banExpiry))
+            {
+                $banExpiry = null;
+            }
+        }
+
+        $effectiveNextExpiry = null;
+        if ($nextWarningExpiry)
+        {
+            $effectiveNextExpiry = $nextWarningExpiry;
+        }
+        if ($warningActionExpiry && $warningActionExpiry > $effectiveNextExpiry)
+        {
+            $effectiveNextExpiry = $warningActionExpiry;
+        }
+        if ($banExpiry && $banExpiry > $effectiveNextExpiry)
+        {
+            $effectiveNextExpiry = $banExpiry;
+        }
+
+        $db->query('
+            update xf_user_option
+            set sv_pending_warning_expiry = ?
+            where user_id = ?
+        ', array($effectiveNextExpiry, $userId));
+
+        XenForo_Db::commit($db);
+
+        return $effectiveNextExpiry === null;
+    }
+
+    public function processExpiredWarningsForUser($userId, $checkBannedStatus, $updatePendingExpiry)
+    {
+        if (empty($userId))
+        {
+            return false;
+        }
+
+        $db = $this->_getDb();
+        $warnings = $db->fetchAll('
+            SELECT *
+            FROM xf_warning
+            WHERE user_id = ? AND expiry_date < ? AND expiry_date > 0 AND is_expired = 0
+        ', array($userId, XenForo_Application::$time));
+        $expired = !empty($warnings);
+        foreach ($warnings AS $warning)
+        {
+            $dw = XenForo_DataWriter::create('XenForo_DataWriter_Warning', XenForo_DataWriter::ERROR_SILENT);
+            $dw->setExistingData($warning, true);
+            $dw->set('is_expired', 1);
+            $dw->save();
+        }
+
+        $warningActionModel = $this->_getWarningActionModel();
+        $warningActions = $warningActionModel->getWarningActionsByUser($userId, true, true, true);
+        $expired = $expired || !empty($warningActions);
+        foreach ($warningActions AS $warningAction)
+        {
+            $warningActionModel->expireWarningAction($warningAction);
+        }
+
+        if ($checkBannedStatus)
+        {
+            $bans = $db->fetchAll('
+                SELECT *
+                FROM xf_user_ban
+                WHERE user_id = ? AND end_date > 0 AND end_date <= ?
+            ', array($userId, XenForo_Application::$time));
+            $expired = $expired || !empty($bans);
+            foreach ($bans AS $ban)
+            {
+                $dw = XenForo_DataWriter::create('XenForo_DataWriter_UserBan');
+                $dw->setExistingData($ban, true);
+                $dw->delete();
+            }
+        }
+
+        if ($updatePendingExpiry)
+        {
+            $expired = $this->updatePendingExpiryFor($userId, $checkBannedStatus);
+        }
+        return $expired;
+    }
 
     protected $userWarningCountCache = array();
 
@@ -1318,5 +1435,10 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
     protected function _getPostModel()
     {
         return $this->getModelFromCache('XenForo_Model_Post');
+    }
+
+    protected function _getWarningActionModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_UserChangeTemp');
     }
 }

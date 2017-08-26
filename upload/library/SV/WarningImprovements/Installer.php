@@ -41,6 +41,12 @@ class SV_WarningImprovements_Installer
         }
 
         SV_Utils_Install::addColumn(
+            'xf_user_option',
+            'sv_pending_warning_expiry',
+            "INT UNSIGNED DEFAULT NULL"
+        );
+
+        SV_Utils_Install::addColumn(
             'xf_sv_warning_category',
             'allowed_user_group_ids',
             "VARBINARY(255) NOT NULL DEFAULT '2'"
@@ -202,6 +208,7 @@ class SV_WarningImprovements_Installer
 */
 
         XenForo_Application::defer('SV_WarningImprovements_Deferred_WarningActionFixup1050700', array());
+        XenForo_Application::defer('SV_WarningImprovements_Deferred_InitializeWarningExpiry', array());
 
         return true;
     }

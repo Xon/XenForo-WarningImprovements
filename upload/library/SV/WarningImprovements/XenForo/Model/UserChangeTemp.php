@@ -51,7 +51,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         ', $userId);
     }
 
-    public function getWarningActionsByUser($userId, $showAll = false, $showDiscouraged = false)
+    public function getWarningActionsByUser($userId, $showAll = false, $showDiscouraged = false, $onlyExpired = false)
     {
         $sql = '';
         if (!$showDiscouraged)
@@ -74,6 +74,11 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
                 )
             ';
         }
+        if($onlyExpired)
+        {
+            $where .= ' and expiry_date is not null and expiry_date > 0 and expiry_date < '. intval(XenForo_Application::$time) . ' ';
+        }
+        
         return $this->fetchAllKeyed('
             SELECT xf_user_change_temp.*, user_change_temp_id as warning_action_id,
                 IFNULL(expiry_date, 0xFFFFFFFF) as expiry_date_sort
