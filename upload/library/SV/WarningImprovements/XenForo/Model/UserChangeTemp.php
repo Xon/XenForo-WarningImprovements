@@ -36,7 +36,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         return $this->_getDb()->fetchRow('
             SELECT xf_user_change_temp.*, user_change_temp_id as warning_action_id
             FROM xf_user_change_temp
-            WHERE user_change_temp_id = ? change_key like \'warning_action_%\'
+            WHERE user_change_temp_id = ? and change_key like \'warning_action_%\'
         ', $id);
     }
 
