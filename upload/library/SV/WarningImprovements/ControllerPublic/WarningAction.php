@@ -81,7 +81,7 @@ class SV_WarningImprovements_ControllerPublic_WarningAction extends XenForo_Cont
                 }
                 else
                 {
-                    $success = $warningActionModel->updateWarningActionExpiryDate($warningActionId, $expiryDate);
+                    $success = $warningActionModel->updateWarningActionExpiryDate($warningAction, $expiryDate);
                 }
                 break;
         }

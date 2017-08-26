@@ -14,18 +14,18 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         return $ret;
     }
 
-    public function updateWarningActionExpiryDate($warningActionId, $expiryDate)
+    public function updateWarningActionExpiryDate(array $warningAction, $expiryDate)
     {
         $res = $this->_getDb()->query('
             UPDATE xf_user_change_temp
             SET expiry_date = ?
             WHERE user_change_temp_id = ?
-        ', array($expiryDate, $warningActionId));
+        ', array($expiryDate, $warningAction['user_change_temp_id']));
         $rowCount = $res->rowCount();
 
         if($rowCount)
         {
-            $this->_getWarningModel()->updatePendingExpiryFor($userId, true);
+            $this->_getWarningModel()->updatePendingExpiryFor($warningAction['user_id'], true);
         }
 
         return $rowCount;

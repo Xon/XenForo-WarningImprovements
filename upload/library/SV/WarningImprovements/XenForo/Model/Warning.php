@@ -52,6 +52,8 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         {
             $effectiveNextExpiry = $banExpiry;
         }
+
+        return $effectiveNextExpiry;
     }
 
     public function updatePendingExpiryFor($userId, $checkBannedStatus)
