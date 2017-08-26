@@ -12,6 +12,8 @@ class SV_WarningImprovements_Deferred_InitializeWarningExpiry extends XenForo_De
 
         /* @var $userModel XenForo_Model_User */
         $userModel = XenForo_Model::create('XenForo_Model_User');
+        /* @var $warningModel XenForo_Model_Warning */
+        $warningModel = XenForo_Model::create('XenForo_Model_Warning');
 
         $userIds = $userModel->getUserIdsInRange($data['position'], $data['batch']);
         if (empty($userIds))
