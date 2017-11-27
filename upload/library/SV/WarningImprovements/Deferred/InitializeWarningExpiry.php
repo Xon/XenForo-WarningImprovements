@@ -10,9 +10,9 @@ class SV_WarningImprovements_Deferred_InitializeWarningExpiry extends XenForo_De
         ), $data);
         $data['batch'] = max(1, $data['batch']);
 
-        /* @var $userModel XenForo_Model_User */
+        /* @var XenForo_Model_User $userModel */
         $userModel = XenForo_Model::create('XenForo_Model_User');
-        /* @var $warningModel XenForo_Model_Warning */
+        /* @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
         $warningModel = XenForo_Model::create('XenForo_Model_Warning');
 
         $userIds = $userModel->getUserIdsInRange($data['position'], $data['batch']);

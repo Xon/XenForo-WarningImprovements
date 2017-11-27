@@ -10,7 +10,9 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
 
         $db = XenForo_Application::getDb();
 
+        /** @var XenForo_Model_User $userModel */
         $userModel = XenForo_Model::create('XenForo_Model_User');
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
         $warningModel = XenForo_Model::create('XenForo_Model_Warning');
 
         $warningActions = $userModel->fetchAllKeyed("

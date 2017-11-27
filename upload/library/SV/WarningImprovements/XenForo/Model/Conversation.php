@@ -1,4 +1,5 @@
 <?php
+
 class SV_WarningImprovements_XenForo_Model_Conversation extends XFCP_SV_WarningImprovements_XenForo_Model_Conversation
 {
     protected $sv_force_email_for_user_id = null;

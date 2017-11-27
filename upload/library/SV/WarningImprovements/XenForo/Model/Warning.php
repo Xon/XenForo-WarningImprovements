@@ -299,6 +299,11 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         );
     }
 
+    /**
+     * @param array      $warningItem
+     * @param array|null $warningCategories
+     * @return array
+     */
     public function getRootWarningCategoryByWarningItem(
         array $warningItem,
         array $warningCategories = null
@@ -323,8 +328,19 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         {
             $parentWarningCategoryId = $warningItem['sv_warning_category_id'];
         }
+        else
+        {
+            $parentWarningCategoryId = null;
+        }
 
-        $parentWarningCategory = $warningCategories[$parentWarningCategoryId];
+        if (isset($warningCategories[$parentWarningCategoryId]))
+        {
+            $parentWarningCategory = $warningCategories[$parentWarningCategoryId];
+        }
+        else
+        {
+            $parentWarningCategory = reset($warningCategories);
+        }
 
         return $this->getRootWarningCategoryByWarningItem($parentWarningCategory);
     }
@@ -602,6 +618,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         uasort($warningItems, function ($first, $second)
         {
             $keys = array('parent_warning_category_id', 'sv_warning_category_id');
+            $firstOrder = $secondOrder = 0;
 
             foreach ($keys as $key)
             {
@@ -627,6 +644,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         uasort($warningItems, function ($first, $second)
         {
             $keys = array('display_order', 'sv_display_order');
+            $firstOrder = $secondOrder = 0;
 
             foreach ($keys as $key)
             {
@@ -658,6 +676,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $depth = 0
     ) {
         $calculatedItems = array();
+        $itemParentId = null;
 
         foreach ($warningItems as $warningItemId => $warningItem)
         {
@@ -961,7 +980,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         ', 'warning_default_id');
     }
 
-    public function getWarningDefaultExtention($warningCount, $warningTotals)
+    public function getWarningDefaultExtention(/** @noinspection PhpUnusedParameterInspection */ $warningCount, $warningTotals)
     {
         return $this->_getDb()->fetchRow('
             SELECT warning_default.*
@@ -1343,6 +1362,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         $message = new XenForo_Phrase('Warning_Thread_Message', $input, false);
         $message = XenForo_Helper_String::autoLinkBbCode($message->render());
 
+        /** @var XenForo_DataWriter_Discussion_Thread $threadDw */
         $threadDw = XenForo_DataWriter::create('XenForo_DataWriter_Discussion_Thread', XenForo_DataWriter::ERROR_SILENT);
         $threadDw->setOption(XenForo_DataWriter_Discussion::OPTION_TRIM_TITLE, true);
         $threadDw->setExtraData(XenForo_DataWriter_Discussion_Thread::DATA_FORUM, $forum);
@@ -1422,26 +1442,41 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         return $warning;
     }
 
+    /**
+     * @return XenForo_Model|SV_WarningImprovements_XenForo_Model_User
+     */
     protected function _getUserModel()
     {
         return $this->getModelFromCache('XenForo_Model_User');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Forum
+     */
     protected function _getForumModel()
     {
         return $this->getModelFromCache('XenForo_Model_Forum');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Thread
+     */
     protected function _getThreadModel()
     {
         return $this->getModelFromCache('XenForo_Model_Thread');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Post
+     */
     protected function _getPostModel()
     {
         return $this->getModelFromCache('XenForo_Model_Post');
     }
 
+    /**
+     * @return XenForo_Model|SV_WarningImprovements_XenForo_Model_UserChangeTemp
+     */
     protected function _getWarningActionModel()
     {
         return $this->getModelFromCache('XenForo_Model_UserChangeTemp');

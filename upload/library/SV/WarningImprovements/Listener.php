@@ -18,11 +18,11 @@ class SV_WarningImprovements_Listener
         $userId = $visitor->user_id;
         if (empty($userId))
         {
-            return;
+            return true;
         }
         if (self::$forcedReloadRecursionGuard)
         {
-            return;
+            return true;
         }
 
         // check order based on most likely criteria
@@ -32,6 +32,7 @@ class SV_WarningImprovements_Listener
             $pendingWarningExpiry !== false // the add-on isn't fully installed yet
             )
         {
+            /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
             $warningModel = XenForo_Model::create('XenForo_Model_Warning');
             if (is_callable(array($warningModel, 'processExpiredWarningsForUser')))
             {

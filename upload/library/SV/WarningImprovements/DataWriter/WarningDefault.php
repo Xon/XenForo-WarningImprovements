@@ -44,6 +44,9 @@ class SV_WarningImprovements_DataWriter_WarningDefault extends XenForo_DataWrite
     {
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Warning|SV_WarningImprovements_XenForo_Model_Warning
+     */
     protected function _getWarningModel()
     {
         return $this->getModelFromCache('XenForo_Model_Warning');

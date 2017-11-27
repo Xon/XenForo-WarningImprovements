@@ -20,6 +20,6 @@ class SV_WarningImprovements_XenForo_DataWriter_ConversationMaster extends XFCP_
             $this->setExtraData(self::DATA_MESSAGE, strtr((string)$message, $replace));
         }
 
-        return parent::_preSave();
+        parent::_preSave();
     }
 }

@@ -37,7 +37,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
             if (empty($warningCategory) || !$warningModel->canViewWarningCategory($warningCategory))
             {
                 $this->error(new XenForo_Phrase('sv_no_permission_to_give_warning'));
-                return false;
+                return;
             }
 
             if ($warningDefinitionId == 0 && !empty($warning))
@@ -193,29 +193,46 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
         parent::_postDelete();
 
         $this->_getWarningModel()->updatePendingExpiryFor($this->get('user_id'), true);
-        $this->getModelFromCache('XenForo_Model_Alert')->deleteAlerts('warning', $this->get('warning_id'));
+        /** @var XenForo_Model_Alert $alertModel */
+        $alertModel = $this->getModelFromCache('XenForo_Model_Alert');
+        $alertModel->deleteAlerts('warning', $this->get('warning_id'));
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Warning|SV_WarningImprovements_XenForo_Model_Warning
+     */
     protected function _getWarningModel()
     {
         return $this->getModelFromCache('XenForo_Model_Warning');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Report
+     */
     protected function _getReportModel()
     {
         return $this->getModelFromCache('XenForo_Model_Report');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Forum
+     */
     protected function _getForumModel()
     {
         return $this->getModelFromCache('XenForo_Model_Forum');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Thread
+     */
     protected function _getThreadModel()
     {
         return $this->getModelFromCache('XenForo_Model_Thread');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Post
+     */
     protected function _getPostModel()
     {
         return $this->getModelFromCache('XenForo_Model_Post');

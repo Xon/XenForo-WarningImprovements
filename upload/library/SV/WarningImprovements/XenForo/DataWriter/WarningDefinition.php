@@ -61,7 +61,9 @@ class SV_WarningImprovements_XenForo_DataWriter_WarningDefinition extends XFCP_S
             return false;
         }
 
-        $warningCategory = $this->_getWarningModel()->getWarningCategoryById(
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+        $warningModel = $this->_getWarningModel();
+        $warningCategory = $warningModel->getWarningCategoryById(
             $warningCategoryId
         );
 

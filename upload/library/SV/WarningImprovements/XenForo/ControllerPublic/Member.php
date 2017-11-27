@@ -27,7 +27,10 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
     public function actionWarningActions()
     {
         $userId = $this->_input->filterSingle('user_id', XenForo_Input::UINT);
-        $user = $this->getHelper('UserProfile')->assertUserProfileValidAndViewable($userId);
+        /** @var XenForo_ControllerHelper_UserProfile $userProfileHelper */
+        $userProfileHelper = $this->getHelper('UserProfile');
+        $user = $userProfileHelper->assertUserProfileValidAndViewable($userId);
+
 
         $warningActionModel = $this->_getWarningActionModel();
         if (!$warningActionModel->canViewUserWarningActions($user))
@@ -71,6 +74,7 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
 
         $viewParams = &$response->params;
 
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
         $warningModel = $this->getModelFromCache('XenForo_Model_Warning');
         $warningItems = $warningModel->getWarningItems(true);
 
@@ -105,6 +109,9 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
         return parent::actionCard();
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_UserChangeTemp|SV_WarningImprovements_XenForo_Model_UserChangeTemp
+     */
     protected function _getWarningActionModel()
     {
         return $this->getModelFromCache('XenForo_Model_UserChangeTemp');

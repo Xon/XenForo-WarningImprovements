@@ -245,11 +245,17 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
         return XenForo_Permission::hasPermission($viewingUser['permissions'], 'general', 'sv_editWarningActions');
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Helper_UserChangeLog
+     */
     protected function _getHelper()
     {
         return $this->getModelFromCache('XenForo_Helper_UserChangeLog');
     }
 
+    /**
+     * @return XenForo_Model|SV_WarningImprovements_XenForo_Model_Warning
+     */
     protected function _getWarningModel()
     {
         return $this->getModelFromCache('XenForo_Model_Warning');

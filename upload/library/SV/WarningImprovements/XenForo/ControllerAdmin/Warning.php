@@ -7,6 +7,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         $response = parent::actionIndex();
         $viewParams = &$response->params;
 
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
         $warningModel = $this->_getWarningModel();
 
         $warningEscalatingDefaults = $warningModel->getWarningDefaultExtentions();
@@ -32,8 +33,11 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
         $this->_routeMatch->setResponseType('json');
 
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+        $warningModel = $this->_getWarningModel();
+
         $viewParams = array(
-            'tree' => $this->_getWarningModel()->getWarningItemTree()
+            'tree' => $warningModel->getWarningItemTree()
         );
 
         return $this->responseView(
@@ -49,7 +53,9 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
         $tree = $this->_input->filterSingle('tree', XenForo_Input::JSON_ARRAY);
 
-        $warningItems = $this->_getWarningModel()->processWarningItemTree($tree);
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+        $warningModel = $this->_getWarningModel();
+        $warningItems = $warningModel->processWarningItemTree($tree);
 
         foreach ($warningItems as $warningItem)
         {
@@ -100,8 +106,9 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
         $node = $this->_input->filterSingle('node', XenForo_Input::JSON_ARRAY);
 
-        $warningItem = $this->_getWarningModel()
-            ->processWarningItemTreeItem($node);
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+        $warningModel = $this->_getWarningModel();
+        $warningItem = $warningModel->processWarningItemTreeItem($node);
 
         if ($warningItem['type'] == 'category')
         {
@@ -167,8 +174,9 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         $response = parent::_getWarningAddEditResponse($warning);
         $viewParams = &$response->params;
 
-        $viewParams['warningCategories'] = $this->_getWarningModel()
-            ->getWarningCategoryOptions();
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+        $warningModel = $this->_getWarningModel();
+        $viewParams['warningCategories'] = $warningModel->getWarningCategoryOptions();
 
         return $response;
     }
@@ -275,10 +283,11 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         {
             $viewParams = &$response->params;
 
-            $viewParams['warningCategories'] = $this->_getWarningModel()
-                ->getWarningCategoryOptions();
+            /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+            $warningModel = $this->_getWarningModel();
+            $viewParams['warningCategories'] = $warningModel->getWarningCategoryOptions();
 
-            $nodeList = array();
+            /** @var XenForo_Model_Node $nodeModel */
             $nodeModel = XenForo_Model::create('XenForo_Model_Node');
 
             $nodeList = $nodeModel->getNodeOptionsArray(
@@ -313,8 +322,11 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
     public function actionDefaultAdd()
     {
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+        $warningModel = $this->_getWarningModel();
+
         return $this->_getDefaultAddEditResponse(array(
-            'threshold_points' => $this->_getWarningModel()->getLastWarningDefault() + 100,
+            'threshold_points' => $warningModel->getLastWarningDefault() + 100,
             'expiry_extension' => 1,
             'expiry_type' => 'days',
             'active' => 1,
@@ -404,8 +416,11 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
     protected function _getCategoryAddEditResponse(array $warningCategory)
     {
-        $warningCategories = $this->_getWarningModel()
-            ->getWarningCategoryOptions(true);
+        /** @var XenForo_Model_UserGroup $userGroupModel */
+        $userGroupModel = $this->getModelFromCache('XenForo_Model_UserGroup');
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+        $warningModel = $this->_getWarningModel();
+        $warningCategories = $warningModel->getWarningCategoryOptions(true);
 
         if (isset($warningCategory['warning_category_id']) &&
             isset($warningCategories[$warningCategory['warning_category_id']])
@@ -413,8 +428,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
             unset($warningCategories[$warningCategory['warning_category_id']]);
         }
 
-        $userGroups = $this->getModelFromCache('XenForo_Model_UserGroup')
-            ->getUserGroupOptions($warningCategory['allowed_user_group_ids']);
+        $userGroups = $userGroupModel->getUserGroupOptions($warningCategory['allowed_user_group_ids']);
 
         $viewParams = array(
             'warningCategory'   => $warningCategory,
@@ -528,6 +542,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
     protected function _getWarningCategoryOrError($warningCategoryId)
     {
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
         $warningModel = $this->_getWarningModel();
 
         $warningCategory = $warningModel->getWarningCategoryById($warningCategoryId);

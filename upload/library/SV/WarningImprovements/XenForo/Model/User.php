@@ -1,4 +1,5 @@
 <?php
+
 class SV_WarningImprovements_XenForo_Model_User extends XFCP_SV_WarningImprovements_XenForo_Model_User
 {
     public function canViewWarnings(&$errorPhraseKey = '', array $viewingUser = null)

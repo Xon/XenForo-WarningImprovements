@@ -6,7 +6,9 @@ class SV_WarningImprovements_AlertHandler_Warning extends XenForo_AlertHandler_A
 
     public function getContentByIds(array $contentIds, $model, $userId, array $viewingUser)
     {
-         return $model->getModelFromCache('XenForo_Model_Warning')->getWarningByIds($contentIds);
+        /** @var SV_WarningImprovements_XenForo_Model_Warning $warningModel */
+        $warningModel = $model->getModelFromCache('XenForo_Model_Warning');
+        return $warningModel->getWarningByIds($contentIds);
     }
 
     public function canViewAlert(array $alert, $content, array $viewingUser)

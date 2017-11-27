@@ -17,6 +17,6 @@ class SV_WarningImprovements_XenForo_DataWriter_ConversationMessage extends XFCP
             $this->set('message', strtr((string)$message, $replace));
         }
 
-        return parent::_preSave();
+        parent::_preSave();
     }
 }

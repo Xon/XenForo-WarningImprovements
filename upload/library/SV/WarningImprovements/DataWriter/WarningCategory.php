@@ -186,6 +186,9 @@ class SV_WarningImprovements_DataWriter_WarningCategory extends XenForo_DataWrit
         return $this->_getWarningModel()->getWarningCategoryTitlePhraseName($id);
     }
 
+    /**
+     * @return XenForo_Model|XenForo_Model_Warning|SV_WarningImprovements_XenForo_Model_Warning
+     */
     protected function _getWarningModel()
     {
         return $this->getModelFromCache('XenForo_Model_Warning');

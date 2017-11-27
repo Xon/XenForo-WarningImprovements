@@ -16,7 +16,9 @@ class SV_WarningImprovements_Option_UserName
 
     public static function verifyOption(&$option, XenForo_DataWriter $dw, $fieldName)
     {
-        $user = XenForo_Model::create("XenForo_Model_User")->getUserByName($option, array());
+        /** @var XenForo_Model_User $userModel */
+        $userModel = XenForo_Model::create("XenForo_Model_User");
+        $user = $userModel->getUserByName($option, array());
 
         if (!empty($user['username']))
         {

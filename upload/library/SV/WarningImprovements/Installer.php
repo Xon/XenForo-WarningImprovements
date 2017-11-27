@@ -156,7 +156,7 @@ class SV_WarningImprovements_Installer
                     ", $warningAction);
                }
             }
-            
+
             XenForo_Db::commit();
         }
 
@@ -193,8 +193,6 @@ class SV_WarningImprovements_Installer
             VALUES
                 ('".SV_WarningImprovements_AlertHandler_Warning::ContentType."', 'alert_handler_class', 'SV_WarningImprovements_AlertHandler_Warning')
         ");
-
-        XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 
 
         SV_Utils_Install::addColumn("xf_warning_action", "sv_post_node_id", "INT NOT NULL DEFAULT 0");
@@ -273,8 +271,6 @@ class SV_WarningImprovements_Installer
             DELETE FROM xf_permission_entry
             WHERE permission_group_id = 'general' and permission_id = 'viewWarning_issuer'
         ");
-
-        XenForo_Model::create('XenForo_Model_ContentType')->rebuildContentTypeCache();
 
         SV_Utils_Install::dropColumn("xf_warning_action", "sv_post_node_id");
         SV_Utils_Install::dropColumn("xf_warning_action", "sv_post_thread_id");

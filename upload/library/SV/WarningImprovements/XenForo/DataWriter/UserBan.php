@@ -19,6 +19,9 @@ class SV_WarningImprovements_XenForo_DataWriter_UserBan extends XFCP_SV_WarningI
         $this->_getWarningModel()->updatePendingExpiryFor($this->get('user_id'), true);
     }
 
+    /**
+     * @return XenForo_Model|SV_WarningImprovements_XenForo_Model_Warning
+     */
     protected function _getWarningModel()
     {
         return $this->getModelFromCache('XenForo_Model_Warning');
