@@ -127,22 +127,23 @@ class SV_WarningImprovements_Installer
             foreach($warningActions as $warningAction)
             {
                 $groups = array_filter(explode(',', $warningAction['warning_groups']));
-                switch (count($groups))
+                if (count($groups) == 0)
                 {
-                    case 0:
-                        continue;
-                    case 1:
-                        $group = reset($groups);
-                        if ($group)
-                        {
-                            $db->query('update xf_warning_action
-                                set sv_warning_category_id = ?
-                                where warning_action_id = ?
-                            ', array($group, $warningAction['warning_action_id']));
-                        }
-                        continue;
-                    default:
-                        break;
+                    continue;
+                }
+                if (count($groups) == 1)
+                {
+                    $group = reset($groups);
+                    if ($group)
+                    {
+                        $db->query(
+                            'UPDATE xf_warning_action
+                                SET sv_warning_category_id = ?
+                                WHERE warning_action_id = ?
+                            ', [$group, $warningAction['warning_action_id']]
+                        );
+                    }
+                    continue;
                 }
                 // copy a warning action for each category
                 unset($warningAction['warning_action_id']);
@@ -150,6 +151,8 @@ class SV_WarningImprovements_Installer
                 $keys = array_keys($warningAction);
                 foreach($groups as $group)
                 {
+                    $warningAction['sv_warning_category_id'] = $group;
+                    $warningAction['warning_groups'] = $group;
                     $warningAction['sv_warning_category_id'] = $group;
                     $db->query("insert ignore into xf_warning_action (".implode(',', $keys).")
                         values (".implode(',', array_fill(0, count($keys), '?')).")
