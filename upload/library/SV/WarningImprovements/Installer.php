@@ -85,6 +85,8 @@ class SV_WarningImprovements_Installer
         // import from Waindigo/TH Warnings add-on
         if (SV_Utils_AddOn::addOnIsActive('Waindigo_Warnings'))
         {
+            XenForo_Db::beginTransaction();
+
             $phraseModel = XenForo_Model::create("XenForo_Model_Phrase");
             // make sure the model is loaded before accessing the static properties
             XenForo_Model::create("XenForo_Model_User");
@@ -119,7 +121,7 @@ class SV_WarningImprovements_Installer
             ');
             // update warning actions
             $warningActions = $db->fetchAll('
-                select*
+                select *
                 from xf_warning_action
             ');
             foreach($warningActions as $warningAction)
@@ -145,14 +147,17 @@ class SV_WarningImprovements_Installer
                 // copy a warning action for each category
                 unset($warningAction['warning_action_id']);
                 unset($warningAction['warning_groups']);
+                $keys = array_keys($warningAction);
                 foreach($groups as $group)
                 {
                     $warningAction['sv_warning_category_id'] = $group;
-                    $db->query("insert ignore into xf_warning_action (".implode(',', $warningAction).")
-                        values (".implode(',', array_fill(0, count($warningAction), '?')).")
+                    $db->query("insert ignore into xf_warning_action (".implode(',', $keys).")
+                        values (".implode(',', array_fill(0, count($keys), '?')).")
                     ", $warningAction);
                }
             }
+            
+            XenForo_Db::commit();
         }
 
         if ($requireDefault && $version < 1040000)
