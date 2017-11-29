@@ -618,7 +618,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         uasort($warningItems, function ($first, $second)
         {
             $keys = array('parent_warning_category_id', 'sv_warning_category_id');
-            $firstOrder = $secondOrder = 0;
+            $firstOrder = $secondOrder = null; // null allows isset() to return false
 
             foreach ($keys as $key)
             {
@@ -644,7 +644,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
         uasort($warningItems, function ($first, $second)
         {
             $keys = array('display_order', 'sv_display_order');
-            $firstOrder = $secondOrder = 0;
+            $firstOrder = $secondOrder = null; // null allows isset() to return false
 
             foreach ($keys as $key)
             {
