@@ -129,7 +129,7 @@ class SV_WarningImprovements_XenForo_Model_UserChangeTemp extends XFCP_SV_Warnin
                 $warning_type['field'] = 'secondary_group_ids';
                 break;
             case 'field':
-                if ($warningAction['action_modifier'] == 'is_discouraged')
+                if ($warningAction['action_modifier'] === 'is_discouraged')
                 {
                     $warning_type['field'] = $warningAction['action_modifier'];
                     break;

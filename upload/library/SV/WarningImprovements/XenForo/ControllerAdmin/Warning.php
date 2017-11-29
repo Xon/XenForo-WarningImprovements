@@ -59,7 +59,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
 
         foreach ($warningItems as $warningItem)
         {
-            if ($warningItem['type'] == 'category')
+            if ($warningItem['type'] === 'category')
             {
                 $dw = XenForo_DataWriter::create(
                     'SV_WarningImprovements_DataWriter_WarningCategory'
@@ -71,7 +71,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                 ));
                 $dw->save();
             }
-            elseif ($warningItem['type'] == 'definition')
+            elseif ($warningItem['type'] === 'definition')
             {
                 $dw = XenForo_DataWriter::create(
                     'XenForo_DataWriter_WarningDefinition'
@@ -110,7 +110,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         $warningModel = $this->_getWarningModel();
         $warningItem = $warningModel->processWarningItemTreeItem($node);
 
-        if ($warningItem['type'] == 'category')
+        if ($warningItem['type'] === 'category')
         {
             $dw = XenForo_DataWriter::create(
                 'SV_WarningImprovements_DataWriter_WarningCategory'
@@ -126,7 +126,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                 'category-'.$dw->get('warning_category_id')
             );
         }
-        elseif ($warningItem['type'] == 'definition')
+        elseif ($warningItem['type'] === 'definition')
         {
             $dw = XenForo_DataWriter::create(
                 'XenForo_DataWriter_WarningDefinition'
@@ -215,7 +215,7 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                 XenForo_Input::STRING
             );
 
-            if ($expiryType == 'never')
+            if ($expiryType === 'never')
             {
                 $dwInput['expiry_type'] = 'never';
             }

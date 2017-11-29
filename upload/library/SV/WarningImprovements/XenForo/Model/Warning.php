@@ -849,7 +849,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                 );
                 $warningItems[] = $item;
 
-                if ($branch['type'] == 'category')
+                if ($branch['type'] === 'category')
                 {
                     $warningItems = array_merge(
                         $warningItems,
@@ -1022,7 +1022,7 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
 
             if (!empty($row['expiry_extension']))
             {
-                if ($row['expiry_type'] == 'never')
+                if ($row['expiry_type'] === 'never')
                 {
                     $warning['expiry_type'] = $row['expiry_type'];
                     $warning['expiry_default'] = $row['expiry_extension'];
@@ -1031,11 +1031,11 @@ class SV_WarningImprovements_XenForo_Model_Warning extends XFCP_SV_WarningImprov
                 {
                     $warning['expiry_default'] = $warning['expiry_default'] + $row['expiry_extension'];
                 }
-                else if ($warning['expiry_type'] == 'months' && $row['expiry_type'] == 'years')
+                else if ($warning['expiry_type'] === 'months' && $row['expiry_type'] === 'years')
                 {
                     $warning['expiry_default'] = $warning['expiry_default'] + $row['expiry_extension'] * 12;
                 }
-                else if ($warning['expiry_type'] == 'years' && $row['expiry_type'] == 'months')
+                else if ($warning['expiry_type'] === 'years' && $row['expiry_type'] === 'months')
                 {
                     $warning['expiry_default'] = $warning['expiry_default'] * 12 + $row['expiry_extension'];
                     $warning['expiry_type'] = 'months';

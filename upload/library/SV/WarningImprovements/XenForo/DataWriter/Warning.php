@@ -49,7 +49,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
                 {
                     $dwInput['points'] = $warning['points_default'];
                     $dwInput['expiry_date'] = (
-                        $warning['expiry_type'] == 'never' ? 0
+                        $warning['expiry_type'] === 'never' ? 0
                         : min(
                             pow(2,32) - 1,
                             strtotime('+' . $warning['expiry_default'] . ' ' . $warning['expiry_type'])
