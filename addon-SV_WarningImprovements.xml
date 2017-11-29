@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.6.1" version_id="1060100" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.6.2" version_id="1060200" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -595,7 +595,7 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="sv_warning_action_added_to_user_groups" version_id="101000" version_string="1.1.0"><![CDATA[Added to user groups]]></phrase>
     <phrase title="sv_warning_action_expiry" version_id="101000" version_string="1.1.0"><![CDATA[Warning Action Expiry]]></phrase>
     <phrase title="sv_warning_action_for_x" version_id="101000" version_string="1.1.0"><![CDATA[Warning action for {name}]]></phrase>
-    <phrase title="sv_warning_action_post_as_user" version_id="1020200" version_string="1.2.2"><![CDATA[The User Id to post as. 0 to user the user triggering the infraction.]]></phrase>
+    <phrase title="sv_warning_action_post_as_user" version_id="1060200" version_string="1.6.2"><![CDATA[The User Id to post as. 0 to user the user triggering the warning.]]></phrase>
     <phrase title="sv_warning_action_post_new_thread" version_id="1050007" version_string="1.5.0 RC 7"><![CDATA[Post message to a new thread in the given forum when this warning action is triggered. Zero to disable.<br/>
 <br/>
 New Thread trumps replying to a thread. Only the last warning action is applied when posting.<br/>
@@ -689,7 +689,7 @@ Edit the phases:<ul>
 </xen:foreach>
 </table>
 </div>]]></template>
-    <template title="sv_member_warn_chooser" version_id="1040500" version_string="1.4.5"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
+    <template title="sv_member_warn_chooser" version_id="1060200" version_string="1.6.2"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
 <xen:require css="sv_member_warn_chooser.css" />
 
 <xen:if is="{$debugMode}">
@@ -700,7 +700,7 @@ Edit the phases:<ul>
 	<xen:require js="js/SV/WarningImprovements/warnings.js" />
 </xen:if>
 
-<div id="warningViewSelect" class="JsOnly">
+<div id="warningViewSelect" class="JsOnly" style="display:none;">
 	<dl class="ctrlUnit">
 		<dt>{xen:phrase warning_type}:</dt>
 

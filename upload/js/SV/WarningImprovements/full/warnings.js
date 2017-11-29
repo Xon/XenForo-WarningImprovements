@@ -48,11 +48,12 @@ var SV = SV || {};
 
       if (this.setting == 'select')
       {
+        this.$selectView.show();
         this.$radioView.remove();
         this.$toggler.text(this.phrases.toggleRadio);
       }
       else
-      {
+      {        
         this.$selectView.remove();
         this.$toggler.text(this.phrases.toggleSelect);
       }
