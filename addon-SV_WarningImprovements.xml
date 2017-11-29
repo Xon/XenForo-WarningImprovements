@@ -616,7 +616,7 @@ Edit the phases:<ul>
     <phrase title="sv_warning_categories" version_id="1040000" version_string="1.4.0"><![CDATA[Warning Categories]]></phrase>
     <phrase title="sv_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Warning Category]]></phrase>
     <phrase title="sv_warning_category_1_title" version_id="1050000" version_string="1.5.0"><![CDATA[Warning]]></phrase>
-    <phrase title="sv_warning_default_applied_crossing_threshold" version_id="102001" version_string="1.2.0"><![CDATA[This warning default will only be applied when a user is issued a warning with thier total warning points above this points threshold. ]]></phrase>
+    <phrase title="sv_warning_default_applied_crossing_threshold" version_id="1060200" version_string="1.6.2"><![CDATA[This warning default will only be applied when a user is issued a warning with their total warning points above this points threshold. ]]></phrase>
     <phrase title="sv_warning_default_is_active" version_id="102001" version_string="1.2.0"><![CDATA[Is active]]></phrase>
     <phrase title="sv_warning_expiry_extension" version_id="102001" version_string="1.2.0"><![CDATA[Expiry Extension]]></phrase>
     <phrase title="sv_warning_expiry_extension_explain" version_id="102001" version_string="1.2.0"><![CDATA[The duration to add to the warning's default expiry period when above the threshold]]></phrase>
