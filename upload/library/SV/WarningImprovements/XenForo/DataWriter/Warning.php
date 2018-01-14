@@ -58,6 +58,22 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
                 }
                 $this->bulkSet($dwInput);
             }
+
+            $xenOptions = XenForo_Application::getOptions();
+            $minNoteLength = $xenOptions->sv_wi_warning_note_chars;
+
+            if (!empty($minNoteLength))
+            {
+                $noteLength = utf8_strlen($this->get('notes'));
+                if ($noteLength < $minNoteLength)
+                {
+                    $underAmount = $minNoteLength - $noteLength;
+                    $this->error(new XenForo_Phrase('sv_please_enter_note_with_at_least_x_characters',
+                        ['count' => $minNoteLength, 'under' => $underAmount]), 'notes'
+                    );
+                }
+            }
+
         }
 
         parent::_preSave();

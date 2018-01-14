@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.6.2" version_id="1060200" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.6.3" version_id="1060300" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -501,6 +501,12 @@ public_warning={xen:phrase post_public_warning}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="SV_WarningImprovements" display_order="350"/>
     </option>
+    <option option_id="sv_wi_warning_note_chars" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="SV_WarningImprovements" display_order="351"/>
+    </option>
   </optiongroups>
   <permissions>
     <permission_groups/>
@@ -550,6 +556,8 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="option_sv_warning_date_format_explain" version_id="1020204" version_string="1.2.2 RC4"><![CDATA[The Date format string, see <a href="http://php.net/manual/en/function.date.php">php.net</a> for details.]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes" version_id="100040" version_string="1.0.4"><![CDATA[Require Notes for Warning]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes_explain" version_id="100040" version_string="1.0.4"><![CDATA[Makes the Notes field required when creating a warning]]></phrase>
+    <phrase title="option_sv_wi_warning_note_chars" version_id="1060200" version_string="1.6.2"><![CDATA[Minimum Note Length]]></phrase>
+    <phrase title="option_sv_wi_warning_note_chars_explain" version_id="1060200" version_string="1.6.2"><![CDATA[The minimum amount of characters required for warning notes. Setting this to 0 will disable.]]></phrase>
     <phrase title="permission_general_sv_editWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[Edit Warning Actions]]></phrase>
     <phrase title="permission_general_sv_showAllWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[Don't Summarize Warning Actions]]></phrase>
     <phrase title="permission_general_sv_viewWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[View Warning Actions]]></phrase>
@@ -578,6 +586,9 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="sv_no_results_match" version_id="1040000" version_string="1.4.0"><![CDATA[No results match]]></phrase>
     <phrase title="sv_parent_category" version_id="1040000" version_string="1.4.0"><![CDATA[Parent Category]]></phrase>
     <phrase title="sv_please_confirm_that_you_want_to_delete_following_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Please confirm that you want to delete the following warning category]]></phrase>
+    <phrase title="sv_please_enter_note_with_at_least_x_characters" version_id="1060200" version_string="1.6.2"><![CDATA[Please enter a note with at least {count} characters.
+<br />
+Note is under by {under} characters.]]></phrase>
     <phrase title="sv_please_enter_valid_parent_warning_category_id" version_id="1040000" version_string="1.4.0"><![CDATA[Please enter a valid parent warning category ID.]]></phrase>
     <phrase title="sv_please_enter_valid_warning_category_id" version_id="1040000" version_string="1.4.0"><![CDATA[Please enter a valid warning category ID.]]></phrase>
     <phrase title="sv_rename" version_id="1040000" version_string="1.4.0"><![CDATA[Rename]]></phrase>
@@ -978,6 +989,10 @@ Edit the phases:<ul>
       <find><![CDATA[</script>]]></find>
       <replace><![CDATA[$0
 <xen:include template="sv_warning_improvement_js"/>]]></replace>
+    </modification>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn6" description="Add AutoValidator support" execution_order="6" enabled="1" action="str_replace">
+      <find><![CDATA[<form action="{xen:link members/warn, $user}" method="post" class="xenForm]]></find>
+      <replace><![CDATA[$0 AutoValidator]]></replace>
     </modification>
     <modification template="member_view" modification_key="sv_warningimprovements_member_view1" description="Warning Actions (header)" execution_order="100" enabled="1" action="str_replace">
       <find><![CDATA[<xen:hook name="member_view_tabs_heading"]]></find>
