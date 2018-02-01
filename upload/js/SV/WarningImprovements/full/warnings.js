@@ -422,6 +422,235 @@ var SV = SV || {};
 
   // *********************************************************************
 
+  XenForo.ForceDisablerInit = null;
+
+  /**
+   * Allows an input:checkbox or input:radio to disable subsidiary controls
+   * based on its own state
+   *
+   * @param {Object} $input
+   */
+  XenForo.Disabler = function($input)
+  {
+    /**
+     * Sets the disabled state of form elements being controlled by this disabler.
+     *
+     * @param Event e
+     * @param boolean If true, this is the initialization call
+     */
+    var setStatus = function(e, init)
+    {
+      if (XenForo.ForceDisablerInit !== null) {
+          init = XenForo.ForceDisablerInit;
+      }
+      //console.info('Disabler %o for child container: %o', $input, $childContainer);
+
+      var $childControls = $childContainer.find('input, select, textarea, button, .inputWrapper, .taggingInput'),
+          speed = init ? 0 : XenForo.speed.fast,
+          select = function(e)
+          {
+            $childContainer.find('input:not([type=hidden], [type=file]), textarea, select, button').first().focus().select();
+          };
+
+      if ($input.is(':checked:enabled'))
+      {
+        $childContainer
+            .removeAttr('disabled')
+            .removeClass('disabled')
+            .trigger('DisablerDisabled');
+
+        $childControls
+            .removeAttr('disabled')
+            .removeClass('disabled');
+
+        if ($input.hasClass('Hider'))
+        {
+          if (init)
+          {
+            $childContainer.show();
+          }
+          else
+          {
+            $childContainer.xfFadeDown(speed, init ? null : select);
+          }
+        }
+        else if (!init)
+        {
+          select.call();
+        }
+      }
+      else
+      {
+        if ($input.hasClass('Hider'))
+        {
+          if (init)
+          {
+            $childContainer.hide();
+          }
+          else
+          {
+            $childContainer.xfFadeUp(speed, null, speed, 'easeInBack');
+          }
+        }
+
+        $childContainer
+            .prop('disabled', true)
+            .addClass('disabled')
+            .trigger('DisablerEnabled');
+
+        $childControls
+          .prop('disabled', true)
+          .addClass('disabled')
+          .each(function(i, ctrl)
+          {
+            var $ctrl = $(ctrl),
+                disabledVal = $ctrl.data('disabled');
+
+            if (disabledVal !== null && typeof(disabledVal) !== 'undefined')
+            {
+              $ctrl.val(disabledVal);
+            }
+          });
+      }
+    },
+
+    $childContainer = $('#' + $input.attr('id') + '_Disabler'),
+
+    $form = $input.closest('form');
+
+    var setStatusDelayed = function()
+    {
+      setTimeout(setStatus, 0);
+    };
+
+    if ($input.is(':radio'))
+    {
+      $form.find('input:radio[name="' + $input.fieldName() + '"]').click(setStatusDelayed);
+    }
+    else
+    {
+      $input.click(setStatusDelayed);
+    }
+
+    $form.bind('reset', setStatusDelayed);
+    $form.bind('XFRecalculate', function() { setStatus(null, true); });
+
+    setStatus(null, true);
+
+    $childContainer.find('label, input, select, textarea').click(function(e)
+    {
+      if (!$input.is(':checked'))
+      {
+        $input.prop('checked', true);
+        setStatus();
+      }
+    });
+
+    this.setStatus = setStatus;
+  };
+
+  XenForo.FormFiller = function($form)
+  {
+    var valueCache = {},
+        clicked = null,
+        xhr = null,
+        preventSubmit = false;
+
+    $form.on('submit', function(e)
+    {
+      if (preventSubmit)
+      {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      }
+    });
+
+    function handleValuesResponse(clicked, ajaxData)
+    {
+      if (XenForo.hasResponseError(ajaxData))
+      {
+        return false;
+      }
+
+      XenForo.ForceDisablerInit = true;
+
+      $.each(ajaxData.formValues, function(selector, value)
+      {
+        var $ctrl = $form.find(selector);
+
+        if ($ctrl.length)
+        {
+          if ($ctrl.is(':checkbox, :radio'))
+          {
+            $ctrl.prop('checked', value).triggerHandler('click');
+          }
+          else if ($ctrl.is('select, input, textarea'))
+          {
+            $ctrl.val(value);
+          }
+        }
+      });
+
+      setTimeout(function() {
+        XenForo.ForceDisablerInit = null;
+
+        var Disabler = $(clicked).data('XenForo.Disabler');
+        if (typeof Disabler === 'object')
+        {
+            Disabler.setStatus();
+        }
+        else
+        {
+            clicked.focus();
+        }
+      }, 0);
+    }
+
+    function handleSelection(e)
+    {
+      var choice = $(e.target).data('choice') || $(e.target).val();
+      if (choice === '')
+      {
+          return true;
+      }
+
+      if (xhr)
+      {
+          //	xhr.abort();
+      }
+
+      if (valueCache[choice])
+      {
+          handleValuesResponse(this, valueCache[choice]);
+      }
+      else
+      {
+        clicked = this;
+        preventSubmit = true;
+
+        xhr = XenForo.ajax($form.data('form-filler-url'),
+            { choice: choice },
+            function(ajaxData, textStatus)
+            {
+              valueCache[choice] = ajaxData;
+
+              handleValuesResponse(clicked, ajaxData);
+            }
+        );
+        xhr.always(function()
+        {
+          preventSubmit = false;
+        });
+      }
+    }
+
+    this.addControl = function($control)
+    {
+      $control.click(handleSelection);
+    };
+  };
+  // *********************************************************************
+
   XenForo.register('a.WarningViewToggler',   'SV.WarningViewToggler');
   XenForo.register('select.WarningSelector', 'SV.WarningSelector');
   XenForo.register('.WarningItemTree',       'SV.WarningItemTree');

@@ -939,15 +939,6 @@ Edit the phases:<ul>
 	XenForo.register('input[name=warning_definition_id][id!=customWarning]', 'XenForo.WarningDefRadioButton');
 	XenForo.CustomWarningRadioButton = function($input)
 	{
-		var $titleInput = $input.closest('li').find('input[name=title]');
-
-		$input.on('click', function() {
-			setTimeout(function() {
-				console.log($titleInput);
-				$titleInput.focus();
-			}, 100);
-		});
-
 		$input.trigger('click');
 	}
 	XenForo.register('input#customWarning', 'XenForo.CustomWarningRadioButton');
