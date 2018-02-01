@@ -7,6 +7,8 @@ A Collection of improvements to XF's warning system.
 - Sends an alert to a user when they receive a warning. (Defaults on, togglable)
 - Allows the Custom Warning to be customized
 - Copy Warning title/text automatically to the public warning
+- Allow non-custom Warnings to have thier Titles edited, opt-in
+- Use XenForo's AJAX handling on errors instead of breaking the current form.
 - Optional "Continue" button on the warning dialog, instead of a "warn" button for the first few tabs.
 - Allow the default content action to be set
 - Control defaults for user notification
