@@ -75,6 +75,19 @@ class SV_WarningImprovements_Installer
             'sv_display_order',
             'INT UNSIGNED NOT NULL DEFAULT 0'
         );
+        $addCol = SV_Utils_Install::addColumn(
+            'xf_warning_definition',
+            'sv_custom_title',
+            'TINYINT(1) UNSIGNED NOT NULL DEFAULT 0'
+        );
+        if ($addCol)
+        {
+            $db->query('
+                update xf_warning_definition
+                set sv_custom_title = 1
+                where warning_definition_id = 0
+            ');
+        }
 
         SV_Utils_Install::addColumn(
             'xf_warning_action',
@@ -87,9 +100,9 @@ class SV_WarningImprovements_Installer
             // insert the defaults for the custom warning. This can't be normally inserted so fiddle with the sql_mode
             $db->query("SET SESSION sql_mode='STRICT_ALL_TABLES,NO_AUTO_VALUE_ON_ZERO'");
             $db->query("insert ignore into xf_warning_definition
-                    (warning_definition_id,points_default,expiry_type,expiry_default,extra_user_group_ids,is_editable)
+                    (warning_definition_id,points_default,expiry_type,expiry_default,extra_user_group_ids,is_editable, sv_custom_title)
                 values
-                    (0,1, 'months',1,'',1);
+                    (0,1, 'months',1,'',1, 1);
             ");
             $db->query("SET SESSION sql_mode='STRICT_ALL_TABLES'");
         }
@@ -214,6 +227,8 @@ class SV_WarningImprovements_Installer
         SV_Utils_Install::addColumn("xf_warning_action", "sv_post_node_id", "INT NOT NULL DEFAULT 0");
         SV_Utils_Install::addColumn("xf_warning_action", "sv_post_thread_id", "INT NOT NULL DEFAULT 0");
         SV_Utils_Install::addColumn("xf_warning_action", "sv_post_as_user_id", "INT");
+
+        SV_Utils_Install::addColumn("xf_warning", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
 /*
         SV_Utils_Install::addColumn("xf_warning", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");
         SV_Utils_Install::addColumn("xf_warning_definition", "sv_PauseExpireOnSuspended", "TINYINT NOT NULL DEFAULT 1");

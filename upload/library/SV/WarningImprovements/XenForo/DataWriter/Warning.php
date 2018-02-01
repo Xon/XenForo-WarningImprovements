@@ -30,6 +30,17 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
                 $warningDefinitionId
             );
 
+            if (SV_WarningImprovements_Globals::$warningInput !== null)
+            {
+                if (empty($warning['sv_custom_title']))
+                {
+                    unset(SV_WarningImprovements_Globals::$warningInput['title']);
+                }
+
+                $this->bulkSet(SV_WarningImprovements_Globals::$warningInput);
+            }
+
+
             $warningCategory = $warningModel->getWarningCategoryById(
                 $warning['sv_warning_category_id']
             );

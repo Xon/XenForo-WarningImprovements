@@ -17,6 +17,10 @@ class SV_WarningImprovements_XenForo_ViewPublic_Member_WarnFill extends XFCP_SV_
         {
             $response['formValues']['#startConversation'] = false;
         }
+        if(!empty($warning['sv_custom_title']))
+        {
+            $response['formValues']['#customTitle'] = true;
+        }
 
         return $response;
     }

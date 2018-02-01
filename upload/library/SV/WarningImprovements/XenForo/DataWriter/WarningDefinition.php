@@ -15,7 +15,11 @@ class SV_WarningImprovements_XenForo_DataWriter_WarningDefinition extends XFCP_S
             ),
             'sv_display_order' => array(
                 'type' => self::TYPE_UINT
-            )
+            ),
+            'sv_custom_title' => array(
+                'type' => self::TYPE_BOOLEAN,
+                'default' => false,
+            ),
         );
 
         return $fields;

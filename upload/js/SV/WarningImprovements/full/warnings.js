@@ -122,13 +122,25 @@ var SV = SV || {};
 
     eChange: function(e)
     {
-      var id = parseInt($(e.target).val());
+      var $target = $(e.target);
+      var id = parseInt($target.val());
+      var showCustomTitle = false;
+      var $warningDefinition = $('select[name="warning_definition_id"] option[value="' + id + '"].warningDefinition');
+      if (id === 0) {
+          showCustomTitle = true;
+      } else if ($warningDefinition.data('custom-title')) {
+          showCustomTitle = true;
+      }
 
       this.$selector.find('option[value="'+id+'"]').trigger('click');
 
-      if (id === 0)
+      if (showCustomTitle)
       {
         this.$customWarningTitle.show();
+
+        if (id !== 0) {
+            this.$customWarningTitle.val($warningDefinition.text());
+        }
 
         setTimeout($.context(function()
         {
@@ -424,20 +436,8 @@ var SV = SV || {};
 
   XenForo.ForceDisablerInit = null;
 
-  /**
-   * Allows an input:checkbox or input:radio to disable subsidiary controls
-   * based on its own state
-   *
-   * @param {Object} $input
-   */
   XenForo.Disabler = function($input)
   {
-    /**
-     * Sets the disabled state of form elements being controlled by this disabler.
-     *
-     * @param Event e
-     * @param boolean If true, this is the initialization call
-     */
     var setStatus = function(e, init)
     {
       if (XenForo.ForceDisablerInit !== null) {
@@ -449,7 +449,12 @@ var SV = SV || {};
           speed = init ? 0 : XenForo.speed.fast,
           select = function(e)
           {
-            $childContainer.find('input:not([type=hidden], [type=file]), textarea, select, button').first().focus().select();
+            var $first = $childContainer.find('input:not([type=hidden], [type=file]), textarea, select, button').first();
+            $first.focus();
+            // hack to select the end of the value
+            var value = $first.val();
+            $first.val('');
+            $first.val(value);
           };
 
       if ($input.is(':checked:enabled'))

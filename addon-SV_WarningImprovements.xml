@@ -332,6 +332,9 @@ hint="{$formatParams.hint}" placeholder="{$formatParams.placeholder}" type="{$fo
 </fieldset>
 <xen:else />
 $1
+<xen:checkboxunit label="">
+	<xen:option name="sv_custom_title" selected="{$warning.sv_custom_title}">{xen:phrase sv_custom_warning_title}</xen:option>
+</xen:checkboxunit>
 </xen:if>]]></replace>
     </modification>
     <modification template="warning_list" modification_key="SV_WarningImprovements_warning_list4" description="Warning Escalating Defaults" execution_order="4156" enabled="1" action="preg_replace">
@@ -571,6 +574,7 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="sv_confirm_deletion_of_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Confirm Deletion of Warning Default.]]></phrase>
     <phrase title="sv_create_new_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Create New Warning Category]]></phrase>
     <phrase title="sv_create_new_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Create New Warning Defaults]]></phrase>
+    <phrase title="sv_custom_warning_title" version_id="1070000" version_string="1.7.0"><![CDATA[Allow editable warning title when giving warning]]></phrase>
     <phrase title="sv_delete_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Delete Warning Category]]></phrase>
     <phrase title="sv_delete_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Delete Warning Default]]></phrase>
     <phrase title="sv_discouraged_display_administrators" version_id="101000" version_string="1.1.0"><![CDATA[Administrators]]></phrase>
@@ -700,7 +704,7 @@ Edit the phases:<ul>
 </xen:foreach>
 </table>
 </div>]]></template>
-    <template title="sv_member_warn_chooser" version_id="1060200" version_string="1.6.2"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
+    <template title="sv_member_warn_chooser" version_id="1070000" version_string="1.7.0"><![CDATA[<link rel="stylesheet" href="styles/chosen/chosen.min.css" />
 <xen:require css="sv_member_warn_chooser.css" />
 
 <xen:if is="{$debugMode}">
@@ -725,7 +729,7 @@ Edit the phases:<ul>
 				<xen:foreach loop="$warningCategories" value="$warningCategory">
 					<optgroup class="warningCategory" label="{$warningCategory.title}">
 						<xen:foreach loop="$warningCategory.warnings" value="$warning">
-							<option class="warningDefinition FormFiller" value="{$warning.warning_definition_id}">{$warning.title}</option>
+							<option class="warningDefinition FormFiller" value="{$warning.warning_definition_id}" {xen:if {$warning.sv_custom_title}, 'data-custom-title="1"', ''}>{$warning.title}</option>
 						</xen:foreach>
 					</optgroup>
 				</xen:foreach>
@@ -748,7 +752,13 @@ Edit the phases:<ul>
 							<li class="warningCategory _depth{$warningItem.depth}">{$warningItem.title}</li>
 						<xen:else />
 							<xen:if is="{$warningItem.warning_definition_id} != 0">
-								<li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" class="FormFiller" value="{$warningItem.warning_definition_id}" /> {$warningItem.title}</label></li>
+								<li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" id="warning_{$warningItem.warning_definition_id}" class="FormFiller {xen:if '{$warningItem.sv_custom_title}', 'Disabler', ''}" value="{$warningItem.warning_definition_id}" {xen:if {$warning.sv_custom_title}, 'data-custom-title="1"', ''}/> {$warningItem.title}</label>
+								<xen:if is="{$warningItem.sv_custom_title}">
+									<ul id="warning_{$warningItem.warning_definition_id}_Disabler">
+										<li><input type="text" name="title" class="textCtrl" value="{$warningItem.title}" maxlength="255" /></li>
+									</ul>
+								</xen:if>
+								</li>
 							<xen:else />
 								<li class="warningDefinition _depth{$warningItem.depth}"><label><input type="radio" name="warning_definition_id" class="FormFiller Disabler" value="0" id="customWarning" checked="checked" /> {xen:phrase custom_warning}:</label>
 									<ul id="customWarning_Disabler">

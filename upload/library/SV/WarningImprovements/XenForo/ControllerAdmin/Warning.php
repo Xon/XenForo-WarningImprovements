@@ -202,8 +202,9 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
                     XenForo_Input::UINT,
                     'array' => true
                 ),
-                'is_editable'          => XenForo_Input::UINT
+                'is_editable'          => XenForo_Input::UINT,
             ));
+            $dwInput['sv_custom_title'] = true;
             $phrases = $this->_input->filter(array(
                 'title'             => XenForo_Input::STRING,
                 'conversationTitle' => XenForo_Input::STRING,
@@ -254,7 +255,8 @@ class SV_WarningImprovements_XenForo_ControllerAdmin_Warning extends XFCP_SV_War
         SV_WarningImprovements_Globals::$warningDefinitionInput = $this->_input->filter(
             array(
                 'sv_warning_category_id' => XenForo_Input::UINT,
-                'sv_display_order'       => XenForo_Input::UINT
+                'sv_display_order'       => XenForo_Input::UINT,
+                'sv_custom_title'        => XenForo_Input::BOOLEAN,
             )
         );
 
