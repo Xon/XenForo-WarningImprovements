@@ -46,14 +46,14 @@ var SV = SV || {};
         this.setSetting('select');
       }
 
-      if (this.setting == 'select')
+      if (this.setting === 'select')
       {
         this.$selectView.show();
         this.$radioView.remove();
         this.$toggler.text(this.phrases.toggleRadio);
       }
       else
-      {        
+      {
         this.$selectView.remove();
         this.$toggler.text(this.phrases.toggleSelect);
       }
@@ -61,7 +61,7 @@ var SV = SV || {};
 
     toggle: function()
     {
-      if (this.setting == 'select')
+      if (this.setting === 'select')
       {
         this.setSetting('radio');
       }
@@ -122,11 +122,11 @@ var SV = SV || {};
 
     eChange: function(e)
     {
-      var id = $(e.target).val();
+      var id = parseInt($(e.target).val());
 
       this.$selector.find('option[value="'+id+'"]').trigger('click');
 
-      if (id == 0)
+      if (id === 0)
       {
         this.$customWarningTitle.show();
 
@@ -195,10 +195,10 @@ var SV = SV || {};
             'data': ajaxData['tree'],
             'check_callback': function (operation, node, parent)
             {
-              if (operation == 'rename_node')
+              if (operation === 'rename_node')
               {
-                var id = node.id.substr(1);
-                if (id == 0)
+                var id = parseInt(node.id.substr(1));
+                if (id === 0)
                 {
                   return false;
                 }
@@ -206,11 +206,11 @@ var SV = SV || {};
                 return true;
               }
 
-              if (operation == 'move_node')
+              if (operation === 'move_node')
               {
-                if (node.type == 'category')
+                if (node.type === 'category')
                 {
-                  if (parent.parent != '#' && parent.parent != null)
+                  if (parent.parent !== '#' && parent.parent != null)
                   {
                     return false;
                   }
@@ -231,14 +231,9 @@ var SV = SV || {};
                 {
                   var inst = $.jstree.reference(data.reference);
                   var node = inst.get_node(data.reference);
-                  var id = node.id.substr(1);
+                  var id = parseInt(node.id.substr(1));
 
-                  if (id == 0)
-                  {
-                    return true;
-                  }
-
-                  return false;
+                  return id === 0;
                 },
                 'action': function(data)
                 {
@@ -257,11 +252,11 @@ var SV = SV || {};
                   var id = node.id.substr(1);
 
                   var href;
-                  if (node.type == 'category')
+                  if (node.type === 'category')
                   {
                     href = this.urls.categoryEdit.replace('{id}', id);
                   }
-                  else if (node.type == 'definition')
+                  else if (node.type === 'definition')
                   {
                     href = this.urls.warningEdit.replace('{id}', id);
                   }
@@ -275,14 +270,9 @@ var SV = SV || {};
                 {
                   var inst = $.jstree.reference(data.reference);
                   var node = inst.get_node(data.reference);
-                  var id = node.id.substr(1);
+                  var id = parseInt(node.id.substr(1));
 
-                  if (id == 0)
-                  {
-                    return true;
-                  }
-
-                  return false;
+                  return id === 0;
                 },
                 'action': $.context(function(data)
                 {
@@ -291,11 +281,11 @@ var SV = SV || {};
                   var id = node.id.substr(1);
 
                   var href;
-                  if (node.type == 'category')
+                  if (node.type === 'category')
                   {
                     href = this.urls.categoryDelete.replace('{id}', id);
                   }
-                  else if (node.type == 'definition')
+                  else if (node.type === 'definition')
                   {
                     href = this.urls.warningDelete.replace('{id}', id);
                   }
@@ -379,11 +369,11 @@ var SV = SV || {};
         var last = window.location.hash.replace('#_', '');
 
         var id;
-        if (last.indexOf('warning-') == 0)
+        if (last.indexOf('warning-') === 0)
         {
           id = last.replace('warning-', 'd');
         }
-        else if (last.indexOf('category-') == 0)
+        else if (last.indexOf('category-') === 0)
         {
           id = last.replace('category-', 'c');
         }
