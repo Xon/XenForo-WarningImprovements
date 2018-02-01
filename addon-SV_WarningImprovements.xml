@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.6.3" version_id="1060300" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="SV_WarningImprovements" title="Warning Improvements" version_string="1.7.0" version_id="1070000" url="https://xenforo.com/community/resources/warning-improvements-by-xon.4156/" install_callback_class="SV_WarningImprovements_Installer" install_callback_method="install" uninstall_callback_class="SV_WarningImprovements_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -881,7 +881,7 @@ Edit the phases:<ul>
 		</xen:if>
 	</div>
 </div>]]></template>
-    <template title="sv_warning_improvement_js" version_id="1040700" version_string="1.4.7"><![CDATA[<script>
+    <template title="sv_warning_improvement_js" version_id="1070000" version_string="1.7.0"><![CDATA[<script>
 !function($, window, document, _undefined)
 {
 	<xen:if is="{$xenOptions.sv_warningimprovements_continue_button}">
@@ -910,7 +910,6 @@ Edit the phases:<ul>
 		}
 	});
 	</xen:if>
-
 	XenForo.CustomWarningRadioTrigger = function ($input)
 	{
 		$input.trigger('click');
@@ -919,7 +918,12 @@ Edit the phases:<ul>
 	XenForo.WarningDefaultActionFormFillerControl = function($input)
 	{
 		if ($input.val() == '{$xenOptions.sv_warningimprovements_default_content_action}') {
-			$input.trigger('click');
+			$input.prop("checked", true);
+			var Disabler = $input.data('XenForo.Disabler');
+			if (Disabler && typeof Disabler == 'object')
+			{
+				Disabler.setStatus(null, 1);
+			}
 		}
 	}
 	XenForo.register('input[name=content_action]', 'XenForo.WarningDefaultActionFormFillerControl');
