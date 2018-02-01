@@ -910,11 +910,6 @@ Edit the phases:<ul>
 		}
 	});
 	</xen:if>
-	XenForo.CustomWarningRadioTrigger = function ($input)
-	{
-		$input.trigger('click');
-	}
-	XenForo.register('input#customWarning', 'XenForo.CustomWarningRadioTrigger');
 	XenForo.WarningDefaultActionFormFillerControl = function($input)
 	{
 		if ($input.val() == '{$xenOptions.sv_warningimprovements_default_content_action}') {
@@ -942,13 +937,20 @@ Edit the phases:<ul>
 		});
 	}
 	XenForo.register('input[name=warning_definition_id][id!=customWarning]', 'XenForo.WarningDefRadioButton');
-	XenForo.CustomWarningRadioButton = function($control)
+	XenForo.CustomWarningRadioButton = function($input)
 	{
-		$control.change(function (e){
-			$('input[name=public_warning]').val($('input[name=title]').val());
+		var $titleInput = $input.closest('li').find('input[name=title]');
+
+		$input.on('click', function() {
+			setTimeout(function() {
+				console.log($titleInput);
+				$titleInput.focus();
+			}, 100);
 		});
+
+		$input.trigger('click');
 	}
-	XenForo.register('input[id=customWarning]', 'XenForo.CustomWarningRadioButton');
+	XenForo.register('input#customWarning', 'XenForo.CustomWarningRadioButton');
 	XenForo.WarningDefSelectOption = function($select)
 	{
 		$select.change(function(e) {
