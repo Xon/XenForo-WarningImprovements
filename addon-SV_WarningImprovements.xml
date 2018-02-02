@@ -560,7 +560,9 @@ Changing this is only retroactive for Warnings, not Warning Alerts.]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes" version_id="100040" version_string="1.0.4"><![CDATA[Require Notes for Warning]]></phrase>
     <phrase title="option_sv_wi_require_warning_notes_explain" version_id="100040" version_string="1.0.4"><![CDATA[Makes the Notes field required when creating a warning]]></phrase>
     <phrase title="option_sv_wi_warning_note_chars" version_id="1060200" version_string="1.6.2"><![CDATA[Minimum Note Length]]></phrase>
-    <phrase title="option_sv_wi_warning_note_chars_explain" version_id="1060200" version_string="1.6.2"><![CDATA[The minimum amount of characters required for warning notes. Setting this to 0 will disable.]]></phrase>
+    <phrase title="option_sv_wi_warning_note_chars_explain" version_id="1070100" version_string="1.7.1"><![CDATA[The minimum amount of characters required for warning notes. Setting this to 0 will disable.<br/>
+<br/>
+Requires "Require Notes for Warning" to be enabled]]></phrase>
     <phrase title="permission_general_sv_editWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[Edit Warning Actions]]></phrase>
     <phrase title="permission_general_sv_showAllWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[Don't Summarize Warning Actions]]></phrase>
     <phrase title="permission_general_sv_viewWarningActions" version_id="101000" version_string="1.1.0"><![CDATA[View Warning Actions]]></phrase>

@@ -73,7 +73,7 @@ class SV_WarningImprovements_XenForo_DataWriter_Warning extends XFCP_SV_WarningI
             $xenOptions = XenForo_Application::getOptions();
             $minNoteLength = $xenOptions->sv_wi_warning_note_chars;
 
-            if (!empty($minNoteLength))
+            if ($xenOptions->sv_wi_require_warning_notes && !empty($minNoteLength))
             {
                 $noteLength = utf8_strlen($this->get('notes'));
                 if ($noteLength < $minNoteLength)
