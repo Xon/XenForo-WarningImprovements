@@ -587,6 +587,7 @@ Requires "Require Notes for Warning" to be enabled]]></phrase>
     <phrase title="sv_edit_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Edit Warning Default]]></phrase>
     <phrase title="sv_global_warning_actions" version_id="1050001" version_string="1.5.0 Alpha 1"><![CDATA[Global Warning Actions]]></phrase>
     <phrase title="sv_increase_default_expiry_by_x" version_id="102001" version_string="1.2.0"><![CDATA[ increase default expiry by {length}]]></phrase>
+    <phrase title="sv_issued_warning" version_id="1070100" version_string="1.7.1"><![CDATA[Issued Warning]]></phrase>
     <phrase title="sv_no_permission_to_give_warning" version_id="1040100" version_string="1.4.1"><![CDATA[You don't have permission to give this warning.]]></phrase>
     <phrase title="sv_no_permission_to_give_warnings" version_id="1040500" version_string="1.4.5"><![CDATA[You don't have permission to any warnings.]]></phrase>
     <phrase title="sv_no_results_match" version_id="1040000" version_string="1.4.0"><![CDATA[No results match]]></phrase>

@@ -70,6 +70,15 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
 
         $response = parent::actionWarn();
 
+        if ($response instanceof XenForo_ControllerResponse_Redirect)
+        {
+            if ($response->redirectMessage === null)
+            {
+                $response->redirectMessage = new XenForo_Phrase('sv_issued_warning');
+            }
+            return $response;
+        }
+
         if (!$response instanceof XenForo_ControllerResponse_View)
         {
             return $response;
