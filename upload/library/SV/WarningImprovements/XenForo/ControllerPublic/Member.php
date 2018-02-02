@@ -70,17 +70,65 @@ class SV_WarningImprovements_XenForo_ControllerPublic_Member extends XFCP_SV_War
 
         $response = parent::actionWarn();
 
-        if ($response instanceof XenForo_ControllerResponse_Redirect)
-        {
-            if ($response->redirectMessage === null)
-            {
-                $response->redirectMessage = new XenForo_Phrase('sv_issued_warning');
-            }
-            return $response;
-        }
-
         if (!$response instanceof XenForo_ControllerResponse_View)
         {
+            if ($response instanceof XenForo_ControllerResponse_Redirect)
+            {
+                if ($response->redirectMessage === null)
+                {
+                    $response->redirectMessage = new XenForo_Phrase('sv_issued_warning');
+                }
+                return $response;
+            }
+
+            if ($response instanceof XenForo_ControllerResponse_Reroute &&
+                $response->controllerName === 'XenForo_ControllerPublic_Error' &&
+                $response->action === 'noPermission')
+            {
+                $userId = $this->_input->filterSingle('user_id', XenForo_Input::UINT);
+                /** @var XenForo_ControllerHelper_UserProfile $userHelper */
+                $userHelper = $this->getHelper('UserProfile');
+                $user = $userHelper->getUserOrError($userId);
+
+                // this happens if the warning already exists
+                $contentInput = $this->_input->filter(
+                    [
+                        'content_type' => XenForo_Input::STRING,
+                        'content_id'   => XenForo_Input::UINT
+                    ]
+                );
+
+                if (!$contentInput['content_type'])
+                {
+                    $contentInput['content_type'] = 'user';
+                    $contentInput['content_id'] = $userId;
+                }
+
+                /* @var $warningModel XenForo_Model_Warning */
+                $warningModel = $this->getModelFromCache('XenForo_Model_Warning');
+
+                $warningHandler = $warningModel->getWarningHandler($contentInput['content_type']);
+                if (!$warningHandler)
+                {
+                    return $response;
+                }
+
+                /** @var array|bool $content */
+                $content = $warningHandler->getContent($contentInput['content_id']);
+                if ($content && $warningHandler->canView($content) && !empty($content['warning_id']))
+                {
+                    $url = $warningHandler->getContentUrl($content);
+                    if ($url)
+                    {
+                        return $this->responseRedirect(
+                            XenForo_ControllerResponse_Redirect::RESOURCE_UPDATED,
+                            $url,
+                            new XenForo_Phrase('sv_content_already_warned')
+                        );
+                    }
+                }
+            }
+
             return $response;
         }
 

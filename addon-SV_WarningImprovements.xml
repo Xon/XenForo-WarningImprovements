@@ -574,6 +574,7 @@ Requires "Require Notes for Warning" to be enabled]]></phrase>
     <phrase title="sv_confirm_delete_warning_category_footnote" version_id="1050004" version_string="1.5.0 RC 4"><![CDATA[<strong>Any children of this category will also be deleted. This includes subcategories, warning definitions, and warning actions.</strong>]]></phrase>
     <phrase title="sv_confirm_deletion_of_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Confirm Deletion of Warning Category]]></phrase>
     <phrase title="sv_confirm_deletion_of_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Confirm Deletion of Warning Default.]]></phrase>
+    <phrase title="sv_content_already_warned" version_id="1070100" version_string="1.7.1"><![CDATA[Content is already warned]]></phrase>
     <phrase title="sv_create_new_warning_category" version_id="1040000" version_string="1.4.0"><![CDATA[Create New Warning Category]]></phrase>
     <phrase title="sv_create_new_warning_default" version_id="102001" version_string="1.2.0"><![CDATA[Create New Warning Defaults]]></phrase>
     <phrase title="sv_custom_warning_title" version_id="1070000" version_string="1.7.0"><![CDATA[Allow editable warning title when giving warning]]></phrase>
