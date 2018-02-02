@@ -1000,9 +1000,9 @@ Edit the phases:<ul>
       <replace><![CDATA[$0
 <xen:include template="sv_warning_improvement_js"/>]]></replace>
     </modification>
-    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn6" description="Add AutoValidator support" execution_order="6" enabled="1" action="str_replace">
-      <find><![CDATA[<form action="{xen:link members/warn, $user}" method="post" class="xenForm]]></find>
-      <replace><![CDATA[$0 AutoValidator]]></replace>
+    <modification template="member_warn" modification_key="SV_WarningImprovements_member_warn6" description="Add AutoValidator &amp; redirect on-submit support" execution_order="6" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<form.*?members/warn.*?class="xenForm[^"]*)(")#si]]></find>
+      <replace><![CDATA[$1 AutoValidator" data-redirect="true"]]></replace>
     </modification>
     <modification template="member_view" modification_key="sv_warningimprovements_member_view1" description="Warning Actions (header)" execution_order="100" enabled="1" action="str_replace">
       <find><![CDATA[<xen:hook name="member_view_tabs_heading"]]></find>
