@@ -2,10 +2,16 @@
 
 A Collection of improvements to XF's warning system.
 
+- Warnings/Bans with time-based expiry are now be removed on the 1st visit after the expiry time, rather than needing to wait for the hourly cron task to run.
+- Sortable warnings with categories
+  - Drag & drop
+  - Permissions per category
+  - per-category warning actions, allowing warning actions to be only triggered from points in that category
+- Updated front-end using smart select menu, or radio boxes
 - User Criteria for warning points
 - Allow users to view their own warnings, and find which posts where warned. 
 - Sends an alert to a user when they receive a warning. (Defaults on, togglable)
-- Allows the Custom Warning to be customized
+- Allows the Custom Warning Definition to be customized
 - Copy Warning title/text automatically to the public warning
 - Allow non-custom Warnings to have thier Titles edited, opt-in
 - Use XenForo's AJAX handling on errors instead of breaking the current form.
