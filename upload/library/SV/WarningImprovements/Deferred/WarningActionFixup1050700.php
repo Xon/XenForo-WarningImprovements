@@ -98,6 +98,11 @@ class SV_WarningImprovements_Deferred_WarningActionFixup1050700 extends XenForo_
             }
         }
 
+        if ($action_trigger_id <= 0)
+        {
+            return false;
+        }
+
         return array('action_trigger_id' => $action_trigger_id, 'users' => $fixedUsers);
     }
 }
